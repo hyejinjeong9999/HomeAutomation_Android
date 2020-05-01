@@ -30,7 +30,7 @@ public class FragmentHome extends Fragment {
     VerticalAdapter verticalAdapter;
     RecyclerView recyclerView;
 
-    ArrayList<SystemInfoVO> list = new ArrayList<>();
+    ArrayList<SystemInfoVO> list;
 
     @Nullable
     @Override
@@ -44,8 +44,11 @@ public class FragmentHome extends Fragment {
 
 
         Bundle bundle = getArguments();
-        list = (ArrayList<SystemInfoVO>) bundle.getSerializable("list");
-        Log.v(TAG,"list"+list.toString());
+//        list = bundle.getParcelableArrayList("list");
+        Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
+        list=(ArrayList<SystemInfoVO>)getArguments().get("list");
+        Log.v(TAG,"list=="+list);
+
         recyclerView = view.findViewById(R.id.recyclerViewVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);

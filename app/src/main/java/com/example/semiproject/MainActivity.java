@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,24 +35,26 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     Context context;
     Bundle bundle;
-    Button btnA;
 
-    public static FragmentManager fragmentManager;
-    public static FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
     FragmentA fragmentA;
     FragmentB fragmentB;
 
-    ArrayList<SystemInfoVO> list = new ArrayList<>();
+    ArrayList<SystemInfoVO> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
+        list = new ArrayList<>();
+        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel,"에어컨","꺼짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"현관문","켜짐", ViewType.ItemVertical));
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         fragmentManager = getSupportFragmentManager();
@@ -60,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction=fragmentManager.beginTransaction();
             bundle = new Bundle();
             fragmentHome = new FragmentHome();
+            bundle.putSerializable("list", list);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
             fragmentHome.setArguments(bundle);
             Log.v(TAG,"fragmentHome==");
         }
-
 
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("홈")));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win")));
@@ -85,12 +88,13 @@ public class MainActivity extends AppCompatActivity {
                         if (fragmentHome == null) {
                             fragmentHome = new FragmentHome();
                             Log.v(TAG,"fragmentHome==");
-                            bundle.putSerializable("list",  list);
-                            intent.putExtra("list",list);
+//                            bundle.putParcelableArrayList("list",  (ArrayList<? extends Parcelable>)list);
                         }
+                        bundle.putSerializable("list", list);
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         fragmentHome.setArguments(bundle);
+
                         break;
                     case 1:
                         if (fragmentA == null) {

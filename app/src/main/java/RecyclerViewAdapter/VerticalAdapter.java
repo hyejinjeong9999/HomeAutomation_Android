@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,8 +44,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.System
 
     @Override
     public void onBindViewHolder(@NonNull SystemInfo holder, int position) {
-            holder.tvSystemName.setText(list.get(position).getTitle());
-            holder.tvSituation.setText(list.get(position).getSituation());
+        holder.ivTitle.setImageResource(list.get(position).getImageView());
+        holder.tvSystemName.setText(list.get(position).getTitle());
+        holder.tvSituation.setText(list.get(position).getSituation());
     }
 
     @Override
@@ -58,11 +60,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.System
     }
 
     public class SystemInfo extends RecyclerView.ViewHolder{
+        public ImageView ivTitle;
         public TextView tvSystemName;
         public TextView tvSituation;
 
         public SystemInfo(@NonNull View itemView) {
             super(itemView);
+            ivTitle = itemView.findViewById(R.id.ivTitle);
             tvSystemName=itemView.findViewById(R.id.tvSystemName);
             tvSituation=itemView.findViewById(R.id.tvSituation);
         }
