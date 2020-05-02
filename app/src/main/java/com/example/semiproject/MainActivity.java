@@ -1,20 +1,15 @@
 package com.example.semiproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,9 +18,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.ViewType;
-import ViewPage.ContentViewPagerAdapter;
 import ViewPage.FragmentA;
-import ViewPage.FragmentB;
+import ViewPage.FragmentFridge;
 import ViewPage.FragmentHome;
 import model.SystemInfoVO;
 
@@ -33,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
     RecyclerView recyclerVIew;
     TabLayout tabLayout;
+    ViewPager viewPager;
     Context context;
     Bundle bundle;
 
@@ -40,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
     FragmentA fragmentA;
-    FragmentB fragmentB;
+    FragmentFridge fragmentFridge;
 
     ArrayList<SystemInfoVO> list;
 
@@ -49,14 +44,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        list = new ArrayList<>();
-        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angel,"에어컨","꺼짐", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angry,"현관문","켜짐", ViewType.ItemVertical));
+        initRecyclerAdapter();
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
+        //ViewPager Code//
+//        viewPager = findViewById(R.id.viewPager);
+//        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
+//        viewPager.setAdapter(pagerAdapter);
+//        tabLayout=findViewById(R.id.tabLayout);
+//        tabLayout.setupWithViewPager(viewPager);
+
+        ArrayList<Integer> imager = new ArrayList<>();
+        imager.add(R.drawable.home);
+
         fragmentManager = getSupportFragmentManager();
 
         if (fragmentHome == null) {
@@ -69,26 +69,26 @@ public class MainActivity extends AppCompatActivity {
             fragmentHome.setArguments(bundle);
             Log.v(TAG,"fragmentHome==");
         }
-
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("홈")));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win")));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("게임")));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("???")));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("???")));
-
+        //TabLayout 항목 추가
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
+        /**
+         * TabLayout 터치 이벤트
+         */
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
                 fragmentTransaction=fragmentManager.beginTransaction();
                 bundle = new Bundle();
-                Intent intent = new Intent();
                 switch (tab.getPosition()){
                     case 0:
                         if (fragmentHome == null) {
                             fragmentHome = new FragmentHome();
                             Log.v(TAG,"fragmentHome==");
-//                            bundle.putParcelableArrayList("list",  (ArrayList<? extends Parcelable>)list);
                         }
                         bundle.putSerializable("list", list);
                         fragmentTransaction.replace(
@@ -105,13 +105,17 @@ public class MainActivity extends AppCompatActivity {
                         fragmentA.setArguments(bundle);
                         break;
                     case 2:
-                        if (fragmentB == null) {
-                            fragmentB = new FragmentB();
+                        if (fragmentFridge == null) {
+                            fragmentFridge = new FragmentFridge();
                         }
                         fragmentTransaction.replace(
-                                R.id.frame, fragmentB).commitAllowingStateLoss();
-                        fragmentB.setArguments(bundle);
+                                R.id.frame, fragmentFridge).commitAllowingStateLoss();
+                        fragmentFridge.setArguments(bundle);
                         break;
+                    case 3:
+                        break;
+                    case 4:
+
                 }
             }
             @Override
@@ -124,13 +128,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    // FragmentHome 에 RecyclerView에 표시할 데이터 정보 Method
+    public void initRecyclerAdapter(){
+        list = new ArrayList<>();
+        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel,"에어컨","꺼짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"현관문","켜짐", ViewType.ItemVertical));
+    }
 
-    private View createTabView(String tabName){
+    /**
+     * 인자를 받아 Custom TabLayout 생성하는 Method
+     * @param tabName
+     * @param iconImage
+     * @return
+     */
+    private View createTabView(String tabName, int iconImage){
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
         TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
         tvTab.setText(tabName);
-//        ImageView ivTab = (ImageView)tabVIew.findViewById(R.id.ivTab);
-//        ivTab.setImageResource(tabImage);
+        ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
+        ivTab.setImageResource(iconImage);
         return tabView;
     }
 }

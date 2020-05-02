@@ -42,7 +42,6 @@ public class FragmentHome extends Fragment {
 //        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
 //        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
 
-
         Bundle bundle = getArguments();
 //        list = bundle.getParcelableArrayList("list");
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
