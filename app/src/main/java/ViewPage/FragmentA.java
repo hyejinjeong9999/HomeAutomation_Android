@@ -23,6 +23,5 @@ public class FragmentA extends Fragment {
         context=container.getContext();
 
         return  view;
-
     }
 }
