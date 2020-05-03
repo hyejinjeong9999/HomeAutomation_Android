@@ -27,6 +27,24 @@ fragmentHome.setArguments(bundle);
 list=(ArrayList<SystemInfoVO>)getArguments().get("list");
 ```
 
+### Err
+
+*  java.lang.RuntimeException: Parcel: unable to marshal value model.SystemInfoVO
+
+  * Bundle을 통해 데이터를 전달하는 과정에서 에러 발생
+  * SystemInfoVO Class에서 직렬화를 해주지 않아 발생
+    * implements Serializable 를 추가하여 문제 처리
+
+  ```java
+  public class SystemInfoVO implements Serializable 
+  ```
+
+  
+
+
+
+
+
 ### Reference
 
 [Fragment Data Send](https://iw90.tistory.com/131)
@@ -36,6 +54,72 @@ list=(ArrayList<SystemInfoVO>)getArguments().get("list");
 
 
 ## View Pager&Tab Layout
+
+### TabLayout
+
+```java
+tabLayout=(TabLayout)findViewById(R.id.tabLayout);
+
+//TabLayout 항목 추가
+tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(
+    "HOME",R.drawable.house_black_18dp)));
+tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(
+    "Win",R.drawable.toys_black_18dp)));
+tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(
+    "냉장고",R.drawable.kitchen_black_18dp)));
+tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(
+    "현관문",R.drawable.border_vertical_black_18dp)));
+tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(
+    "조명",R.drawable.incandescent_black_18dp)));
+/**
+* TabLayout 터치 이벤트
+*/
+tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
+        fragmentTransaction=fragmentManager.beginTransaction();
+        bundle = new Bundle();
+        switch (tab.getPosition()){
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+
+        }
+    }
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+});
+//customTabViewCreate//
+private View createTabView(String tabName, int iconImage){
+    View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
+    TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
+    tvTab.setText(tabName);
+    ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
+    ivTab.setImageResource(iconImage);
+    return tabView;
+}
+```
+
+* Method
+  * onTabSelected()
+    * 텝이 선택 되었을때 호출
+  * onTabUnselected()
+    * 텝이 선택되지 않았을 때 호출
+  * onTabReselected()
+    * 텝이 다시 선택되었을 때 호출
 
 ### View Page
 
@@ -124,7 +208,41 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
 
 [in Fragment](https://stackoverflow.com/questions/37251583/how-to-start-zxing-on-a-fragment/43966669)
 
+## Socket Communication
 
+* Socket
+  * PrintWriter
+  * BufferedReader
+
+```java
+Thread thread = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        try {
+            socket=new Socket("IP",1234);
+            bufferedReader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream()));
+            printWriter = new PrintWriter(socket.getOutputStream());
+            Log.v(TAG,"Socket Situation=="+socket.isConnected());
+            DataReceiveAsyncTask asyncTask =
+                new DataReceiveAsyncTask(bufferedReader, tvValue);
+            asyncTask.execute();
+            while (true){
+                String msg = sharedObject.pop();
+                printWriter.println(msg);
+                printWriter.flush();
+            }
+        }catch (IOException e){
+            Log.v(TAG,"Socket Communication IOException=="+ e);
+        }
+    }
+});
+thread.start();
+```
+
+
+
+### Fragment Component
 
 
 

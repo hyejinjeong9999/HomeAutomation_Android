@@ -30,7 +30,7 @@ public class FragmentHome extends Fragment {
     VerticalAdapter verticalAdapter;
     RecyclerView recyclerView;
 
-    ArrayList<SystemInfoVO> list;
+    ArrayList<SystemInfoVO> list = new ArrayList<>();
 
     @Nullable
     @Override
@@ -41,9 +41,6 @@ public class FragmentHome extends Fragment {
 //        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
 //        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
 //        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-
-        Bundle bundle = getArguments();
-//        list = bundle.getParcelableArrayList("list");
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
         list=(ArrayList<SystemInfoVO>)getArguments().get("list");
         Log.v(TAG,"list=="+list);
@@ -56,5 +53,41 @@ public class FragmentHome extends Fragment {
 
         recyclerView.setAdapter(verticalAdapter);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.v(TAG,"onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(TAG,"onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG,"onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG,"onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.v(TAG,"onDestroyView");
     }
 }

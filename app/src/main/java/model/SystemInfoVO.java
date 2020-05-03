@@ -2,7 +2,9 @@ package model;
 
 import android.widget.ImageView;
 
-public class SystemInfoVO {
+import java.io.Serializable;
+
+public class SystemInfoVO implements Serializable {
     int imageView;
     String title = "";
     String situation="";

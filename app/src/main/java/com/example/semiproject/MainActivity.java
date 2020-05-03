@@ -15,6 +15,11 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.ViewType;
@@ -36,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
     FragmentHome fragmentHome;
     FragmentA fragmentA;
     FragmentFridge fragmentFridge;
-
     ArrayList<SystemInfoVO> list;
+
+    Socket socket;
+    PrintWriter printWriter;
+    BufferedReader bufferedReader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +62,30 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout=findViewById(R.id.tabLayout);
 //        tabLayout.setupWithViewPager(viewPager);
 
-        ArrayList<Integer> imager = new ArrayList<>();
-        imager.add(R.drawable.home);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socket=new Socket("ip",1234);
+                    bufferedReader = new BufferedReader(
+                            new InputStreamReader(socket.getInputStream()));
+                    printWriter = new PrintWriter(socket.getOutputStream());
+                    Log.v(TAG,"Socket Situation=="+socket.isConnected());
+//                    DataReceiveAsyncTask asyncTask =
+//                            new DataReceiveAsyncTask(bufferedReader, tvValue);
+//                    asyncTask.execute();
+                    while (true){
+//                        String msg = sharedObject.pop();
+//                        printWriter.println(msg);
+//                        printWriter.flush();
+                    }
+                }catch (IOException e){
+                    Log.v(TAG,"Socket Communication IOException=="+ e);
+                }
+            }
+        });
+        thread.start();
+
 
         fragmentManager = getSupportFragmentManager();
 
@@ -64,9 +94,10 @@ public class MainActivity extends AppCompatActivity {
             bundle = new Bundle();
             fragmentHome = new FragmentHome();
             bundle.putSerializable("list", list);
+            fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
-            fragmentHome.setArguments(bundle);
+
             Log.v(TAG,"fragmentHome==");
         }
         //TabLayout 항목 추가
@@ -79,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
          * TabLayout 터치 이벤트
          */
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            //텝이 선택 되었을때 호출
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
@@ -90,11 +122,10 @@ public class MainActivity extends AppCompatActivity {
                             fragmentHome = new FragmentHome();
                             Log.v(TAG,"fragmentHome==");
                         }
-                        bundle.putSerializable("list", list);
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
+                        bundle.putSerializable("list", list);
                         fragmentHome.setArguments(bundle);
-
                         break;
                     case 1:
                         if (fragmentA == null) {
@@ -115,16 +146,17 @@ public class MainActivity extends AppCompatActivity {
                     case 3:
                         break;
                     case 4:
-
                 }
             }
+            //텝이 선택되지 않았을 때 호출
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                Log.v(TAG,"onTabUnselected()_tab=="+tab.getPosition());
             }
+            //텝이 다시 선택되었을 때 호출
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                Log.v(TAG,"onTabReselected()_tab=="+tab.getPosition());
             }
         });
     }
