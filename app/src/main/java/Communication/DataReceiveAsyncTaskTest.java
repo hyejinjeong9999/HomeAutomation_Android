@@ -7,13 +7,16 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class DataReceveAsyncTask extends AsyncTask<Void, String, String> {
-    String TAG="DataReceiveAsyncTask";
+public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
+    String TAG="DataReceiveAsyncTaskTest";
     BufferedReader bufferedReader;
+    TextView tvReceiveData;
+
     String msg = "";
 
-    public DataReceveAsyncTask(BufferedReader bufferedReader){
+    public DataReceiveAsyncTaskTest(BufferedReader bufferedReader, TextView tvReceiveData){
         this.bufferedReader=bufferedReader;
+        this.tvReceiveData=tvReceiveData;
     }
     /**\
      *Thread 처리 Code
@@ -37,6 +40,8 @@ public class DataReceveAsyncTask extends AsyncTask<Void, String, String> {
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         Log.v(TAG,"nProgressUpdate_values="+values[0]);
+        tvReceiveData.setText(values[0]);
+        Log.v(TAG,"getText()=="+tvReceiveData.getText());
     }
 
     /**

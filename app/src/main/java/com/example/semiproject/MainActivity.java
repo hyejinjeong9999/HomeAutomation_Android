@@ -26,6 +26,7 @@ import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
 import ViewPage.FragmentFridge;
 import ViewPage.FragmentHome;
+import ViewPage.FragmentTest;
 import model.SystemInfoVO;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,11 +42,13 @@ public class MainActivity extends AppCompatActivity {
     FragmentHome fragmentHome;
     FragmentA fragmentA;
     FragmentFridge fragmentFridge;
+    FragmentTest fragmentTest;
     ArrayList<SystemInfoVO> list;
 
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
+    Communication.SharedObject sharedObject = new Communication.SharedObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
                     Log.v(TAG,"Socket Situation=="+socket.isConnected());
-//                    DataReceiveAsyncTask asyncTask =
-//                            new DataReceiveAsyncTask(bufferedReader, tvValue);
+//                    Communication.DataReceveAsyncTask asyncTask =
+//                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
                     while (true){
-//                        String msg = sharedObject.pop();
-//                        printWriter.println(msg);
-//                        printWriter.flush();
+                        String msg = sharedObject.pop();
+                        printWriter.println(msg);
+                        printWriter.flush();
                     }
                 }catch (IOException e){
                     Log.v(TAG,"Socket Communication IOException=="+ e);
@@ -150,6 +153,12 @@ public class MainActivity extends AppCompatActivity {
                         fragmentFridge.setArguments(bundle);
                         break;
                     case 3:
+                        if(fragmentTest == null){
+                            fragmentTest = new FragmentTest(sharedObject,bufferedReader);
+                        }
+                        fragmentTransaction.replace(
+                                R.id.frame, fragmentTest).commitAllowingStateLoss();
+                        fragmentTest.setArguments(bundle);
                         break;
                     case 4:
                 }
