@@ -26,32 +26,31 @@ public class FragmentHome extends Fragment {
     String TAG ="FragmentHome";
     View view;
     Context context;
-
     VerticalAdapter verticalAdapter;
-    RecyclerView recyclerView;
-
-    ArrayList<SystemInfoVO> list = new ArrayList<>();
+    ArrayList<SystemInfoVO> list;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragmen_home, container, false);
-        context = container.getContext();
 
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
+        /**
+         * MainActivity 에서 Bundle을 통해 부여된 Key를 입력하고  Data를 받아온다
+         */
+        context = container.getContext();
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
         list=(ArrayList<SystemInfoVO>)getArguments().get("list");
-        Log.v(TAG,"list=="+list);
 
-        recyclerView = view.findViewById(R.id.recyclerViewVertical);
+        /**
+         * RecyclerVIew 생성 Code
+         */
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
-        verticalAdapter = new VerticalAdapter(context, list, 0);
+        verticalAdapter = new VerticalAdapter(context, list);
         recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setAdapter(verticalAdapter);
+
         return view;
     }
 

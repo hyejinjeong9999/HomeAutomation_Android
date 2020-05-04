@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
 //        viewPager.setAdapter(pagerAdapter);
 //        tabLayout=findViewById(R.id.tabLayout);
 //        tabLayout.setupWithViewPager(viewPager);
-
+        /**
+         * SocketCommunication with Server
+         */
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -86,9 +88,11 @@ public class MainActivity extends AppCompatActivity {
         });
         thread.start();
 
-
+        /**
+         * App 실행시 처음 표시해줄 Fragment
+         * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
+         */
         fragmentManager = getSupportFragmentManager();
-
         if (fragmentHome == null) {
             fragmentTransaction=fragmentManager.beginTransaction();
             bundle = new Bundle();
@@ -100,14 +104,16 @@ public class MainActivity extends AppCompatActivity {
 
             Log.v(TAG,"fragmentHome==");
         }
-        //TabLayout 항목 추가
+        /**
+         * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
+         */
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
         /**
-         * TabLayout 터치 이벤트
+         * TabLayout SelectListenerEvent
          */
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             //텝이 선택 되었을때 호출
@@ -160,11 +166,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    // FragmentHome 에 RecyclerView에 표시할 데이터 정보 Method
+
+    /**
+     * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
+     */
     public void initRecyclerAdapter(){
         list = new ArrayList<>();
         list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angel,"에어컨","꺼짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel,"에어컨", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angry,"현관문","켜짐", ViewType.ItemVertical));
