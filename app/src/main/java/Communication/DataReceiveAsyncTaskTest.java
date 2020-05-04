@@ -35,6 +35,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
     }
     /**
      * Thread가 진행 중 실행 UI를 변경할 수 있다.
+     * Thread 진행중 bufferedReader를 통해 받아온 데이터를 TextView에 Set해준다
      */
     @Override
     protected void onProgressUpdate(String... values) {
@@ -43,7 +44,6 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
         tvReceiveData.setText(values[0]);
         Log.v(TAG,"getText()=="+tvReceiveData.getText());
     }
-
     /**
      * doInBackground 의 수행이 끝난뒤 실행
      */

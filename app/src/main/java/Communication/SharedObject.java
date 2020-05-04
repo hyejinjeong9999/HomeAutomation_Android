@@ -4,6 +4,9 @@ import android.util.Log;
 
 import java.util.LinkedList;
 
+/**
+ * Queue 구조로 LinkedList에 put Method로 데이터를 입력하고 pop Method로 데이터를 꺼낸다.
+ */
 public class SharedObject {
     String TAG = "SharedObject";
     Object monitor = new Object();
@@ -24,7 +27,6 @@ public class SharedObject {
                 try{
                     monitor.wait();
                     result = dataList.removeFirst();
-
                 }catch (InterruptedException e){
                     Log.v(TAG,"pop()_InterruptedException=="+e);
                 }

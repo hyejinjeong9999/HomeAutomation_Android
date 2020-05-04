@@ -32,12 +32,13 @@ public class FragmentTest extends Fragment {
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_test,container,false);
         context=container.getContext();
+        tvReceiveData=view.findViewById(R.id.tvReceiveData);
+
         btnTest=view.findViewById(R.id.btnTest);
         btnTest.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -46,9 +47,15 @@ public class FragmentTest extends Fragment {
                 tvReceiveData.setText("바뀌니???");
             }
         });
-        tvReceiveData=view.findViewById(R.id.tvReceiveData);
-        Communication.DataReceiveAsyncTaskTest asyncTaskTest = new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
+        /**
+         * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
+         */
+        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
+                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
         asyncTaskTest.execute();
+        /**
+         * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
+         */
         sbLED=view.findViewById(R.id.sbLED);
         sbLED.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -56,19 +63,15 @@ public class FragmentTest extends Fragment {
                 Log.v(TAG,"onProgressChanged =="+progress);
                 sharedObject.put(String.valueOf(progress));
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
-
-
         return  view;
     }
     @Override

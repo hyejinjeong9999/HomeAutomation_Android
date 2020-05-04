@@ -214,6 +214,10 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
   * PrintWriter
   * BufferedReader
 
+### PrintWriter
+
+* MainActivity
+
 ```java
 Thread thread = new Thread(new Runnable() {
     @Override
@@ -224,8 +228,6 @@ Thread thread = new Thread(new Runnable() {
                 new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream());
             Log.v(TAG,"Socket Situation=="+socket.isConnected());
-            DataReceiveAsyncTask asyncTask =
-                new DataReceiveAsyncTask(bufferedReader, tvValue);
             asyncTask.execute();
             while (true){
                 String msg = sharedObject.pop();
@@ -240,13 +242,168 @@ Thread thread = new Thread(new Runnable() {
 thread.start();
 ```
 
+* ShraredObject
+
+```java
+/**
+ * Queue 구조로 LinkedList에 put Method로 데이터를 입력하고 pop Method로 데이터를 꺼낸다.
+ */
+public class SharedObject {
+    String TAG = "SharedObject";
+    Object monitor = new Object();
+    private LinkedList<String> dataList = new LinkedList<>();
+
+    public void put(String msg) {
+        synchronized (monitor){
+            Log.v(TAG, "put() == " + msg);
+            dataList.addLast(msg);
+            monitor.notify();
+        }
+    }
+
+    public String pop() {
+        String result = "";
+        synchronized (monitor) {
+            if (dataList.isEmpty()) {
+                try{
+                    monitor.wait();
+                    result = dataList.removeFirst();
+
+                }catch (InterruptedException e){
+                    Log.v(TAG,"pop()_InterruptedException=="+e);
+                }
+            }else {
+                Log.v(TAG,"pop() =="+dataList.getFirst());
+                result = dataList.removeFirst();
+            }
+        }
+        return result;
+    }
+}
+```
+
+### BufferedReader
+
+* Fragment
+
+```java
+public class FragmentTest extends Fragment {
+    String TAG="FragmentTest";
+    View view;
+    Context context;
+    SeekBar sbLED;
+    TextView tvReceiveData;
+    Button btnTest;
+    Communication.SharedObject sharedObject;
+    BufferedReader bufferedReader;
+
+    public FragmentTest(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
+        this.sharedObject=sharedObject;
+        this.bufferedReader=bufferedReader;
+    }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_test,container,false);
+        context=container.getContext();
+        tvReceiveData=view.findViewById(R.id.tvReceiveData);
+
+        btnTest=view.findViewById(R.id.btnTest);
+        btnTest.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG,"onClick");
+                tvReceiveData.setText("바뀌니???");
+            }
+        });
+        /**
+         * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
+         */
+        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
+                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
+        asyncTaskTest.execute();
+        /**
+         * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
+         */
+        sbLED=view.findViewById(R.id.sbLED);
+        sbLED.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.v(TAG,"onProgressChanged =="+progress);
+                sharedObject.put(String.valueOf(progress));
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        return  view;
+    }
+}
+```
+
+* AsyncTask
+
+```java
+public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
+    String TAG="DataReceiveAsyncTaskTest";
+    BufferedReader bufferedReader;
+    TextView tvReceiveData;
+
+    String msg = "";
+
+    public DataReceiveAsyncTaskTest(BufferedReader bufferedReader, TextView tvReceiveData){
+        this.bufferedReader=bufferedReader;
+        this.tvReceiveData=tvReceiveData;
+    }
+    /**\
+     *Thread 처리 Code
+     */
+    @Override
+    protected String doInBackground(Void... voids) {
+        while (true){
+            try {
+                msg = bufferedReader.readLine();
+                Log.v(TAG,"doInBackground()_readLine()=="+msg);
+                publishProgress(msg);
+            }catch (IOException e){
+                Log.v(TAG,"doInBackground()_IOException=="+e);
+            }
+        }
+    }
+    /**
+     * Thread가 진행 중 실행 UI를 변경할 수 있다.
+     * Thread 진행중 bufferedReader를 통해 받아온 데이터를 TextView에 Set해준다
+     */
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        Log.v(TAG,"nProgressUpdate_values="+values[0]);
+        tvReceiveData.setText(values[0]);
+        Log.v(TAG,"getText()=="+tvReceiveData.getText());
+    }
+    /**
+     * doInBackground 의 수행이 끝난뒤 실행
+     */
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        Log.v(TAG,"onPostExecute------------");
+    }
+}
+```
+
 
 
 ### Fragment Component
 
 
 
-## Reference
+## Other Reference
 
 [Layout 테두리](https://5stralia.tistory.com/10)
 
