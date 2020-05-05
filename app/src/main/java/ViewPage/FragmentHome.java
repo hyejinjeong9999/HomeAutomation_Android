@@ -3,7 +3,9 @@ package ViewPage;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.semiproject.R;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
@@ -26,33 +29,114 @@ public class FragmentHome extends Fragment {
     String TAG ="FragmentHome";
     View view;
     Context context;
-
     VerticalAdapter verticalAdapter;
-    RecyclerView recyclerView;
+    ArrayList<SystemInfoVO> list;
+    GestureDetector gestureDetector;
+    Communication.SharedObject sharedObject;
+    BufferedReader bufferedReader;
 
-    ArrayList<SystemInfoVO> list = new ArrayList<>();
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
+        this.sharedObject=sharedObject;
+        this.bufferedReader=bufferedReader;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragmen_home, container, false);
+
+        /**
+         * MainActivity 에서 Bundle을 통해 부여된 Key를 입력하고  Data를 받아온다
+         */
         context = container.getContext();
+        Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
+        list=(ArrayList<SystemInfoVO>)getArguments().get("list");
+        /**
+         *
+         */
+        gestureDetector = new GestureDetector(context,new GestureDetector.SimpleOnGestureListener(){
+            //누르고 땔 때 한번만 인식하게 하는 처리
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
 
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-//        list.add(new SystemInfoVO("home","wjdtkd", ViewType.ItemVertical));
-
-
-        Bundle bundle = getArguments();
-        list = (ArrayList<SystemInfoVO>) bundle.getSerializable("list");
-        Log.v(TAG,"list"+list.toString());
-        recyclerView = view.findViewById(R.id.recyclerViewVertical);
+        /**
+         * RecyclerVIew 생성 Code
+         */
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
-        verticalAdapter = new VerticalAdapter(context, list, 0);
+        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
+        recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setAdapter(verticalAdapter);
+
         return view;
+    }
+
+    RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerView.OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            //손으로 터치한 곳의 좌표를 읽어 해당 Item 의  View를 가져옴.
+            view = rv.findChildViewUnder(e.getX(),e.getY());
+
+            //터치한 곳의 View가 RecyclerView 안의 아이템이고 그 아이템의 View가 null이 아니라
+            //정확한 Item의 View를 가져왔고, gestureDetector에서 한번만 누르면 true를 넘기게 구현했으니
+            //한번만 눌려서 그 값이 true가 넘어왔다면
+            if(view != null && gestureDetector.onTouchEvent(e)){
+                int currentPosition = rv.getChildAdapterPosition(view);
+                Log.v(TAG,"onInterceptTouchEvent()_currentPosition=="+currentPosition);
+                return  true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    };
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.v(TAG,"onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(TAG,"onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG,"onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG,"onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.v(TAG,"onDestroyView");
     }
 }
