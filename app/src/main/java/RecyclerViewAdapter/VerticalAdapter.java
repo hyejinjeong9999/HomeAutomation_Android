@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.semiproject.R;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import model.SystemInfoVO;
@@ -23,11 +24,15 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     String TAG = "VerticalAdapter";
     Context context;
     View view;
+    BufferedReader bufferedReader;
+    Communication.SharedObject sharedObject;
     ArrayList<SystemInfoVO> list;
 
-    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list) {
+    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
         this.context = context;
         this.list = list;
+        this.bufferedReader = bufferedReader;
+        this.sharedObject = sharedObject;
         Log.v(TAG,"list0=="+list.get(0).getViewType());
         Log.v(TAG,"list0=="+list.get(1).getViewType());
         Log.v(TAG,"list0=="+list.get(2).getViewType());
@@ -75,6 +80,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, "onCheckedChanged/" + isChecked);
+                    if(isChecked == true){
+                        sharedObject.put("/aircon ON");
+                    }else {
+                        sharedObject.put("/aircon OFF");
+                    }
                 }
             });
         }

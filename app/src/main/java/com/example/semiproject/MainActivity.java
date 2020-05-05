@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentHome == null) {
             fragmentTransaction=fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome();
+            fragmentHome = new FragmentHome(sharedObject,bufferedReader);
             bundle.putSerializable("list", list);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()){
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome();
+                            fragmentHome = new FragmentHome(sharedObject,bufferedReader);
                             Log.v(TAG,"fragmentHome==");
                         }
                         fragmentTransaction.replace(
