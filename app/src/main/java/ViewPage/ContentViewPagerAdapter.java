@@ -17,7 +17,7 @@ public class ContentViewPagerAdapter extends FragmentPagerAdapter {
         fragmentList = new ArrayList<>();
 //        fragmentList.add(new FragmentHome());
         fragmentList.add(new FragmentA());
-        fragmentList.add(new FragmentFridge());
+
 
         title = new ArrayList<>();
         title.add("HOME");

@@ -19,18 +19,18 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 
-public class FragmentFridge extends Fragment {
-    String TAG = "FragmentFridge";
+public class FragmentRefrigerator extends Fragment {
+    String TAG = "FragmentRefrigerator";
     View view;
     Context context;
     Activity maintAtivity;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_fridge,container,false);
+        view = inflater.inflate(R.layout.fragment_refrigerator,container,false);
         context=container.getContext();
         //QR code Scanner Start
-        IntentIntegrator.forSupportFragment(FragmentFridge.this).initiateScan();
+        IntentIntegrator.forSupportFragment(FragmentRefrigerator.this).initiateScan();
 
         return  view;
     }

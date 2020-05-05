@@ -24,7 +24,8 @@ import java.util.ArrayList;
 
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
-import ViewPage.FragmentFridge;
+import ViewPage.FragmentLight;
+import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
@@ -41,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
     FragmentA fragmentA;
-    FragmentFridge fragmentFridge;
+    FragmentRefrigerator fragmentRefrigerator;
     FragmentTest fragmentTest;
+    FragmentLight fragmentLight;
     ArrayList<SystemInfoVO> list;
 
     Socket socket;
@@ -145,12 +147,12 @@ public class MainActivity extends AppCompatActivity {
                         fragmentA.setArguments(bundle);
                         break;
                     case 2:
-                        if (fragmentFridge == null) {
-                            fragmentFridge = new FragmentFridge();
+                        if (fragmentRefrigerator == null) {
+                            fragmentRefrigerator = new FragmentRefrigerator();
                         }
                         fragmentTransaction.replace(
-                                R.id.frame, fragmentFridge).commitAllowingStateLoss();
-                        fragmentFridge.setArguments(bundle);
+                                R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
+                        fragmentRefrigerator.setArguments(bundle);
                         break;
                     case 3:
                         if(fragmentTest == null){
@@ -161,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTest.setArguments(bundle);
                         break;
                     case 4:
+                        if (fragmentLight == null){
+                            fragmentLight = new FragmentLight();
+                        }
+                        fragmentTransaction.replace(
+                                R.id.frame, fragmentLight).commitAllowingStateLoss();
                 }
             }
             //텝이 선택되지 않았을 때 호출
