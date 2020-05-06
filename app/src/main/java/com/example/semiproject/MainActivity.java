@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentRefrigerator fragmentRefrigerator;
     FragmentTest fragmentTest;
     FragmentLight fragmentLight;
+    int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
 
     Socket socket;
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initRecyclerAdapter();
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
@@ -112,13 +112,19 @@ public class MainActivity extends AppCompatActivity {
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.house_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.toys_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
         /**
          * TabLayout SelectListenerEvent
+         * Fragment Call
          */
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             //텝이 선택 되었을때 호출
@@ -126,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
                 fragmentTransaction=fragmentManager.beginTransaction();
-                bundle = new Bundle();
+//                bundle = new Bundle();
                 switch (tab.getPosition()){
                     case 0:
                         if (fragmentHome == null) {
@@ -137,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
                         fragmentHome.setArguments(bundle);
+                        fragmentTag = 0;
                         break;
                     case 1:
                         if (fragmentA == null) {
@@ -145,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
                         fragmentA.setArguments(bundle);
+                        fragmentTag = 1;
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -153,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
                         fragmentRefrigerator.setArguments(bundle);
+                        fragmentTag = 2;
                         break;
                     case 3:
                         if(fragmentTest == null){
@@ -161,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentTest).commitAllowingStateLoss();
                         fragmentTest.setArguments(bundle);
+                        fragmentTag = 3;
                         break;
                     case 4:
                         if (fragmentLight == null){
@@ -168,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentLight).commitAllowingStateLoss();
+                        fragmentTag = 4;
                 }
             }
             //텝이 선택되지 않았을 때 호출
@@ -181,6 +192,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG,"onTabReselected()_tab=="+tab.getPosition());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragmentTag != 0){
+            fragmentTransaction=fragmentManager.beginTransaction();
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+            bundle.putSerializable("list", list);
+            fragmentHome.setArguments(bundle);
+            fragmentTag = 0;
+
+        }else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -197,14 +223,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
-     * @param tabName
      * @param iconImage
      * @return
      */
-    private View createTabView(String tabName, int iconImage){
+    private View createTabView(int iconImage){
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
-        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
-        tvTab.setText(tabName);
+//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
+//        tvTab.setText(tabName);
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;

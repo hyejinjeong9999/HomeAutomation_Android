@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,15 +24,21 @@ public class FragmentRefrigerator extends Fragment {
     String TAG = "FragmentRefrigerator";
     View view;
     Context context;
-    Activity maintAtivity;
+    Button btnQRcode;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_refrigerator,container,false);
         context=container.getContext();
-        //QR code Scanner Start
-        IntentIntegrator.forSupportFragment(FragmentRefrigerator.this).initiateScan();
-
+        btnQRcode=view.findViewById(R.id.btnQRcode);
+        btnQRcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //QR code Scanner Start
+                IntentIntegrator.forSupportFragment(FragmentRefrigerator.this).initiateScan();
+                Log.v(TAG,"onClick()==QR");
+            }
+        });
         return  view;
     }
     /**

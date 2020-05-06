@@ -9,10 +9,10 @@
         android:layout_height="25dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter" />
-    <TextView
-        android:id="@+id/tvTab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textIsSelectable="true"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tvTab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:textIsSelectable="true"/>-->
 </LinearLayout>
