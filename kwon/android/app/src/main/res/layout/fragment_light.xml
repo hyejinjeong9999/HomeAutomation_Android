@@ -4,9 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fragmentBack">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewVertical"
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:text="Light"
+        android:textSize="50sp"
+        android:gravity="center" />
+
 </LinearLayout>
