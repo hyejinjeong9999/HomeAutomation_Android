@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#efcec5">
+    <TextView
+        android:id="@+id/fragA_TV_01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fragment A"
+        android:textSize="50sp"
+        android:layout_gravity="center_vertical|center_horizontal"/>
+    <ImageButton
+        android:id="@+id/fragA_IV"
+        android:layout_width="500px"
+        android:layout_height="500px"
+        android:layout_gravity="center"
+        android:tooltipText="ON"
+        android:background="@drawable/round_button_pressed" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현재 상태"
+        android:layout_gravity="center"/>
+    <ToggleButton
+        android:id="@+id/fragA_TB_01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="열렸다"
+        android:textOff="닫혔다"
+        android:layout_gravity="center"
+        android:gravity="center" />
+    <ToggleButton
+        android:id="@+id/fragA_TB_02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="온!"
+        android:textOff="..오프"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+    <ToggleButton
+        android:id="@+id/fragA_TB_03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="onState"
+        android:textOff="offState"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+</LinearLayout>
