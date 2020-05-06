@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA();
+                            fragmentA = new FragmentA(bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();

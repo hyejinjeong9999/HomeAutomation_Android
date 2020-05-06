@@ -1,11 +1,14 @@
 package ViewPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,10 +16,23 @@ import androidx.fragment.app.Fragment;
 
 import com.example.semiproject.R;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+
+import model.WeatherVO;
+
 public class FragmentA extends Fragment {
     String TAG="FragmentA";
     View view;
+    BufferedReader bufferedReader;
     Context context;
+    TextView fragA_TV_01;
+    public FragmentA(){
+
+    }
+    public FragmentA(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
 
     @Nullable
     @Override
@@ -24,8 +40,31 @@ public class FragmentA extends Fragment {
         view = inflater.inflate(R.layout.fragment_a,container,false);
         context=container.getContext();
 
+        //fragA_TV_01  = view.findViewById(R.id.fragA_TV_01);
+        Intent i =  new Intent(context, Communication.WeatherService.class);
+        context.startService(i);
+
+        getActivity().startService(new Intent(getActivity(), Communication.WeatherService.class));
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    Bundle bundle = getArguments();
+                    if (bundle != null) {
+                        WeatherVO temperature = (WeatherVO) bundle.getSerializable("result");
+                        Log.i("test", temperature.getTemp());
+                        //fragA_TV_01.setText(temperature);
+                    }
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+
         return  view;
     }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
