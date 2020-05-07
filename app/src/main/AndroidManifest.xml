@@ -16,15 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD:app/src/main/AndroidManifest.xml
         <activity android:name=".ReservationActivity"></activity>
-=======
         <service
             android:name="Communication.WeatherService"
             android:enabled="true"
             android:exported="true"/>
 
->>>>>>> 965356bfda0d06b40448bc49320374a993329d08:kwon/android/app/src/main/AndroidManifest.xml
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

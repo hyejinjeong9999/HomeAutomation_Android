@@ -7,16 +7,17 @@
         android:id="@+id/fragA_TV_01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragment A"
+        android:text="창문"
         android:textSize="50sp"
         android:layout_gravity="center_vertical|center_horizontal"/>
     <ImageButton
-        android:id="@+id/fragA_IV"
+        android:id="@+id/fragA_Auto_Btn"
         android:layout_width="500px"
         android:layout_height="500px"
         android:layout_gravity="center"
-        android:tooltipText="ON"
-        android:background="@drawable/round_button_pressed" />
+        android:tooltipText="Auto"
+        android:background="@drawable/imagebtn_selector"
+        android:src="@drawable/imagebtn_icon_selector"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
