@@ -10,31 +10,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="5"
         android:orientation="horizontal">
         <TextView
-
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="실내온도"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/recyclerItemCol"/>
         <TextView
-
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="날씨"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/recyclerItemCol"/>
         <TextView
-
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="대기상태"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/recyclerItemCol"/>
     </LinearLayout>
     <LinearLayout
@@ -42,46 +39,52 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/iv1"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvTemp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:background="@drawable/angel"/>
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_margin="10dp"
+            android:text="0"
+            android:textSize="30sp"/>
         <ImageView
-            android:id="@+id/iv2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/ivWeather"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:background="@drawable/angel"/>
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            />
         <ImageView
-            android:id="@+id/iv3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/ivSituation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:background="@drawable/angel"/>
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="5"
         android:orientation="horizontal">
         <TextView
-
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:text="상태"
             android:textColor="@color/recyclerItemCol"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_vertical|end"/>
         <TextView
-            android:id="@+id/tv5"
+            android:id="@+id/tvSituation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="환기중"
             android:textColor="@color/recyclerItemCol"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_horizontal|center_vertical"/>
     </LinearLayout>
 
 

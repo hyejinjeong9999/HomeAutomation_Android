@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     Bundle bundle;
     TestVO testVO = new TestVO();
+    WeatherVO[] weathers;
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
 
-
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
@@ -66,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //RecyclerView Item List 생성성
         initRecyclerAdapter();
+        //Service Start
         Intent i = new Intent(getApplicationContext(), WeatherService.class);
         startService(i);
 
@@ -121,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
                         } catch (IOException | ClassNotFoundException e) {
                             e.printStackTrace();
                         }
-                    }else {
+                    } else {
                         Log.v(TAG, "nulllllllll");
                     }
                 }
             }
         });
-        thread1.start();
+//        thread1.start();
 
         /**
          * App 실행시 처음 표시해줄 Fragment
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             bundle = new Bundle();
             fragmentHome = new FragmentHome(sharedObject, bufferedReader);
             bundle.putSerializable("list", list);
+//            bundle.putSerializable("weather", weathers[0]);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -178,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
+                        bundle.putSerializable("weather", weathers[0]);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
@@ -187,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-
                         fragmentA.setArguments(bundleFagmentA);
                         break;
                     case 2:
@@ -274,18 +277,19 @@ public class MainActivity extends AppCompatActivity {
         return tabView;
     }
 
+    /**
+     * Service를 이요해 webServer에서 REST API 통신을 이용해 데이터를 가져온다
+     */
     Bundle bundleFagmentA;
 
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i("test", "야2");
-        WeatherVO[] weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
+        weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.i("test", weathers[0].getTemp());
         bundleFagmentA = new Bundle();
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
         super.onNewIntent(intent);
     }
-
-
 }
