@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
 import ViewPage.FragmentLight;
@@ -29,6 +32,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
@@ -58,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initRecyclerAdapter();
+        Intent i =  new Intent(getApplicationContext(), WeatherService.class);
+        startService(i);
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -147,12 +153,16 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA();
+                            fragmentA = new FragmentA(bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
+<<<<<<< HEAD
                         fragmentA.setArguments(bundle);
                         fragmentTag = 1;
+=======
+                        fragmentA.setArguments(bundleFagmentA);
+>>>>>>> 02110f596a10ed584ec73bb73f4e0181cdd813a6
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -233,5 +243,17 @@ public class MainActivity extends AppCompatActivity {
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;
+    }
+
+    Bundle bundleFagmentA;
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i("test", "야2");
+        WeatherVO[] weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
+        Log.i("test", weathers[0].getTemp());
+        bundleFagmentA = new Bundle();
+        bundleFagmentA.putSerializable("weather", weathers[0]);
+        Log.i("test", "야3");
+        super.onNewIntent(intent);
     }
 }
