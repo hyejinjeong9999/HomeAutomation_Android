@@ -40,26 +40,13 @@ public class FragmentA extends Fragment {
         view = inflater.inflate(R.layout.fragment_a,container,false);
         context=container.getContext();
 
-        //fragA_TV_01  = view.findViewById(R.id.fragA_TV_01);
-        Intent i =  new Intent(context, Communication.WeatherService.class);
-        context.startService(i);
-
-        getActivity().startService(new Intent(getActivity(), Communication.WeatherService.class));
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    Bundle bundle = getArguments();
-                    if (bundle != null) {
-                        WeatherVO temperature = (WeatherVO) bundle.getSerializable("result");
-                        Log.i("test", temperature.getTemp());
-                        //fragA_TV_01.setText(temperature);
-                    }
-                }
-            }
-        };
-        Thread t = new Thread(r);
-        t.start();
+        fragA_TV_01 = view.findViewById(R.id.fragA_TV_01);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
+            fragA_TV_01.setText(weather.getTemp());
+            Log.i("test", weather.getTemp());
+        }
 
         return  view;
     }

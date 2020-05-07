@@ -8,11 +8,13 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.semiproject.MainActivity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class WeatherService extends Service {
 
         @Override
         public void run() {
-            String url = "http://70.12.60.98:8080/HomeAutomationServer/getWeather";
+            String url = "http://70.12.229.165:8080/HomeAutomationServer/Weather";
             try{
                 //1. URL 객체 생성
                 URL obj = new URL(url);
@@ -79,35 +81,33 @@ public class WeatherService extends Service {
                 //doucment : [{책1권}, {책1권}, {책1권}, ....]
                 //value값을 객체화 시킨다
                 ObjectMapper mapper = new ObjectMapper();
-                Map<String, Object> map =
-                        mapper.readValue(sb.toString(), new TypeReference<Map<String, Object>>(){});
-                Object jsonObject = map.get("documents");
-                Log.i("weather", jsonObject.toString());
-                String jsonStinrg = mapper.writeValueAsString(jsonObject);
-                Log.i("weather", jsonStinrg);
+                Log.i("test", "야");
+                WeatherVO[] resultArr = mapper.readValue(sb.toString(), WeatherVO[].class);
+                Log.i("test", resultArr[0].getTemp());
 
-                ArrayList<WeatherVO> searchBooks =
-                        mapper.readValue(jsonStinrg, new TypeReference< ArrayList<WeatherVO>>() {});
-                ArrayList<String> resultData = new ArrayList<>();
-                for(WeatherVO vo : searchBooks){
-                    resultData.add(vo.getTemp());
-                    Log.i("test", vo.getTemp());
 
-                }
+//                ArrayList<String> resultData = new ArrayList<>();
+//                for(WeatherVO vo : weathers){
+//                    resultData.add(vo.getTemp());
+//                    Log.i("test", vo.getTemp());
+//                }
 
 
 
-//                Intent resultIntent = new Intent(getApplicationContext(), ViewPage.FragmentA.class);
-//                resultIntent.putExtra("result", resultData);
-//                resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(resultIntent);
+                Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Log.i("test", "야");
+                resultIntent.putExtra("weatherResult", resultArr);
+                Log.i("test", "야");
+                resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-                FragmentA fragment = new FragmentA();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("result", resultData);
-                fragment.setArguments(bundle);
+                startActivity(resultIntent);
+
+//                FragmentA fragment = new FragmentA();
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("result", resultData);
+//                fragment.setArguments(bundle);
 
 
 

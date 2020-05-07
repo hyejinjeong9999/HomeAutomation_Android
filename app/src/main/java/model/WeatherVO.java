@@ -1,6 +1,8 @@
 package model;
 
-public class WeatherVO {
+import java.io.Serializable;
+
+public class WeatherVO implements Serializable {
     String weather; // weather - main
     String temp; // main - temp
     String feelsLike; // main - feels_like

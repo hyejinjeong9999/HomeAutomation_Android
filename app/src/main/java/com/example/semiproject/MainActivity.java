@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
 import ViewPage.FragmentLight;
@@ -30,6 +32,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initRecyclerAdapter();
+        Intent i =  new Intent(getApplicationContext(), WeatherService.class);
+        startService(i);
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -145,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-                        fragmentA.setArguments(bundle);
+                        fragmentA.setArguments(bundleFagmentA);
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -209,5 +214,17 @@ public class MainActivity extends AppCompatActivity {
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;
+    }
+
+    Bundle bundleFagmentA;
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i("test", "야2");
+        WeatherVO[] weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
+        Log.i("test", weathers[0].getTemp());
+        bundleFagmentA = new Bundle();
+        bundleFagmentA.putSerializable("weather", weathers[0]);
+        Log.i("test", "야3");
+        super.onNewIntent(intent);
     }
 }
