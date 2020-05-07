@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
 import ViewPage.FragmentLight;
@@ -29,6 +32,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentRefrigerator fragmentRefrigerator;
     FragmentTest fragmentTest;
     FragmentLight fragmentLight;
+    int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
 
     Socket socket;
@@ -56,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initRecyclerAdapter();
+        Intent i =  new Intent(getApplicationContext(), WeatherService.class);
+        startService(i);
 
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket=new Socket("70.12.225.223",1234);
+                    socket=new Socket("70.12.60.98",4444);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -112,13 +118,19 @@ public class MainActivity extends AppCompatActivity {
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.house_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.toys_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
         /**
          * TabLayout SelectListenerEvent
+         * Fragment Call
          */
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             //텝이 선택 되었을때 호출
@@ -126,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
                 fragmentTransaction=fragmentManager.beginTransaction();
-                bundle = new Bundle();
+//                bundle = new Bundle();
                 switch (tab.getPosition()){
                     case 0:
                         if (fragmentHome == null) {
@@ -137,14 +149,17 @@ public class MainActivity extends AppCompatActivity {
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
                         fragmentHome.setArguments(bundle);
+                        fragmentTag = 0;
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA();
+                            fragmentA = new FragmentA(bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-                        fragmentA.setArguments(bundle);
+
+                        fragmentA.setArguments(bundleFagmentA);
+
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -153,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
                         fragmentRefrigerator.setArguments(bundle);
+                        fragmentTag = 2;
                         break;
                     case 3:
                         if(fragmentTest == null){
@@ -161,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentTest).commitAllowingStateLoss();
                         fragmentTest.setArguments(bundle);
+                        fragmentTag = 3;
                         break;
                     case 4:
                         if (fragmentLight == null){
@@ -168,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentLight).commitAllowingStateLoss();
+                        fragmentTag = 4;
                 }
             }
             //텝이 선택되지 않았을 때 호출
@@ -183,12 +201,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fragmentTag != 0){
+            fragmentTransaction=fragmentManager.beginTransaction();
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+            bundle.putSerializable("list", list);
+            fragmentHome.setArguments(bundle);
+            fragmentTag = 0;
+
+        }else {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
     public void initRecyclerAdapter(){
         list = new ArrayList<>();
-        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVerticalWeather));
         list.add(new SystemInfoVO(R.drawable.angel,"에어컨", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
@@ -197,16 +230,27 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
-     * @param tabName
      * @param iconImage
      * @return
      */
-    private View createTabView(String tabName, int iconImage){
+    private View createTabView(int iconImage){
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
-        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
-        tvTab.setText(tabName);
+//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
+//        tvTab.setText(tabName);
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;
+    }
+
+    Bundle bundleFagmentA;
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i("test", "야2");
+        WeatherVO[] weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
+        Log.i("test", weathers[0].getTemp());
+        bundleFagmentA = new Bundle();
+        bundleFagmentA.putSerializable("weather", weathers[0]);
+        Log.i("test", "야3");
+        super.onNewIntent(intent);
     }
 }
