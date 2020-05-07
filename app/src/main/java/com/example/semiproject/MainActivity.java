@@ -157,12 +157,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-<<<<<<< HEAD
-                        fragmentA.setArguments(bundle);
-                        fragmentTag = 1;
-=======
+
                         fragmentA.setArguments(bundleFagmentA);
->>>>>>> 02110f596a10ed584ec73bb73f4e0181cdd813a6
+
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
