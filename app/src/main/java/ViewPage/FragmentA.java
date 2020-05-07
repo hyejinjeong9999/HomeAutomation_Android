@@ -47,7 +47,6 @@ public class FragmentA extends Fragment {
             fragA_TV_01.setText(weather.getTemp());
             Log.i("test", weather.getTemp());
         }
-
         return  view;
     }
 

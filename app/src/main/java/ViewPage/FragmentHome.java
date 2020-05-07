@@ -24,13 +24,17 @@ import java.util.ArrayList;
 import RecyclerViewAdapter.VerticalAdapter;
 import RecyclerViewAdapter.ViewType;
 import model.SystemInfoVO;
+import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
     String TAG ="FragmentHome";
     View view;
     Context context;
     VerticalAdapter verticalAdapter;
+
     ArrayList<SystemInfoVO> list;
+    WeatherVO weathers;
+
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
@@ -51,6 +55,9 @@ public class FragmentHome extends Fragment {
         context = container.getContext();
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
         list=(ArrayList<SystemInfoVO>)getArguments().get("list");
+//        Log.v(TAG,"bundle=="+(WeatherVO)savedInstanceState.getSerializable("weather"));
+//        weathers=(WeatherVO)savedInstanceState.getSerializable("weather");
+
         /**
          *
          */
@@ -69,6 +76,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
         verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
+//        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader);
         recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);

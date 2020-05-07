@@ -1,6 +1,7 @@
 package RecyclerViewAdapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import model.SystemInfoVO;
+import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     String TAG = "VerticalAdapter";
@@ -27,10 +29,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     BufferedReader bufferedReader;
     Communication.SharedObject sharedObject;
     ArrayList<SystemInfoVO> list;
+    WeatherVO weathers;
+    DisplayMetrics displayMetrics = new DisplayMetrics();
 
     public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
         this.context = context;
         this.list = list;
+//        this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
         Log.v(TAG,"list0=="+list.get(0).getViewType());
@@ -73,6 +78,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
             ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
             ((SystemInfo)holder).tvSituation.setText(list.get(position).getSituation());
+            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
+            deviceWidth = deviceWidth / 2;
+            int deviceHeight = (int) (deviceWidth * 1.5);
+            holder.itemView.getLayoutParams().height = deviceHeight;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
+
+            holder.itemView.requestLayout(); // 변경 사항 적용
         }else if (holder instanceof SystemInfoSwitch){
             ((SystemInfoSwitch)holder).ivTitle.setImageResource(list.get(position).getImageView());
             ((SystemInfoSwitch)holder).tvSystemName.setText(list.get(position).getTitle());
@@ -91,10 +102,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).iv1.setImageResource(list.get(position).getImageView());
-            ((SystemInfoWeather)holder).iv2.setImageResource(list.get(position).getImageView());
-            ((SystemInfoWeather)holder).iv3.setImageResource(list.get(position).getImageView());
-            ((SystemInfoWeather)holder).tv5.setText(list.get(position).getTitle());
+            ((SystemInfoWeather)holder).tvTemp.setText("28");
+            ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).ivSituation.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).tvSituation.setText(list.get(position).getTitle());
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -154,16 +165,16 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class SystemInfoWeather extends RecyclerView.ViewHolder{
-        public ImageView iv1;
-        public ImageView iv2;
-        public ImageView iv3;
-        public TextView tv5;
+        public TextView tvTemp;
+        public ImageView ivWeather;
+        public ImageView ivSituation;
+        public TextView tvSituation;
         public SystemInfoWeather(@NonNull View itemView) {
             super(itemView);
-            iv1 = itemView.findViewById(R.id.iv1);
-            iv2 = itemView.findViewById(R.id.iv2);
-            iv3 = itemView.findViewById(R.id.iv3);
-            tv5 = itemView.findViewById(R.id.tv5);
+            tvTemp = itemView.findViewById(R.id.tvTemp);
+            ivWeather = itemView.findViewById(R.id.ivWeather);
+            ivSituation = itemView.findViewById(R.id.ivSituation);
+            tvSituation = itemView.findViewById(R.id.tvSituation);
         }
     }
 }
