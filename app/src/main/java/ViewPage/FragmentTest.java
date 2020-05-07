@@ -61,7 +61,9 @@ public class FragmentTest extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Log.v(TAG,"onProgressChanged =="+progress);
-                sharedObject.put(String.valueOf(progress));
+                String msg= "/1TEMPRATURE"+String.valueOf(progress);
+                sharedObject.put(msg);
+//                sharedObject.put(String.valueOf(progress));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {

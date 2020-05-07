@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+import model.TestVO;
 import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     Context context;
     Bundle bundle;
+    TestVO testVO = new TestVO();
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
@@ -52,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
 
+
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
+    ObjectInputStream objectInputStream;
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
     @Override
@@ -62,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initRecyclerAdapter();
-        Intent i =  new Intent(getApplicationContext(), WeatherService.class);
+        Intent i = new Intent(getApplicationContext(), WeatherService.class);
         startService(i);
 
-        tabLayout=(TabLayout)findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
 //        viewPager = findViewById(R.id.viewPager);
 //        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
@@ -79,25 +84,50 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket=new Socket("70.12.60.98",4444);
+                    socket = new Socket("70.12.60.98", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
-                    Log.v(TAG,"Socket Situation=="+socket.isConnected());
+                    objectInputStream = new ObjectInputStream(socket.getInputStream());
+                    Log.v(TAG, "Socket Situation==" + socket.isConnected());
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
-                    while (true){
+                    while (true) {
                         String msg = sharedObject.pop();
                         printWriter.println(msg);
                         printWriter.flush();
                     }
-                }catch (IOException e){
-                    Log.v(TAG,"Socket Communication IOException=="+ e);
+                } catch (IOException e) {
+                    Log.v(TAG, "Socket Communication IOException==" + e);
                 }
             }
         });
         thread.start();
+//        Communication.DataReceveAsyncTask111 asyncTaskTest =
+//                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
+//        asyncTaskTest.execute();
+
+        ///ObjectBuffer
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (objectInputStream != null) {
+                        try {
+                            testVO = (TestVO) objectInputStream.readObject();
+                            Log.i("test", testVO.getTemp1());
+                            Log.v(TAG, "onCreate==" + testVO.toString());
+                        } catch (IOException | ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        Log.v(TAG, "nulllllllll");
+                    }
+                }
+            }
+        });
+        thread1.start();
 
         /**
          * App 실행시 처음 표시해줄 Fragment
@@ -105,15 +135,15 @@ public class MainActivity extends AppCompatActivity {
          */
         fragmentManager = getSupportFragmentManager();
         if (fragmentHome == null) {
-            fragmentTransaction=fragmentManager.beginTransaction();
+            fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject,bufferedReader);
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
             bundle.putSerializable("list", list);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
 
-            Log.v(TAG,"fragmentHome==");
+            Log.v(TAG, "fragmentHome==");
         }
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
@@ -136,14 +166,14 @@ public class MainActivity extends AppCompatActivity {
             //텝이 선택 되었을때 호출
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.v(TAG,"onTabSelected()_getPosition=="+tab.getPosition());
-                fragmentTransaction=fragmentManager.beginTransaction();
+                Log.v(TAG, "onTabSelected()_getPosition==" + tab.getPosition());
+                fragmentTransaction = fragmentManager.beginTransaction();
 //                bundle = new Bundle();
-                switch (tab.getPosition()){
+                switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject,bufferedReader);
-                            Log.v(TAG,"fragmentHome==");
+                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+                            Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -157,12 +187,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-<<<<<<< HEAD
-                        fragmentA.setArguments(bundle);
-                        fragmentTag = 1;
-=======
+
                         fragmentA.setArguments(bundleFagmentA);
->>>>>>> 02110f596a10ed584ec73bb73f4e0181cdd813a6
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -174,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 2;
                         break;
                     case 3:
-                        if(fragmentTest == null){
-                            fragmentTest = new FragmentTest(sharedObject,bufferedReader);
+                        if (fragmentTest == null) {
+                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentTest).commitAllowingStateLoss();
@@ -183,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 3;
                         break;
                     case 4:
-                        if (fragmentLight == null){
+                        if (fragmentLight == null) {
                             fragmentLight = new FragmentLight();
                         }
                         fragmentTransaction.replace(
@@ -191,30 +217,32 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 4;
                 }
             }
+
             //텝이 선택되지 않았을 때 호출
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Log.v(TAG,"onTabUnselected()_tab=="+tab.getPosition());
+                Log.v(TAG, "onTabUnselected()_tab==" + tab.getPosition());
             }
+
             //텝이 다시 선택되었을 때 호출
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                Log.v(TAG,"onTabReselected()_tab=="+tab.getPosition());
+                Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        if (fragmentTag != 0){
-            fragmentTransaction=fragmentManager.beginTransaction();
+        if (fragmentTag != 0) {
+            fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
             bundle.putSerializable("list", list);
             fragmentHome.setArguments(bundle);
             fragmentTag = 0;
 
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -222,21 +250,22 @@ public class MainActivity extends AppCompatActivity {
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
-    public void initRecyclerAdapter(){
+    public void initRecyclerAdapter() {
         list = new ArrayList<>();
-        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVerticalWeather));
-        list.add(new SystemInfoVO(R.drawable.angel,"에어컨", ViewType.ItemVerticalSwitch));
-        list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angry,"현관문","켜짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
+        list.add(new SystemInfoVO(R.drawable.angel, "에어컨", ViewType.ItemVerticalSwitch));
+        list.add(new SystemInfoVO(R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
     }
 
     /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
+     *
      * @param iconImage
      * @return
      */
-    private View createTabView(int iconImage){
+    private View createTabView(int iconImage) {
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
 //        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
 //        tvTab.setText(tabName);
@@ -246,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     Bundle bundleFagmentA;
+
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i("test", "야2");
@@ -256,4 +286,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i("test", "야3");
         super.onNewIntent(intent);
     }
+
+
 }
