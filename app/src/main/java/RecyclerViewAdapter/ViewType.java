@@ -6,4 +6,5 @@ package RecyclerViewAdapter;
 public class ViewType {
     public static final int ItemVertical = 0;
     public static final int ItemVerticalSwitch = 1;
+    public static final int ItemVerticalWeather = 2;
 }

@@ -52,6 +52,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(viewType == ViewType.ItemVertical){
             view = inflater.inflate(R.layout.recycler_item_systeminfo,parent,false);
             return new SystemInfo(view);
+        }else if(viewType == ViewType.ItemVerticalWeather){
+            view = inflater.inflate(R.layout.recycler_item_weatherinfo,parent,false);
+            return new SystemInfoWeather(view);
         }else{
             view = inflater.inflate(R.layout.recycler_item_systeminfo_air,parent,false);
             return new SystemInfoSwitch(view);
@@ -87,6 +90,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             });
+        }else if (holder instanceof SystemInfoWeather){
+            ((SystemInfoWeather)holder).iv1.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).iv2.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).iv3.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).tv5.setText(list.get(position).getTitle());
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -142,6 +150,20 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ivTitle = itemView.findViewById(R.id.ivTitle);
             tvSystemName=itemView.findViewById(R.id.tvSystemName);
             swSituation=itemView.findViewById(R.id.swSituation);
+        }
+    }
+
+    public class SystemInfoWeather extends RecyclerView.ViewHolder{
+        public ImageView iv1;
+        public ImageView iv2;
+        public ImageView iv3;
+        public TextView tv5;
+        public SystemInfoWeather(@NonNull View itemView) {
+            super(itemView);
+            iv1 = itemView.findViewById(R.id.iv1);
+            iv2 = itemView.findViewById(R.id.iv2);
+            iv3 = itemView.findViewById(R.id.iv3);
+            tv5 = itemView.findViewById(R.id.tv5);
         }
     }
 }

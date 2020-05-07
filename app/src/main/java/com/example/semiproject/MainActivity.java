@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket=new Socket("70.12.225.223",1234);
+                    socket=new Socket("70.12.60.98",4444);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void initRecyclerAdapter(){
         list = new ArrayList<>();
-        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(R.drawable.angry,"대기상태","좋음", ViewType.ItemVerticalWeather));
         list.add(new SystemInfoVO(R.drawable.angel,"에어컨", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(R.drawable.angry,"조명","켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angel,"냉장고","????", ViewType.ItemVertical));
