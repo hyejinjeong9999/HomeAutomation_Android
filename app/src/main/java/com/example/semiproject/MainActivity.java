@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("70.12.60.98", 1357);
+                    socket = new Socket("192.168.1.9", 1357);
 //                    bufferedReader = new BufferedReader(
 //                            new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         Log.i("test", "야2");
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        Log.i("test", weathers[0].getTemp());
+        Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
         bundleFagmentA = new Bundle();
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
