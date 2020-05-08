@@ -3,17 +3,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#efcec5">
-    <TextView
-        android:id="@+id/fragATV01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="창문"
-        android:textSize="50sp"
-        android:layout_gravity="center_vertical|center_horizontal"/>
+<!--    <TextView-->
+<!--        android:id="@+id/fragATV01"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="창문"-->
+<!--        android:textSize="50sp"-->
+<!--        android:layout_gravity="center_vertical|center_horizontal"/>-->
     <ImageButton
         android:id="@+id/fragARunBtn"
-        android:layout_width="500px"
-        android:layout_height="500px"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_gravity="center"
         android:tooltipText="Auto"
         android:background="@drawable/imagebtn_selector"
@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:text="현재 온도"
         android:layout_gravity="center"/>
+
     <ToggleButton
         android:id="@+id/fragATB01"
         android:layout_width="wrap_content"

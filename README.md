@@ -10,9 +10,30 @@
 
 
 
-2020-05-05
+2020-05-06
 
 - 너무 피곤
 - 메인 UI, 창문 UI 
 - 자동/수동 기능
 	수동은 알람 형식으로
+
+
+
+2020-05-07
+
+- ON/OFF ImageButton 구현
+	selector 2개(imagebtn_selector, imagebtn_icon_selector)
+- 현제 온도 TextView 구현
+	id/fragACurrentTemp
+
+
+
+2020-05-08
+
+- ImageButton 변경
+	ON/OFF > OPEN/CLOSE
+- WeatherVO > setWeather 에서 icon 
+- setOnCheckedChangeListener > 에어컨 on/off Toast메세지 띄울것.
+- SystemInfoWeather > 값 설정할것.
+- bundleFagmentA > 상태창을  recycler_item_weatherinfo 활용
+	- recycler_item_weatherinfo 에 VO값 대입

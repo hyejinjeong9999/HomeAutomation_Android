@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
     ObjectInputStream objectInputStream;
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
+    // recycler_item_weatherinfo 관련
+    TextView roomTemp;
+    ImageView outWeather;
+    ImageView roomPM;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -284,12 +289,40 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+
         Log.i("test", "야2");
+
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        Log.i("test", weathers[0].getTemp());
+        roomTemp = findViewById(R.id.tvTemp);
+        outWeather = findViewById(R.id.ivWeather);
+        roomPM = findViewById(R.id.ivSituation);
+
+        Log.i("test", weathers[0].getTemp());       //tvTemp
+        Log.i("test", weathers[0].getWeather());    //ivWeather
+        Log.i("test", weathers[0].getHumidity());   //ivSituation
         bundleFagmentA = new Bundle();
+        if(bundleFagmentA != null){
+            Log.i("test", weathers[0].getTemp());       //tvTemp
+            Log.i("test", weathers[0].getWeather());    //ivWeather
+            Log.i("test", weathers[0].getHumidity());
+            roomTemp.setText(weathers[0].getTemp());
+//            outWeather.setImageResource(weathers[0].getWeather());
+//            roomPM;
+        }
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
         super.onNewIntent(intent);
     }
+//
+//    view = inflater.inflate(R.layout.fragment_a,container,false);
+//    context=container.getContext();
+//
+//    // 현제 온도 보여주기
+//    fragATV01 = view.findViewById(R.id.fragACurrentTemp);
+//    Bundle bundle = getArguments();
+//        if (bundle != null) {
+//        WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
+//        fragATV01.setText(weather.getTemp());
+//    }
+//        return  view;
 }
