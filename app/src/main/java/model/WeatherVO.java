@@ -28,6 +28,8 @@ public class WeatherVO implements Serializable {
     }
 
     public String getTemp() {
+        // String 소숫점 한 자리까지 잘라오기
+        temp = String.format("%.4s",temp);
         return temp;
     }
 
