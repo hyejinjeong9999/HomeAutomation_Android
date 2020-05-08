@@ -43,6 +43,9 @@ public class FragmentHome extends Fragment {
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
     }
+    public FragmentHome(Communication.SharedObject sharedObject){
+        this.sharedObject=sharedObject;
+    }
 
     @Nullable
     @Override
@@ -53,10 +56,11 @@ public class FragmentHome extends Fragment {
          * MainActivity 에서 Bundle을 통해 부여된 Key를 입력하고  Data를 받아온다
          */
         context = container.getContext();
+        Bundle bundle = getArguments();
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
         list=(ArrayList<SystemInfoVO>)getArguments().get("list");
-//        Log.v(TAG,"bundle=="+(WeatherVO)savedInstanceState.getSerializable("weather"));
-//        weathers=(WeatherVO)savedInstanceState.getSerializable("weather");
+//        Log.v(TAG,"bundle=="+bundle.getSerializable("weather").toString());
+//        weathers=(WeatherVO)bundle.getSerializable("weather");
 
         /**
          *
@@ -75,8 +79,8 @@ public class FragmentHome extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
-        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
-//        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader);
+//        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
+        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader);
         recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);

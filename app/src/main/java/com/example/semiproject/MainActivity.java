@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+
 import model.TestVO;
 import model.WeatherVO;
 
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     Context context;
     Bundle bundle;
-    TestVO testVO = new TestVO();
+    TestVO testVO;
     WeatherVO[] weathers;
 
     FragmentManager fragmentManager;
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     Socket socket;
     PrintWriter printWriter;
-    BufferedReader bufferedReader;
+//    BufferedReader bufferedReader;
+    ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
@@ -87,14 +91,42 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     socket = new Socket("70.12.60.98", 1357);
-                    bufferedReader = new BufferedReader(
-                            new InputStreamReader(socket.getInputStream()));
+//                    bufferedReader = new BufferedReader(
+//                            new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
+                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                     objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
+
+                    ///ObjectBuffer
+                    Thread thread1 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            testVO = new TestVO();
+                            while (true) {
+                                Log.v(TAG,"Thread111111111111111111");
+                                try {
+                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
+                                    testVO = (TestVO) objectInputStream.readObject();
+                                    Log.v(TAG,"testVO=="+testVO.getTemp1());
+                                    if (testVO != null) {
+                                        Log.v(TAG,"objectInputStream-----------------");
+                                        Log.v(TAG, "onCreate==" + testVO);
+                                        //testVO = (TestVO) objectInputStream.readObject();
+                                        Log.i("test", testVO.getTemp1());
+                                    } else {
+                                        Log.v(TAG, "nulllllllll");
+                                    }
+                                } catch (IOException | ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                    thread1.start();
                     while (true) {
                         String msg = sharedObject.pop();
                         printWriter.println(msg);
@@ -110,36 +142,19 @@ public class MainActivity extends AppCompatActivity {
 //                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
 //        asyncTaskTest.execute();
 
-        ///ObjectBuffer
-        Thread thread1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (objectInputStream != null) {
-                        try {
-                            testVO = (TestVO) objectInputStream.readObject();
-                            Log.i("test", testVO.getTemp1());
-                            Log.v(TAG, "onCreate==" + testVO.toString());
-                        } catch (IOException | ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.v(TAG, "nulllllllll");
-                    }
-                }
-            }
-        });
-//        thread1.start();
 
         /**
          * App 실행시 처음 표시해줄 Fragment
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager =
+
+                getSupportFragmentManager();
         if (fragmentHome == null) {
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+            fragmentHome = new FragmentHome(sharedObject);
             bundle.putSerializable("list", list);
 //            bundle.putSerializable("weather", weathers[0]);
             fragmentHome.setArguments(bundle);
@@ -156,11 +171,16 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.house_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.toys_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.house_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.toys_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
         /**
          * TabLayout SelectListenerEvent
          * Fragment Call
@@ -175,19 +195,20 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
-                        bundle.putSerializable("weather", weathers[0]);
+//                        bundle.putSerializable("weather", weathers);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA(bufferedReader);
+//                            fragmentA = new FragmentA(bufferedReader);
+                            fragmentA = new FragmentA();
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
@@ -204,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         if (fragmentTest == null) {
-                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+//                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+                            fragmentTest = new FragmentTest(sharedObject);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentTest).commitAllowingStateLoss();

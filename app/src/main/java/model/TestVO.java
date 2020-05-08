@@ -1,12 +1,11 @@
 package model;
 
-
 import java.io.Serializable;
 
-public  class TestVO implements Serializable {
-    String temp1 = "";
-    String temp2 = "";
-    String temp3 = "";
+public  class TestVO implements Serializable{
+    String temp1 = "0";
+    String temp2 = "0";
+    String temp3 = "0";
 
     public String getTemp1() {
         return temp1;

@@ -3,8 +3,12 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#363333</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="fragmentBack">#363333</color>
+<!--    <color name="fragmentBack">#363333</color>-->
+    <color name="fragmentBack">#FFFFFF</color>
     <color name="fragmentHomeFont">#BDB7B7</color>
+    <color name="fragmentHomeFont1">#3092FF</color>
     <color name="tabIndicatorCol">#FFEB3B</color>
     <color name="recyclerItemCol">#1E1D17</color>
+    <color name="recyclerViewItemBack">#4B96F1</color>
+
 </resources>
