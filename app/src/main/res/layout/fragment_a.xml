@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:background="#efcec5">
     <TextView
-        android:id="@+id/fragA_TV_01"
+        android:id="@+id/fragATV01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="창문"
         android:textSize="50sp"
         android:layout_gravity="center_vertical|center_horizontal"/>
     <ImageButton
-        android:id="@+id/fragA_Auto_Btn"
+        android:id="@+id/fragARunBtn"
         android:layout_width="500px"
         android:layout_height="500px"
         android:layout_gravity="center"
@@ -19,32 +19,30 @@
         android:background="@drawable/imagebtn_selector"
         android:src="@drawable/imagebtn_icon_selector"/>
     <TextView
+        android:id="@+id/fragACurrentTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="현재 상태"
+        android:text="현재 온도"
         android:layout_gravity="center"/>
     <ToggleButton
-        android:id="@+id/fragA_TB_01"
+        android:id="@+id/fragATB01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="열렸다"
-        android:textOff="닫혔다"
+
         android:layout_gravity="center"
         android:gravity="center" />
     <ToggleButton
-        android:id="@+id/fragA_TB_02"
+        android:id="@+id/fragATB02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="온!"
-        android:textOff="..오프"
+
         android:layout_gravity="center"
         android:gravity="center"/>
     <ToggleButton
         android:id="@+id/fragA_TB_03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="onState"
-        android:textOff="offState"
+
         android:layout_gravity="center"
         android:gravity="center"/>
 </LinearLayout>

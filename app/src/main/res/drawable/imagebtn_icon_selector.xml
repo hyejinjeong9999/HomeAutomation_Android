@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:drawable="@drawable/ic_btn_on"
+<item android:drawable="@drawable/ic_btn_open"
     android:state_pressed="true" />
-<item android:drawable="@drawable/ic_btn_off"
+<item android:drawable="@drawable/ic_btn_close"
     android:state_pressed="false"/>
 </selector>
