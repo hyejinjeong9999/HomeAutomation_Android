@@ -15,7 +15,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
     Socket socket;
     PrintWriter printWriter;
-//    BufferedReader bufferedReader;
+    BufferedReader bufferedReader;
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
+    ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
     @Override
@@ -90,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("192.168.1.9", 1357);
-//                    bufferedReader = new BufferedReader(
-//                            new InputStreamReader(socket.getInputStream()));
+                    socket = new Socket("70.12.60.98", 1357);
+                    bufferedReader = new BufferedReader(
+                            new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
                     objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                     objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -109,20 +115,36 @@ public class MainActivity extends AppCompatActivity {
                             while (true) {
                                 Log.v(TAG,"Thread111111111111111111");
                                 try {
-                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
-                                    testVO = (TestVO) objectInputStream.readObject();
-                                    Log.v(TAG,"testVO=="+testVO.getTemp1());
-                                    if (testVO != null) {
-                                        Log.v(TAG,"objectInputStream-----------------");
-                                        Log.v(TAG, "onCreate==" + testVO);
-                                        //testVO = (TestVO) objectInputStream.readObject();
-                                        Log.i("test", testVO.getTemp1());
-                                    } else {
-                                        Log.v(TAG, "nulllllllll");
-                                    }
-                                } catch (IOException | ClassNotFoundException e) {
+                                    String jsonData = bufferedReader.readLine();
+                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    testVO=objectMapper.readValue(jsonData, TestVO.class);
+                                    Log.v(TAG,"testVo.getTemp1=="+testVO.getTemp1());
+
+//                                    com.google.gson.JsonParser p = new com.google.gson.JsonParser();
+//                                    Object object = p.parse(jsonData);
+//                                    JSONObject jsonObject = (JSONObject)object;
+//                                    JSONObject data = (JSONObject)jsonObject.get("temp1");
+//                                    Log.v(TAG,"jsonData=="+data);
+
+
+                                    //ObjectInputStream 을 이용한 Serializable된 객체 전달//
+//                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
+//                                    testVO = (TestVO) objectInputStream.readObject();
+//                                    Log.v(TAG,"testVO=="+testVO.getTemp1());
+//                                    if (testVO != null) {
+//                                        Log.v(TAG,"objectInputStream-----------------");
+//                                        Log.v(TAG, "onCreate==" + testVO);
+//                                        //testVO = (TestVO) objectInputStream.readObject();
+//                                        Log.i("test", testVO.getTemp1());
+//                                    } else {
+//                                        Log.v(TAG, "nulllllllll");
+//                                    }
+                                }catch (IOException e) {
                                     e.printStackTrace();
                                 }
+//                                catch (IOException | ClassNotFoundException e) {
+//                                    e.printStackTrace();
+//                                }
                             }
                         }
                     });
@@ -147,9 +169,7 @@ public class MainActivity extends AppCompatActivity {
          * App 실행시 처음 표시해줄 Fragment
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
-        fragmentManager =
-
-                getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         if (fragmentHome == null) {
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
@@ -160,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
-
             Log.v(TAG, "fragmentHome==");
         }
         /**

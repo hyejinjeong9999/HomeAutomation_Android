@@ -409,6 +409,8 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
 
 [상단바or타이틀바 지우기](https://commin.tistory.com/63)
 
+[상태바색변경&투명도](https://codeomni.tistory.com/217)
+
 
 
 
