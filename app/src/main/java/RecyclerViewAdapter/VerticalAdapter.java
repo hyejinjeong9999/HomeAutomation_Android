@@ -1,6 +1,7 @@
 package RecyclerViewAdapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -97,8 +98,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Log.v(TAG, "onCheckedChanged/" + isChecked);
                     if(isChecked == true){
                         sharedObject.put("/aircon ON");
+                        Toast.makeText(context.getApplicationContext(), "aircon ON", Toast.LENGTH_SHORT).show();
                     }else {
                         sharedObject.put("/aircon OFF");
+                        Toast.makeText(context.getApplicationContext(), "aircon OFF", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -112,7 +115,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTemp.setText("28");
+
+            ((SystemInfoWeather)holder).tvTemp.setText("27");
             ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
             ((SystemInfoWeather)holder).ivSituation.setImageResource(list.get(position).getImageView());
             ((SystemInfoWeather)holder).tvSituation.setText(list.get(position).getTitle());
