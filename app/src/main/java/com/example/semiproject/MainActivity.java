@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,8 +48,11 @@ import model.WeatherVO;
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
     RecyclerView recyclerVIew;
-    TabLayout tabLayout;
     ViewPager viewPager;
+    TabLayout tabLayout;
+    FrameLayout flFirstVIew;
+    FrameLayout frame;
+
     Context context;
     Bundle bundle = new Bundle();
     TestVO testVO;
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("70.12.60.98", 1357);
+                    socket = new Socket("192.168.1.9", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -125,12 +129,6 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     String temp1 = jsonObject.getString("temp1");
                                     Log.v(TAG,"jsonObject_getTemp1=="+temp1);
-
-//                                    com.google.gson.JsonParser p = new com.google.gson.JsonParser();
-//                                    Object object = p.parse(jsonData);
-//                                    JSONObject jsonObject = (JSONObject)object;
-//                                    JSONObject data = (JSONObject)jsonObject.get("temp1");
-//                                    Log.v(TAG,"jsonData=="+data);
 
                                     //ObjectInputStream 을 이용한 Serializable된 객체 전달//
 //                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
@@ -175,26 +173,20 @@ public class MainActivity extends AppCompatActivity {
          */
         fragmentManager = getSupportFragmentManager();
 //        if (fragmentHome == null) {
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            bundle = new Bundle();
-////            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
-//            fragmentHome = new FragmentHome(sharedObject);
-//            bundle.putSerializable("list", list);
-//            bundle.putSerializable("weather", weathers[0]);
+////            fragmentTransaction = fragmentManager.beginTransaction();
+////            bundle = new Bundle();
+//////            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+////            fragmentHome = new FragmentHome(sharedObject);
+////            bundle.putSerializable("list", list);
 ////            bundle.putSerializable("weather", weathers[0]);
-//            fragmentHome.setArguments(bundle);
-//            fragmentTransaction.replace(
-//                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-//            Log.v(TAG, "fragmentHome==");
-//        }
+////            fragmentHome.setArguments(bundle);
+////            fragmentTransaction.replace(
+////                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+////            Log.v(TAG, "fragmentHome==");
+////        }
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("HOME",R.drawable.house_black_18dp)));
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("Win",R.drawable.toys_black_18dp)));
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.house_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().
@@ -236,7 +228,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-                        fragmentA.setArguments(bundleFagmentA);
+//                        fragmentA.setArguments(bundleFagmentA);
+                        bundle.putSerializable("weather", weathers[0]);
+                        fragmentA.setArguments(bundle);
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -301,12 +295,16 @@ public class MainActivity extends AppCompatActivity {
      */
     public void initRecyclerAdapter() {
         list = new ArrayList<>();
-        list.add(new SystemInfoVO(R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
-        list.add(new SystemInfoVO(R.drawable.angel, "에어컨", ViewType.ItemVerticalSwitch));
-        list.add(new SystemInfoVO(R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
-
+        list.add(new SystemInfoVO(
+                R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
+        list.add(new SystemInfoVO(
+                R.drawable.angel, "에어컨", ViewType.ItemVerticalSwitch));
+        list.add(new SystemInfoVO(
+                R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(
+                R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
+        list.add(new SystemInfoVO(
+                R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
     }
 
     /**
@@ -327,25 +325,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Service를 이요해 webServer에서 REST API 통신을 이용해 데이터를 가져온다
      */
-    Bundle bundleFagmentA;
 
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i("test", "야2");
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
-        bundleFagmentA = new Bundle();
-        bundleFagmentA.putSerializable("weather", weathers[0]);
-        Log.i("test", "야3");
 
         if (fragmentHome == null) {
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
             fragmentHome = new FragmentHome(sharedObject);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weathers[0]);
-//            bundle.putSerializable("weather", weathers[0]);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();

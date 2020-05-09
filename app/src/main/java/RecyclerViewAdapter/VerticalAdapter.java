@@ -38,9 +38,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
-        Log.v(TAG,"list0=="+list.get(0).getViewType());
-        Log.v(TAG,"list0=="+list.get(1).getViewType());
-        Log.v(TAG,"list0=="+list.get(2).getViewType());
     }
     /**
      * getItemViewType() method에서 Return 받는 VIewType 형태의 아이템 뷰를 위한 뷰홀더 객체 생성
@@ -75,9 +72,16 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         Log.v(TAG,"onBindViewHolder()"+holder.itemView);
         if (holder instanceof SystemInfo){
-            ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
-            ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
-            ((SystemInfo)holder).tvSituation.setText(list.get(position).getSituation());
+            Log.v(TAG,""+list.get(position).getTitle());
+            if (list.get(position).getTitle().equals("냉장고")){
+                ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
+                ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
+                ((SystemInfo)holder).tvSituation.setText("장고장고");
+            }else {
+                ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
+                ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
+                ((SystemInfo)holder).tvSituation.setText(list.get(position).getSituation());
+            }
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
 //            int deviceHeight = (int) (deviceWidth * 1.5);
@@ -111,8 +115,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTemp.setText("28");
-            ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
+            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTempMin());
+            Log.v(TAG,"getWeather=="+weathers.getWeather());
+            if (weathers.getWeather().equals("Drizzle")){
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.angel);
+            }else {
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
+            }
             ((SystemInfoWeather)holder).ivSituation.setImageResource(list.get(position).getImageView());
             ((SystemInfoWeather)holder).tvSituation.setText(list.get(position).getTitle());
         }
@@ -146,7 +155,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return list.size();
     }
 
-    //ItemVIew Class//
+    //////////ItemVIew Class//////////
     public class SystemInfo extends RecyclerView.ViewHolder{
         public ImageView ivTitle;
         public TextView tvSystemName;

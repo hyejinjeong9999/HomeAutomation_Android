@@ -60,6 +60,8 @@ public class FragmentHome extends Fragment {
         Log.v(TAG,"bundle=="+(ArrayList<SystemInfoVO>)getArguments().get("list"));
         list=(ArrayList<SystemInfoVO>)getArguments().get("list");
         Log.v(TAG,"weathers=="+(WeatherVO) getArguments().get("weather"));
+        weathers = (WeatherVO) getArguments().get("weather");
+        Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
 //        Log.v(TAG,"bundle=="+bundle.getSerializable("weather").toString());
 //        weathers=(WeatherVO)bundle.getSerializable("weather");
 
