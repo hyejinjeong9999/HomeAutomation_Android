@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     Context context;
-    Bundle bundle;
+    Bundle bundle = new Bundle();
     TestVO testVO;
     WeatherVO[] weathers;
 
@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
                     objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                     objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
+                    printWriter.println("/IDAndroid");
+                    printWriter.flush();
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
@@ -167,24 +169,24 @@ public class MainActivity extends AppCompatActivity {
 //                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
 //        asyncTaskTest.execute();
 
-
         /**
          * App 실행시 처음 표시해줄 Fragment
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
         fragmentManager = getSupportFragmentManager();
-        if (fragmentHome == null) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            bundle = new Bundle();
-//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
-            fragmentHome = new FragmentHome(sharedObject);
-            bundle.putSerializable("list", list);
+//        if (fragmentHome == null) {
+//            fragmentTransaction = fragmentManager.beginTransaction();
+//            bundle = new Bundle();
+////            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//            fragmentHome = new FragmentHome(sharedObject);
+//            bundle.putSerializable("list", list);
 //            bundle.putSerializable("weather", weathers[0]);
-            fragmentHome.setArguments(bundle);
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            Log.v(TAG, "fragmentHome==");
-        }
+////            bundle.putSerializable("weather", weathers[0]);
+//            fragmentHome.setArguments(bundle);
+//            fragmentTransaction.replace(
+//                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+//            Log.v(TAG, "fragmentHome==");
+//        }
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
-//                        bundle.putSerializable("weather", weathers);
+                        bundle.putSerializable("weather", weathers[0]);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
@@ -304,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SystemInfoVO(R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
+
     }
 
     /**
@@ -334,6 +337,20 @@ public class MainActivity extends AppCompatActivity {
         bundleFagmentA = new Bundle();
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
+
+        if (fragmentHome == null) {
+            fragmentTransaction = fragmentManager.beginTransaction();
+            bundle = new Bundle();
+//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+            fragmentHome = new FragmentHome(sharedObject);
+            bundle.putSerializable("list", list);
+            bundle.putSerializable("weather", weathers[0]);
+//            bundle.putSerializable("weather", weathers[0]);
+            fragmentHome.setArguments(bundle);
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+            Log.v(TAG, "fragmentHome==");
+        }
         super.onNewIntent(intent);
     }
 }

@@ -10,7 +10,7 @@
     <color name="tabIndicatorCol">#12110D</color>
     <color name="tabBackGroundCol">#70918F83</color>
     <color name="recyclerItemCol">#191813</color>
-    <color name="recyclerViewItemBack">#161A1E</color>
+    <color name="recyclerViewItemBack">#5E0D1115</color>
     <color name="recyclerViewItemFont">#BDB7B7</color>
 
 </resources>

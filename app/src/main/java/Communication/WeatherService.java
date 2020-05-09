@@ -25,6 +25,7 @@ import model.WeatherVO;
 
 public class WeatherService extends Service {
     String TAG = "WeatherService";
+    WeatherVO weathervo = new WeatherVO();
     public WeatherService() {
     }
 
@@ -83,6 +84,8 @@ public class WeatherService extends Service {
                 ObjectMapper mapper = new ObjectMapper();
                 WeatherVO[] resultArr = mapper.readValue(stringBuffer.toString(), WeatherVO[].class);
                 Log.v(TAG,"resultArr=="+resultArr[0].getTemp());
+//                weathervo = mapper.readValue(stringBuffer.toString(), WeatherVO.class);
+//                Log.v(TAG,"weathervo=="+weathervo.getTemp());
 
 //                ArrayList<String> resultData = new ArrayList<>();
 //                for(WeatherVO vo : weathers){
