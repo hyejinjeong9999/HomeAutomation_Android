@@ -27,7 +27,6 @@
 	id/fragACurrentTemp
 
 
-
 2020-05-08
 
 - ImageButton 변경
@@ -37,3 +36,8 @@
 - SystemInfoWeather > 값 설정할것.
 - bundleFagmentA > 상태창을  recycler_item_weatherinfo 활용
 	- recycler_item_weatherinfo 에 VO값 대입
+
+
+
+2020-05-09
+- 멘토 특강

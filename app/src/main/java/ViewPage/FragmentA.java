@@ -45,7 +45,9 @@ public class FragmentA extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
+
             fragATV01.setText(weather.getTemp());
+            Log.v(TAG,"getTemp=="+weather.getTemp());
             Log.i("test", weather.getTemp());
         }
         return  view;

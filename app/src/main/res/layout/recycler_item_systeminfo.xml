@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:background="@drawable/round_border"
     android:layout_marginStart="25dp"
     android:layout_marginEnd="25dp"
@@ -21,7 +21,7 @@
         android:layout_weight="10"
         android:gravity="center_vertical"
         android:textSize="23sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/recyclerViewItemFont"/>
     <TextView
         android:id="@+id/tvSituation"
         android:layout_width="0dp"
@@ -30,5 +30,5 @@
         android:gravity="center_vertical|end"
         android:layout_marginEnd="10dp"
         android:textSize="15sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/recyclerViewItemFont"/>
 </LinearLayout>

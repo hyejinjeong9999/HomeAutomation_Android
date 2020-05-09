@@ -15,12 +15,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,6 +40,7 @@ import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
+
 import model.TestVO;
 import model.WeatherVO;
 
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     Context context;
     Bundle bundle;
-    TestVO testVO = new TestVO();
+    TestVO testVO;
     WeatherVO[] weathers;
 
     FragmentManager fragmentManager;
@@ -59,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
+    ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
+    ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
     // recycler_item_weatherinfo 관련
@@ -95,11 +105,58 @@ public class MainActivity extends AppCompatActivity {
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
+                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                     objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
+
+                    ///ObjectBuffer
+                    Thread thread1 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            testVO = new TestVO();
+                            while (true) {
+                                Log.v(TAG,"Thread111111111111111111");
+                                try {
+                                    String jsonData = bufferedReader.readLine();
+                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    testVO=objectMapper.readValue(jsonData, TestVO.class);
+                                    Log.v(TAG,"testVo.getTemp1=="+testVO.getTemp1());
+
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    String temp1 = jsonObject.getString("temp1");
+                                    Log.v(TAG,"jsonObject_getTemp1=="+temp1);
+
+//                                    com.google.gson.JsonParser p = new com.google.gson.JsonParser();
+//                                    Object object = p.parse(jsonData);
+//                                    JSONObject jsonObject = (JSONObject)object;
+//                                    JSONObject data = (JSONObject)jsonObject.get("temp1");
+//                                    Log.v(TAG,"jsonData=="+data);
+
+                                    //ObjectInputStream 을 이용한 Serializable된 객체 전달//
+//                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
+//                                    testVO = (TestVO) objectInputStream.readObject();
+//                                    Log.v(TAG,"testVO=="+testVO.getTemp1());
+//                                    if (testVO != null) {
+//                                        Log.v(TAG,"objectInputStream-----------------");
+//                                        Log.v(TAG, "onCreate==" + testVO);
+//                                        //testVO = (TestVO) objectInputStream.readObject();
+//                                        Log.i("test", testVO.getTemp1());
+//                                    } else {
+//                                        Log.v(TAG, "nulllllllll");
+//                                    }
+                                }catch (IOException | JSONException e) {
+                                    e.printStackTrace();
+                                }
+//                                catch (IOException | ClassNotFoundException e) {
+//                                    e.printStackTrace();
+//                                }
+                            }
+                        }
+                    });
+                    thread1.start();
                     while (true) {
                         String msg = sharedObject.pop();
                         printWriter.println(msg);
@@ -115,26 +172,6 @@ public class MainActivity extends AppCompatActivity {
 //                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
 //        asyncTaskTest.execute();
 
-        ///ObjectBuffer
-        Thread thread1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (objectInputStream != null) {
-                        try {
-                            testVO = (TestVO) objectInputStream.readObject();
-                            Log.i("test", testVO.getTemp1());
-                            Log.v(TAG, "onCreate==" + testVO.toString());
-                        } catch (IOException | ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.v(TAG, "nulllllllll");
-                    }
-                }
-            }
-        });
-//        thread1.start();
 
         /**
          * App 실행시 처음 표시해줄 Fragment
@@ -144,13 +181,13 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentHome == null) {
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+            fragmentHome = new FragmentHome(sharedObject);
             bundle.putSerializable("list", list);
 //            bundle.putSerializable("weather", weathers[0]);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
-
             Log.v(TAG, "fragmentHome==");
         }
         /**
@@ -161,11 +198,16 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("냉장고",R.drawable.kitchen_black_18dp)));
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("현관문",R.drawable.border_vertical_black_18dp)));
 //        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView("조명",R.drawable.incandescent_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.house_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.toys_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.house_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.toys_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
         /**
          * TabLayout SelectListenerEvent
          * Fragment Call
@@ -180,19 +222,20 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
                         bundle.putSerializable("list", list);
-                        bundle.putSerializable("weather", weathers[0]);
+//                        bundle.putSerializable("weather", weathers);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA(bufferedReader);
+//                            fragmentA = new FragmentA(bufferedReader);
+                            fragmentA = new FragmentA();
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
@@ -209,7 +252,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         if (fragmentTest == null) {
-                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+//                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+                            fragmentTest = new FragmentTest(sharedObject);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentTest).commitAllowingStateLoss();
@@ -291,24 +335,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
 
         Log.i("test", "야2");
-
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        roomTemp = findViewById(R.id.tvTemp);
-        outWeather = findViewById(R.id.ivWeather);
-        roomPM = findViewById(R.id.ivSituation);
-
-        Log.i("test", weathers[0].getTemp());       //tvTemp
-        Log.i("test", weathers[0].getWeather());    //ivWeather
-        Log.i("test", weathers[0].getHumidity());   //ivSituation
+        Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
         bundleFagmentA = new Bundle();
-        if(bundleFagmentA != null){
-            Log.i("test", weathers[0].getTemp());       //tvTemp
-            Log.i("test", weathers[0].getWeather());    //ivWeather
-            Log.i("test", weathers[0].getHumidity());
-            roomTemp.setText(weathers[0].getTemp());
-//            outWeather.setImageResource(weathers[0].getWeather());
-//            roomPM;
-        }
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
         super.onNewIntent(intent);

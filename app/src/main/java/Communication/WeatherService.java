@@ -24,6 +24,7 @@ import ViewPage.FragmentA;
 import model.WeatherVO;
 
 public class WeatherService extends Service {
+    String TAG = "WeatherService";
     public WeatherService() {
     }
 
@@ -69,22 +70,19 @@ public class WeatherService extends Service {
                 //데이터 연결통로 만들어 데이터를 읽어드린다
                 //InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
                 //BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                BufferedReader br =
-                        new BufferedReader(new InputStreamReader(con.getInputStream()));
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
                 String line;
-                StringBuffer sb = new StringBuffer();
-                while((line = br.readLine()) != null){
-                    sb.append(line);
+                StringBuffer stringBuffer = new StringBuffer();
+                while((line = bufferedReader.readLine()) != null){
+                    stringBuffer.append(line);
                 }
-                Log.i("weather", sb.toString());
-                br.close();
-                //doucment : [{책1권}, {책1권}, {책1권}, ....]
+                Log.v(TAG,"weather=="+stringBuffer.toString());
+                bufferedReader.close();
                 //value값을 객체화 시킨다
                 ObjectMapper mapper = new ObjectMapper();
-                Log.i("test", "야");
-                WeatherVO[] resultArr = mapper.readValue(sb.toString(), WeatherVO[].class);
-                Log.i("test", resultArr[0].getTemp());
-
+                WeatherVO[] resultArr = mapper.readValue(stringBuffer.toString(), WeatherVO[].class);
+                Log.v(TAG,"resultArr=="+resultArr[0].getTemp());
 
 //                ArrayList<String> resultData = new ArrayList<>();
 //                for(WeatherVO vo : weathers){
@@ -92,12 +90,8 @@ public class WeatherService extends Service {
 //                    Log.i("test", vo.getTemp());
 //                }
 
-
-
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-                Log.i("test", "야");
                 resultIntent.putExtra("weatherResult", resultArr);
-                Log.i("test", "야");
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -109,10 +103,8 @@ public class WeatherService extends Service {
 //                bundle.putSerializable("result", resultData);
 //                fragment.setArguments(bundle);
 
-
-
             }catch (Exception e){
-                Log.i("kakao", e.toString());
+                Log.v(TAG, "Exception=="+e.toString());
             }
         }
     }

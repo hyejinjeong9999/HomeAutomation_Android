@@ -33,10 +33,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     WeatherVO weathers;
     DisplayMetrics displayMetrics = new DisplayMetrics();
 
-    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
+    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list,WeatherVO weathers,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
         this.context = context;
         this.list = list;
-//        this.weathers = weathers;
+        this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
         Log.v(TAG,"list0=="+list.get(0).getViewType());
@@ -79,12 +79,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
             ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
             ((SystemInfo)holder).tvSituation.setText(list.get(position).getSituation());
-            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
-            deviceWidth = deviceWidth / 2;
-            int deviceHeight = (int) (deviceWidth * 1.5);
-            holder.itemView.getLayoutParams().height = deviceHeight;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
-
-            holder.itemView.requestLayout(); // 변경 사항 적용
+//            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
+//            deviceWidth = deviceWidth / 2;
+//            int deviceHeight = (int) (deviceWidth * 1.5);
+//            holder.itemView.getLayoutParams().height = deviceHeight;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
+//
+//            holder.itemView.requestLayout(); // 변경 사항 적용
         }else if (holder instanceof SystemInfoSwitch){
             ((SystemInfoSwitch)holder).ivTitle.setImageResource(list.get(position).getImageView());
             ((SystemInfoSwitch)holder).tvSystemName.setText(list.get(position).getTitle());
@@ -102,6 +102,15 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             });
+
+            // Switch Component onTouch Event (Double Touch 시 호출됨.....)
+            ((SystemInfoSwitch)holder).swSituation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG,"swSituation onClick()");
+                }
+            });
+
         }else if (holder instanceof SystemInfoWeather){
             ((SystemInfoWeather)holder).tvTemp.setText("28");
             ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
