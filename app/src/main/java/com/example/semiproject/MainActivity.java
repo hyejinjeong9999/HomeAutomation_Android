@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-//                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(

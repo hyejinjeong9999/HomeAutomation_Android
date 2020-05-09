@@ -6,7 +6,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/angel"/>
+            android:src="@drawable/homeautomation"/>
     </item>
 
 </layer-list>
