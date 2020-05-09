@@ -120,12 +120,15 @@ public class MainActivity extends AppCompatActivity {
                                     testVO=objectMapper.readValue(jsonData, TestVO.class);
                                     Log.v(TAG,"testVo.getTemp1=="+testVO.getTemp1());
 
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    String temp1 = jsonObject.getString("temp1");
+                                    Log.v(TAG,"jsonObject_getTemp1=="+temp1);
+
 //                                    com.google.gson.JsonParser p = new com.google.gson.JsonParser();
 //                                    Object object = p.parse(jsonData);
 //                                    JSONObject jsonObject = (JSONObject)object;
 //                                    JSONObject data = (JSONObject)jsonObject.get("temp1");
 //                                    Log.v(TAG,"jsonData=="+data);
-
 
                                     //ObjectInputStream 을 이용한 Serializable된 객체 전달//
 //                                    Log.v(TAG,"obis========="+objectInputStream.readObject());
@@ -139,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 //                                    } else {
 //                                        Log.v(TAG, "nulllllllll");
 //                                    }
-                                }catch (IOException e) {
+                                }catch (IOException | JSONException e) {
                                     e.printStackTrace();
                                 }
 //                                catch (IOException | ClassNotFoundException e) {

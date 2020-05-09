@@ -403,6 +403,22 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
 
 
 
+## Err
+
+*  not permitted
+
+  * 문제 원인은 안드로이드에서 기본적으로 Http 접근을 허용하지 않는다. Https로 접근하면 문제가 없지만 해당 사이트가 Https를 지원하지 않는 등의 이유로 Http로 접근을 해야 한다면 예외처리를 해야한다.
+  * AndroidManifest.xml
+
+  ```xml
+   <application
+          android:usesCleartextTraffic="true">
+  ```
+
+  * [Reference](https://developer.android.com/training/articles/security-config#CertificatePinning)
+
+
+
 ## Other Reference
 
 [Layout 테두리](https://5stralia.tistory.com/10)
