@@ -19,18 +19,21 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import model.WeatherVO;
 
 public class FragmentA extends Fragment {
     String TAG="FragmentA";
     View view;
+    SharedObject sharedObject;
     BufferedReader bufferedReader;
     Context context;
     TextView fragA_TV_01;
     public FragmentA(){
 
     }
-    public FragmentA(BufferedReader bufferedReader) {
+    public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
+        this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
     }
 

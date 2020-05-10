@@ -1,8 +1,10 @@
 package RecyclerViewAdapter;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +30,17 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     View view;
     BufferedReader bufferedReader;
     Communication.SharedObject sharedObject;
-    ArrayList<SystemInfoVO> list;
+    ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
     DisplayMetrics displayMetrics = new DisplayMetrics();
+    //Item 의 클릭 상태를 저장 하는 ArrayObject
+    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+    // Item Position clicked before
+    int prePosition = -1;
 
-    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> list,WeatherVO weathers,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
+    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
         this.context = context;
-        this.list = list;
+        this.itemList = itemList;
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
@@ -72,15 +78,17 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         Log.v(TAG,"onBindViewHolder()"+holder.itemView);
         if (holder instanceof SystemInfo){
-            Log.v(TAG,""+list.get(position).getTitle());
-            if (list.get(position).getTitle().equals("냉장고")){
-                ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
-                ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
+            Log.v(TAG,""+itemList.get(position).getTitle());
+            if (itemList.get(position).getTitle().equals("냉장고")){
+                ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
+                ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
                 ((SystemInfo)holder).tvSituation.setText("장고장고");
+                changeVisibility(sparseBooleanArray.get(position));
             }else {
-                ((SystemInfo)holder).ivTitle.setImageResource(list.get(position).getImageView());
-                ((SystemInfo)holder).tvSystemName.setText(list.get(position).getTitle());
-                ((SystemInfo)holder).tvSituation.setText(list.get(position).getSituation());
+                ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
+                ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
+                ((SystemInfo)holder).tvSituation.setText(itemList.get(position).getSituation());
+                changeVisibility(sparseBooleanArray.get(position));
             }
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
@@ -89,8 +97,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //
 //            holder.itemView.requestLayout(); // 변경 사항 적용
         }else if (holder instanceof SystemInfoSwitch){
-            ((SystemInfoSwitch)holder).ivTitle.setImageResource(list.get(position).getImageView());
-            ((SystemInfoSwitch)holder).tvSystemName.setText(list.get(position).getTitle());
+            ((SystemInfoSwitch)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
+            ((SystemInfoSwitch)holder).tvSystemName.setText(itemList.get(position).getTitle());
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
@@ -116,14 +124,20 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }else if (holder instanceof SystemInfoWeather){
             ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTempMin());
+
+            /**
+             * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
+             */
             Log.v(TAG,"getWeather=="+weathers.getWeather());
             if (weathers.getWeather().equals("Drizzle")){
-                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.angel);
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
+            }else if (weathers.getWeather().equals("Mist")){
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.snow);
             }else {
-                ((SystemInfoWeather)holder).ivWeather.setImageResource(list.get(position).getImageView());
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-            ((SystemInfoWeather)holder).ivSituation.setImageResource(list.get(position).getImageView());
-            ((SystemInfoWeather)holder).tvSituation.setText(list.get(position).getTitle());
+            ((SystemInfoWeather)holder).ivSituation.setImageResource(itemList.get(position).getImageView());
+            ((SystemInfoWeather)holder).tvSituation.setText(itemList.get(position).getTitle());
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -132,6 +146,30 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onClick(View v) {
                 Log.v(TAG,"onBindViewHolder()_onClick()_position=="+position);
+                switch (position){
+                    case 0:
+                        Log.v(TAG,"onBindViewHolder()_onClick()_position=0="+position);
+                        break;
+                    case 1:
+                        Log.v(TAG,"onBindViewHolder()_onClick()_position=1="+position);
+                        break;
+                    case 3:
+                        if (sparseBooleanArray.get(position)) {
+                            // 펼쳐진 Item을 클릭 시
+                            sparseBooleanArray.delete(position);
+                        } else {
+                            // 직전의 클릭됐던 Item의 클릭상태를 지움
+                            sparseBooleanArray.delete(prePosition);
+                            // 클릭한 Item의 position을 저장
+                            sparseBooleanArray.put(position, true);
+                        }
+                        // 해당 포지션의 변화를 알림
+                        if (prePosition != -1) notifyItemChanged(prePosition);
+                        notifyItemChanged(position);
+                        // 클릭된 position 저장
+                        prePosition = position;
+                        break;
+                }
             }
         });
     }
@@ -142,8 +180,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     @Override
     public int getItemViewType(int position) {
-        Log.v(TAG,"getItemViewType()"+list.get(position).getViewType());
-        return list.get(position).getViewType();
+        Log.v(TAG,"getItemViewType()"+itemList.get(position).getViewType());
+        return itemList.get(position).getViewType();
     }
 
     /**
@@ -151,8 +189,32 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     @Override
     public int getItemCount() {
-        Log.v(TAG,"getItemCount()"+list.size());
-        return list.size();
+        Log.v(TAG,"getItemCount()"+itemList.size());
+        return itemList.size();
+    }
+
+    public void changeVisibility(final boolean isExpanded){
+        // height 값을 dp로 지정해서 넣고싶으면 아래 소스 이용
+        int dpValue = 150;
+        float d = context.getResources().getDisplayMetrics().density;
+        int height = (int)(dpValue * d);
+
+        // ValueAnimator.ofInt(int... values)는 View가 변할 값을 지정, 인자는 int 배열
+        ValueAnimator valueAnimator = isExpanded ? ValueAnimator.ofInt(0, height) : ValueAnimator.ofInt(height,0);
+        // Animation 이 실행되는 시간, n/1000초
+        valueAnimator.setDuration(600);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                //value는 height 값
+                int value = (int) animation.getAnimatedValue();
+                //imageView의 높이 변경
+//                imageView2.getLayoutParams().height = value;
+//                imageView2.requestLayout();
+//                // imageView가 실제로 사라지게하는 부분
+//                imageView2.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     //////////ItemVIew Class//////////

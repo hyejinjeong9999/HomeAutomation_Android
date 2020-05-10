@@ -19,12 +19,25 @@ import com.example.semiproject.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.io.BufferedReader;
+
+import Communication.SharedObject;
+
 
 public class FragmentRefrigerator extends Fragment {
     String TAG = "FragmentRefrigerator";
     View view;
     Context context;
     Button btnQRcode;
+
+    SharedObject sharedObject;
+    BufferedReader bufferedReader;
+
+    public FragmentRefrigerator(SharedObject sharedObject, BufferedReader bufferedReader){
+        this.sharedObject=sharedObject;
+        this.bufferedReader=bufferedReader;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
