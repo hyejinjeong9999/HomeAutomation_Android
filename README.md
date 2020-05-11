@@ -46,3 +46,11 @@
 - final 에 추가할 요소 회의
 	딥러닝: 단지네 커뮤니티 시설 혼잡도 예측
 
+
+
+
+
+2020-05-11
+
+- https://openweathermap.org/weather-conditions > "weather" 항목 세부사항 및 아이콘 리스트
+- https://erikflowers.github.io/weather-icons/ > .svg 폴더에 날씨 아이콘 

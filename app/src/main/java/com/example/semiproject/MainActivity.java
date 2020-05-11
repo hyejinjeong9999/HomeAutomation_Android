@@ -1,21 +1,20 @@
 package com.example.semiproject;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
@@ -26,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -35,12 +33,11 @@ import java.util.ArrayList;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
+import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
-import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
-
 import model.TestVO;
 import model.WeatherVO;
 
@@ -76,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
     TextView roomTemp;
     ImageView outWeather;
     ImageView roomPM;
+
+    // Fragment A
+    ImageButton fragAImageBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,6 +341,24 @@ public class MainActivity extends AppCompatActivity {
         bundleFagmentA.putSerializable("weather", weathers[0]);
         Log.i("test", "야3");
         super.onNewIntent(intent);
+    }
+
+    public void imageBtnClicked(View view) {
+        fragAImageBtn = (ImageButton) findViewById(R.id.fragARunBtn);
+        fragAImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = 0;
+
+                if(index == 0 ){
+                    fragAImageBtn.setSelected(true);
+                    index += 1;
+                }else{
+                    fragAImageBtn.setSelected(false);
+                    index = 0;
+                }
+            }
+        });
     }
 //
 //    view = inflater.inflate(R.layout.fragment_a,container,false);
