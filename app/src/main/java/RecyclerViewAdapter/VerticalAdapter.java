@@ -83,12 +83,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
                 ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
                 ((SystemInfo)holder).tvSituation.setText("장고장고");
-                changeVisibility(sparseBooleanArray.get(position));
+
             }else {
                 ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
                 ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
                 ((SystemInfo)holder).tvSituation.setText(itemList.get(position).getSituation());
-                changeVisibility(sparseBooleanArray.get(position));
+
             }
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
@@ -133,6 +133,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
             }else if (weathers.getWeather().equals("Mist")){
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.snow);
+            }else if (weathers.getWeather().equals("Clouds")){
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.cloudy);
+            }else if (weathers.getWeather().equals("Rain")){
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
@@ -193,30 +197,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return itemList.size();
     }
 
-    public void changeVisibility(final boolean isExpanded){
-        // height 값을 dp로 지정해서 넣고싶으면 아래 소스 이용
-        int dpValue = 150;
-        float d = context.getResources().getDisplayMetrics().density;
-        int height = (int)(dpValue * d);
-
-        // ValueAnimator.ofInt(int... values)는 View가 변할 값을 지정, 인자는 int 배열
-        ValueAnimator valueAnimator = isExpanded ? ValueAnimator.ofInt(0, height) : ValueAnimator.ofInt(height,0);
-        // Animation 이 실행되는 시간, n/1000초
-        valueAnimator.setDuration(600);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                //value는 height 값
-                int value = (int) animation.getAnimatedValue();
-                //imageView의 높이 변경
-//                imageView2.getLayoutParams().height = value;
-//                imageView2.requestLayout();
-//                // imageView가 실제로 사라지게하는 부분
-//                imageView2.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-            }
-        });
-    }
-
     //////////ItemVIew Class//////////
     public class SystemInfo extends RecyclerView.ViewHolder{
         public ImageView ivTitle;
@@ -255,6 +235,49 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ivWeather = itemView.findViewById(R.id.ivWeather);
             ivSituation = itemView.findViewById(R.id.ivSituation);
             tvSituation = itemView.findViewById(R.id.tvSituation);
+        }
+    }
+    public class SystemInfo1 extends RecyclerView.ViewHolder{
+        public ImageView ivTitle;
+        public TextView tvSystemName;
+        public TextView tvSituation;
+
+        public SystemInfo1(@NonNull View itemView) {
+            super(itemView);
+            ivTitle = itemView.findViewById(R.id.ivTitle);
+            tvSystemName=itemView.findViewById(R.id.tvSystemName);
+            tvSituation=itemView.findViewById(R.id.tvSituation);
+            Log.v(TAG,"SystemInfo.class");
+        }
+
+        public void onBind(SystemInfoVO list, int position, SparseBooleanArray sparseBooleanArray){
+            ivTitle.setImageResource(itemList.get(position).getImageView());
+            tvSystemName.setText(itemList.get(position).getTitle());
+            tvSituation.setText(itemList.get(position).getSituation());
+            changeVisibility(sparseBooleanArray.get(position));
+        }
+        public void changeVisibility(final boolean isExpanded){
+            // height 값을 dp로 지정해서 넣고싶으면 아래 소스 이용
+            int dpValue = 150;
+            float d = context.getResources().getDisplayMetrics().density;
+            int height = (int)(dpValue * d);
+
+            // ValueAnimator.ofInt(int... values)는 View가 변할 값을 지정, 인자는 int 배열
+            ValueAnimator valueAnimator = isExpanded ? ValueAnimator.ofInt(0, height) : ValueAnimator.ofInt(height,0);
+            // Animation 이 실행되는 시간, n/1000초
+            valueAnimator.setDuration(600);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    //value는 height 값
+                    int value = (int) animation.getAnimatedValue();
+                    //imageView의 높이 변경
+//                imageView2.getLayoutParams().height = value;
+//                imageView2.requestLayout();
+//                // imageView가 실제로 사라지게하는 부분
+//                imageView2.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+                }
+            });
         }
     }
 }
