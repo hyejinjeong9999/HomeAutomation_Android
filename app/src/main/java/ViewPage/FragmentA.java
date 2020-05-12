@@ -43,15 +43,20 @@ public class FragmentA extends Fragment {
         view = inflater.inflate(R.layout.fragment_a,container,false);
         context=container.getContext();
 
-        // 창문 버튼 누르기
+        // 창문 상태 (자동/수동)
+
+
+        // 창문 버튼 (자동/수동)
         toggleBtn = view.findViewById(R.id.fragAToggleBtn);
         toggleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(toggleBtn.isChecked()){
-                   Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(context, "수동~", Toast.LENGTH_SHORT).show();
+
                 }else{
-                    Toast.makeText(context, "OPEN", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "자동~", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
