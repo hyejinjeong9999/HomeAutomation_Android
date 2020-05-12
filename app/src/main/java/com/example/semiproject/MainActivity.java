@@ -1,5 +1,6 @@
 package com.example.semiproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -9,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     //Latte
 //                    socket = new Socket("70.12.229.165", 1357);
                     //PC
-                    socket = new Socket("70.12.60.98", 1357);
+                    socket = new Socket("192.168.1.9", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -302,7 +306,6 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
-
     @Override
     public void onBackPressed() {
         if (fragmentTag != 0) {
