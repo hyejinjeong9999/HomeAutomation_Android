@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ReservationActivity"></activity>
         <service
             android:name="Communication.WeatherService"
             android:enabled="true"

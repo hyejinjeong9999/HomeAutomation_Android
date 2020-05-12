@@ -83,9 +83,16 @@ public class MainActivity extends AppCompatActivity {
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
+<<<<<<< HEAD
     SpeechRecognizer speechRecognizer;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     Intent intent;
+=======
+    // recycler_item_weatherinfo 관련
+    TextView roomTemp;
+    ImageView outWeather;
+    ImageView roomPM;
+>>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -338,7 +345,12 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
+<<<<<<< HEAD
         Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+=======
+
+        Log.i("test", "야2");
+>>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
 //        weatherVO = new WeatherVO();
@@ -358,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onNewIntent(intent);
     }
+<<<<<<< HEAD
 
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
@@ -408,3 +421,18 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
+=======
+//
+//    view = inflater.inflate(R.layout.fragment_a,container,false);
+//    context=container.getContext();
+//
+//    // 현제 온도 보여주기
+//    fragATV01 = view.findViewById(R.id.fragACurrentTemp);
+//    Bundle bundle = getArguments();
+//        if (bundle != null) {
+//        WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
+//        fragATV01.setText(weather.getTemp());
+//    }
+//        return  view;
+}
+>>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138

@@ -25,9 +25,16 @@ public class WeatherVO implements Serializable {
 
     public void setWeather(String weather) {
         this.weather = weather;
+        if(weather != null){
+            if(weather.equals("Clouds")){
+
+            }
+        }
     }
 
     public String getTemp() {
+        // String 소숫점 한 자리까지 잘라오기
+        temp = String.format("%.4s",temp);
         return temp;
     }
 
