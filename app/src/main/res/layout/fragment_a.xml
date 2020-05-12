@@ -1,55 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:background="@drawable/fragment_background">
 
-    <TextView
-        android:id="@+id/fragATV01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="창문"
-        android:textSize="20sp"
-        android:layout_gravity="center_vertical|center_horizontal"/>
 
     <ToggleButton
         android:id="@+id/fragAToggleBtn"
+        android:layout_width="207dp"
+        android:layout_height="199dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/toggle_btn_selector"
+        android:textOff="  "
+        android:textOn=" "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:contentDescription="window status"
+        android:id="@+id/fragAImgBtn"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:background="@drawable/imagebtn_icon_selector"
-        android:textOff="  "
-        android:textOn=" "/>
+        android:layout_marginTop="0dp"
+        android:background="@color/colorEmpty"
+        android:src="@drawable/imgbtn_icon_selector"
+        app:layout_constraintBottom_toBottomOf="@+id/fragAToggleBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragAToggleBtn"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/fragACurrentTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="28dp"
         android:text="현재 온도"
-        android:textSize="20sp"
-        android:layout_gravity="center"/>
+        android:textAlignment="center"
+        android:textSize="35sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragAToggleBtn" />
 
-    <ToggleButton
-        android:id="@+id/fragATB01"
+    <EditText
+        android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragACurrentTemp"
+        android:autofillHints="sample/date/hhmm"
+        android:hint="Time"
+        tools:text="@tools:sample/date/hhmm" />
 
-        android:layout_gravity="center"
-        android:gravity="center" />
-    <ToggleButton
-        android:id="@+id/fragATB02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_gravity="center"
-        android:gravity="center"/>
-    <ToggleButton
-        android:id="@+id/fragA_TB_03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_gravity="center"
-        android:gravity="center"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
