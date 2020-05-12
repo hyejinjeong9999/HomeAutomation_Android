@@ -13,9 +13,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -59,7 +62,7 @@ public class WeatherService extends Service {
 
         @Override
         public void run() {
-            String url = "http://192.168.1.13:8080/HomeAutomationServer/Weather";
+            String url = "http://70.12.229.165:8080/HomeAutomationWebServer/Weather";
             try{
                 //1. URL 객체 생성
                 URL obj = new URL(url);
@@ -93,8 +96,14 @@ public class WeatherService extends Service {
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(resultIntent);
 
+            }catch (MalformedURLException e){
+                Log.v(TAG, "Wrong URL Exception=="+e.toString());
+            }catch (SocketTimeoutException e){
+                Log.v(TAG, "TimeOut Exception=="+e.toString());
+            }catch (IOException e){
+                Log.v(TAG, "Network err Exception=="+e.toString());
             }catch (Exception e){
-                Log.v(TAG, "Exception=="+e.toString());
+                Log.v(TAG, "Other Exception=="+e.toString());
             }
         }
     }

@@ -1,14 +1,21 @@
 package com.example.semiproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -76,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
+    SpeechRecognizer speechRecognizer;
+    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("192.168.1.9", 1357);
+                    socket = new Socket("70.12.229.165", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -236,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentLight).commitAllowingStateLoss();
+                        speechRecognizer.startListening(intent);
                         fragmentTag = 4;
                 }
             }
@@ -252,6 +264,26 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
             }
         });
+        //////////////////음성 인식/////////////////////
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.RECORD_AUDIO)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO
+                );
+            }
+        }
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
     @Override
@@ -304,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Service를 이요해 webServer에서 REST API 통신을 이용해 데이터를 가져온다
      */
-
     @Override
     protected void onNewIntent(Intent intent) {
         Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
@@ -327,4 +358,53 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onNewIntent(intent);
     }
+
+    private RecognitionListener recognitionListener = new RecognitionListener() {
+        @Override
+        public void onReadyForSpeech(Bundle bundle) {
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+        }
+
+        @Override
+        public void onRmsChanged(float v) {
+        }
+
+        @Override
+        public void onBufferReceived(byte[] bytes) {
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+        }
+
+        @Override
+        public void onError(int i) {
+//            tvSound.setText("너무 늦게 말하면 오류뜹니다");
+            Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
+
+        }
+
+        @Override
+        public void onResults(Bundle bundle) {
+            String key = "";
+            key = SpeechRecognizer.RESULTS_RECOGNITION;
+            ArrayList<String> mResult = bundle.getStringArrayList(key);
+
+            String[] rs = new String[mResult.size()];
+            mResult.toArray(rs);
+            Log.v(TAG,"음성인식=="+rs[0]);
+//            tvSound.setText(rs[0]);
+        }
+
+        @Override
+        public void onPartialResults(Bundle bundle) {
+        }
+
+        @Override
+        public void onEvent(int i, Bundle bundle) {
+        }
+    };
 }
