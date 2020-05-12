@@ -14,7 +14,7 @@ public class SharedObject {
 
     public void put(String msg) {
         synchronized (monitor){
-            Log.v(TAG, "put() == " + msg);
+            Log.v(TAG, "put()==" + msg);
             dataList.addLast(msg);
             monitor.notify();
         }
@@ -30,7 +30,7 @@ public class SharedObject {
                     Log.v(TAG,"pop()_InterruptedException=="+e);
                 }
             }else {
-                Log.v(TAG,"pop() =="+dataList.getFirst());
+                Log.v(TAG,"pop()=="+dataList.getFirst());
                 result = dataList.removeFirst();
             }
         }

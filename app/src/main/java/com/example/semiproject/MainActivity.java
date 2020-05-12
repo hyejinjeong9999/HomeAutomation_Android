@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
     ObjectMapper objectMapper = new ObjectMapper();
+    String jsonData;
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
     SpeechRecognizer speechRecognizer;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     TextView roomTemp;
     ImageView outWeather;
     ImageView roomPM;
+    String name = "/ID:ANDROID";
 
 
     @Override
@@ -124,11 +126,12 @@ public class MainActivity extends AppCompatActivity {
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
-                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                    objectInputStream = new ObjectInputStream(socket.getInputStream());
+//                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//                    objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
-                    printWriter.println("/IDAndroid");
-                    printWriter.flush();
+                    name=name.trim();
+                    sharedObject.put(name+"IN");
+                    Log.v(TAG,"name=="+name);
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
@@ -139,14 +142,16 @@ public class MainActivity extends AppCompatActivity {
                             testVO = new TestVO();
                             while (true) {
                                 try {
-                                    if(bufferedReader.readLine() != null){
-                                        String jsonData = bufferedReader.readLine();
-                                        Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    jsonData = bufferedReader.readLine();
+//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    if(jsonData != null){
                                         testVO=objectMapper.readValue(jsonData, TestVO.class);
-                                        Log.v(TAG,"testVo.getTemp1=="+testVO.getTemp());
+                                        Log.v(TAG,"testVo.getTemp=="+testVO.getTemp());
+                                        Log.v(TAG,"testVo.getLight=="+testVO.getLight());
+                                        Log.v(TAG,"testVo.getOnOff=="+testVO.getOnOff());
 
                                         JSONObject jsonObject = new JSONObject(jsonData);
-                                        String temp1 = jsonObject.getString("temp1");
+                                        String temp1 = jsonObject.getString("temp");
                                         Log.v(TAG,"jsonObject_getTemp1=="+temp1);
                                     }
                                 }catch (IOException | JSONException e) {
@@ -274,7 +279,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
             }
         });
-        //////////////////음성 인식/////////////////////
+        /**
+         * //////////////////음성 인식/////////////////////
+         */
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -310,7 +317,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -419,5 +425,21 @@ public class MainActivity extends AppCompatActivity {
         public void onEvent(int i, Bundle bundle) {
         }
     };
+
+    /**
+     * Server Socket Client Remove
+     */
+    @Override
+    protected void onDestroy() {
+        sharedObject.put(name+"OUT");
+        try {
+            printWriter.close();
+            bufferedReader.close();
+        } catch (IOException e) {
+            Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
+        }
+        Log.v(TAG,"onDestroy()");
+        super.onDestroy();
+    }
 }
 
