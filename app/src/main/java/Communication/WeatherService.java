@@ -13,9 +13,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,6 +28,7 @@ import model.WeatherVO;
 
 public class WeatherService extends Service {
     String TAG = "WeatherService";
+    WeatherVO weathervo = new WeatherVO();
     public WeatherService() {
     }
 
@@ -58,7 +62,7 @@ public class WeatherService extends Service {
 
         @Override
         public void run() {
-            String url = "http://70.12.229.165:8080/HomeAutomationServer/Weather";
+            String url = "http://70.12.229.165:8080/HomeAutomationWebServer/Weather";
             try{
                 //1. URL 객체 생성
                 URL obj = new URL(url);
@@ -68,10 +72,9 @@ public class WeatherService extends Service {
                 //대표적인 호출방식(GET, POST), 인증에 대한 처리
                 con.setRequestMethod("GET");
                 //데이터 연결통로 만들어 데이터를 읽어드린다
-                //InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
-                //BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 BufferedReader bufferedReader = new BufferedReader(
                         new InputStreamReader(con.getInputStream()));
+
                 String line;
                 StringBuffer stringBuffer = new StringBuffer();
                 while((line = bufferedReader.readLine()) != null){
@@ -83,28 +86,24 @@ public class WeatherService extends Service {
                 ObjectMapper mapper = new ObjectMapper();
                 WeatherVO[] resultArr = mapper.readValue(stringBuffer.toString(), WeatherVO[].class);
                 Log.v(TAG,"resultArr=="+resultArr[0].getTemp());
-
-//                ArrayList<String> resultData = new ArrayList<>();
-//                for(WeatherVO vo : weathers){
-//                    resultData.add(vo.getTemp());
-//                    Log.i("test", vo.getTemp());
-//                }
+//                weathervo = mapper.readValue(stringBuffer.toString(), WeatherVO.class);
+//                Log.v(TAG,"weathervo=="+weathervo.getTemp());
 
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                 resultIntent.putExtra("weatherResult", resultArr);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
                 startActivity(resultIntent);
 
-//                FragmentA fragment = new FragmentA();
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("result", resultData);
-//                fragment.setArguments(bundle);
-
+            }catch (MalformedURLException e){
+                Log.v(TAG, "Wrong URL Exception=="+e.toString());
+            }catch (SocketTimeoutException e){
+                Log.v(TAG, "TimeOut Exception=="+e.toString());
+            }catch (IOException e){
+                Log.v(TAG, "Network err Exception=="+e.toString());
             }catch (Exception e){
-                Log.v(TAG, "Exception=="+e.toString());
+                Log.v(TAG, "Other Exception=="+e.toString());
             }
         }
     }

@@ -19,7 +19,6 @@ public class SharedObject {
             monitor.notify();
         }
     }
-
     public String pop() {
         String result = "";
         synchronized (monitor) {
