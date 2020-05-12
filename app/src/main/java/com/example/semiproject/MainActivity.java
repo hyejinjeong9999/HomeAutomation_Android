@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -64,11 +66,13 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout flFirstVIew;
     FrameLayout frame;
 
+    Intent intent;
+    Intent serviceIntent;
     Bundle bundle;
     TestVO testVO;
     WeatherVO weatherVO;
     WeatherVO[] weathers;
-
+    //Fragment
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
@@ -78,26 +82,26 @@ public class MainActivity extends AppCompatActivity {
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
-
+    //Socket Communication
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
     ObjectMapper objectMapper = new ObjectMapper();
-    String jsonData;
     Communication.SharedObject sharedObject = new Communication.SharedObject();
-
+    String jsonData;
+    //Speech recognition
     SpeechRecognizer speechRecognizer;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
-    Intent intent;
 
     // recycler_item_weatherinfo 관련
     TextView roomTemp;
     ImageView outWeather;
     ImageView roomPM;
-    String name = "/ID:ANDROID";
 
+    String name = "/ID:ANDROID";
+    SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +110,15 @@ public class MainActivity extends AppCompatActivity {
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
-        Intent i = new Intent(getApplicationContext(), WeatherService.class);
-        startService(i);
+        serviceIntent = new Intent(getApplicationContext(), WeatherService.class);
+        startService(serviceIntent);
+
+        /**
+         * Implementing Pull to Refresh
+         * WeatherService Restart
+         */
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(onRefreshListener);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -155,8 +166,11 @@ public class MainActivity extends AppCompatActivity {
                                         Log.v(TAG,"testVo.getOnOff=="+testVO.getOnOff());
 
                                         JSONObject jsonObject = new JSONObject(jsonData);
-                                        String temp1 = jsonObject.getString("temp");
-                                        Log.v(TAG,"jsonObject_getTemp1=="+temp1);
+                                        String temp = jsonObject.getString("temp");
+                                        Log.v(TAG,"jsonObject_getTemp=="+temp);
+                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
+                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+
                                     }
                                 }catch (IOException | JSONException e) {
                                     e.printStackTrace();
@@ -276,15 +290,15 @@ public class MainActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 Log.v(TAG, "onTabUnselected()_tab==" + tab.getPosition());
             }
-
             //텝이 다시 선택되었을 때 호출
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
             }
         });
+
         /**
-         * //////////////////음성 인식/////////////////////
+         * //////////////////Speech recognition/////////////////////
          */
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO)
@@ -306,20 +320,8 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
-    @Override
-    public void onBackPressed() {
-        if (fragmentTag != 0) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            bundle.putSerializable("list", list);
-            fragmentHome.setArguments(bundle);
-            fragmentTag = 0;
 
-        } else {
-            super.onBackPressed();
-        }
-    }
+
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -335,6 +337,23 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
                 R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
+    }
+
+    /**
+     * BackButton Pressed
+     */
+    @Override
+    public void onBackPressed() {
+        if (fragmentTag != 0) {
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+            bundle.putSerializable("list", list);
+            fragmentHome.setArguments(bundle);
+            fragmentTag = 0;
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -379,35 +398,62 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
+    /**
+     * ReFreshListener
+     */
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            /**
+             * 가장 위에 표시된 Fragment 를 얻어와(getSupportFragmentManager().getFragments()) 해당 Fragment Refresh
+             */
+            Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                if (currentFragment.isVisible()) {
+                    if(currentFragment instanceof FragmentHome){
+                        Log.v(TAG,"FragmentHome");
+                        startService(serviceIntent);
+                    }else if (currentFragment instanceof FragmentA){
+                        Log.v(TAG,"FragmentA");
+                    }
+                    else if (currentFragment instanceof FragmentRefrigerator){
+                        Log.v(TAG,"FragmentRefrigerator");
+                    }
+                    else if (currentFragment instanceof FragmentTest){
+                        Log.v(TAG,"FragmentTest");
+                    }
+                    else if (currentFragment instanceof FragmentLight){
+                        Log.v(TAG,"FragmentLight");
+                    }
+                }
+            }
+            swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
+        }
+    };
 
+    /**
+     * Speech recognition
+     */
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
         }
-
         @Override
         public void onBeginningOfSpeech() {
         }
-
         @Override
         public void onRmsChanged(float v) {
         }
-
         @Override
         public void onBufferReceived(byte[] bytes) {
         }
-
         @Override
         public void onEndOfSpeech() {
         }
-
         @Override
         public void onError(int i) {
-//            tvSound.setText("너무 늦게 말하면 오류뜹니다");
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
-
         }
-
         @Override
         public void onResults(Bundle bundle) {
             String key = "";
@@ -419,11 +465,9 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG,"음성인식=="+rs[0]);
 //            tvSound.setText(rs[0]);
         }
-
         @Override
         public void onPartialResults(Bundle bundle) {
         }
-
         @Override
         public void onEvent(int i, Bundle bundle) {
         }

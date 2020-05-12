@@ -73,9 +73,6 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
-
-//        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//        finish();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

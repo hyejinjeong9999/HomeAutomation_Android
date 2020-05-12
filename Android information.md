@@ -158,6 +158,12 @@ ViewPagerActivity에서는 어댑터에 add하기 전에, 미리 프래그먼트
 
 [ViewPager](https://hyogeun-android.tistory.com/entry/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EA%B0%95%EC%9D%98-9-TabLayout-ViewPager-%EC%99%80-BaseActivity%EC%82%AC%EC%9A%A9)
 
+
+
+## [RecyclerView](https://github.com/hyunho058/AndroidTIL/blob/master/RecyclerVIew.md)
+
+### Reference
+
 ## QR code
 
 * Zxing Library
@@ -397,9 +403,141 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
 }
 ```
 
-
-
 ### Fragment Component
+
+
+
+## Request Permission
+
+```java
+@Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //보안 설정
+        //1. 보안처리 (AndroidManifest.xml파일에 기본 보안에 대한 설정)
+        //1.1 Android version 이 마쉬멜로우 버전 이전, 이후인지 check
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            //1.1.1 Version M 이상
+            Log.v(TAG,"Version Check=="+Build.VERSION.SDK_INT);
+            int permissionResult = ActivityCompat.checkSelfPermission(
+                    getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+            if(permissionResult == PackageManager.PERMISSION_DENIED){
+                //권한 없을 경우
+                //1. 앱을 처음 실행해서 물어본적이 없는경우
+                //2. 권한 허용에 대해서 사용자에게 물어보았지만 사용자가 거절을 선택 했을경우
+                if(shouldShowRequestPermissionRationale(android.Manifest.permission.RECORD_AUDIO)){
+                    //true => 권한을 거부한적 있는 경우(일반적으로 dialog를 이용해서 다시 물어봄)
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(SplashActivity.this);
+                    dialog.setTitle("권한 필요");
+                    dialog.setMessage("주소록 권한이 필요합니다, 수락할거니");
+                    dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG,"dialog_onClick==YES");
+                            requestPermissions(new String[]{android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},100);
+                        }
+                    });
+                    dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG,"dialog_onClick==NO");
+                        }
+                    });
+                    dialog.create().show();
+                }else {
+                    //false => 한번도 물어본적 없는경우
+                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO,android.Manifest.permission.CAMERA},100);
+                    //여러개의 권한을 물어볼수 있기 때문에 String[] 배열에 넣어줌 한뻐너에 다 처리할 수 있음
+                }
+            }else {
+                //권한 있을 경우
+                Log.v(TAG,"Check=="+permissionResult+" /보안설정 통과");
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+        }else {
+            //1.1.2 Version M 미만
+            Log.v(TAG,"Version Check=="+Build.VERSION.SDK_INT+" /보안설정 통과");
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.v(TAG,"onRequestPermissionsResult() _ requestCode=="+requestCode);
+        //사용자가 권한을 설정하게 되면 이 Method가 마지막으로 호출 됨.
+        if(requestCode == 100){
+            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                //사용자가 권한 허용을 눌렀을 경우
+                Log.v(TAG,"onRequestPermissionsResult()_보안 통과_grantResults[0]=="+grantResults[0]);
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+        }
+    }
+```
+
+![image-20200512220502029](Android information.assets/image-20200512220502029.png) 
+
+### Reference
+
+[Android Developers](https://developer.android.com/training/permissions/requesting?hl=ko)
+
+[Permission](https://kangchobo.tistory.com/43)
+
+## Implementing Refresh
+
+* build.gradle
+
+```java
+dependencies {
+    //SwipeRefreshLayout
+    implementation 'com.android.support:support-v4:29.1.0'
+```
+
+* XML
+  * 새로고침을 적용할 View 를 SwipeRefreshLayout로 감싼다
+
+```xml
+ <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tabLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+```
+
+* Activity
+  * 새로고침 적용할 Code를 onRefresh() 안에 작성
+  * swipeRefresh.setRefreshing(false) 
+    * false로 설정해야 새로고침 아이콘이 종료된다
+
+```java
+swipeRefresh = findViewById(R.id.swipeRefresh);
+swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    @Override
+    public void onRefresh() {
+        Log.v(TAG,"onRefresh()");
+        startService(serviceIntent);
+        swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
+    }
+});
+```
+
+### Reference
+
+[Refresh](https://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide)
+
+
 
 
 

@@ -124,7 +124,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTempMin());
+            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTemp());
 
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
