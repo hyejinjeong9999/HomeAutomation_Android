@@ -1,14 +1,14 @@
 package ViewPage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,18 +17,18 @@ import androidx.fragment.app.Fragment;
 import com.example.semiproject.R;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
 
 import Communication.SharedObject;
 import model.WeatherVO;
 
 public class FragmentA extends Fragment {
-    String TAG="FragmentA";
-    View view;
-    SharedObject sharedObject;
-    BufferedReader bufferedReader;
-    Context context;
-    TextView fragATV01;
+    private String TAG="FragmentA";
+    private View view;
+    private SharedObject sharedObject;
+    private BufferedReader bufferedReader;
+    private Context context;
+    private TextView fragATV01;
+    private ToggleButton toggleBtn;
     public FragmentA(){
 
     }
@@ -43,20 +43,28 @@ public class FragmentA extends Fragment {
         view = inflater.inflate(R.layout.fragment_a,container,false);
         context=container.getContext();
 
+        // 창문 버튼 누르기
+        toggleBtn = view.findViewById(R.id.fragAToggleBtn);
+        toggleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(toggleBtn.isChecked()){
+                   Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "OPEN", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // 현제 온도 보여주기
         fragATV01 = view.findViewById(R.id.fragACurrentTemp);
         Bundle bundle = getArguments();
         if (bundle != null) {
             WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-<<<<<<< HEAD
             Log.v(TAG,"weather=="+weather);
-            fragA_TV_01.setText(weather.getTemp());
-=======
 
             fragATV01.setText(weather.getTemp());
->>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
             Log.v(TAG,"getTemp=="+weather.getTemp());
-            Log.i("test", weather.getTemp());
         }
         return  view;
     }

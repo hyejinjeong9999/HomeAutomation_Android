@@ -1,15 +1,6 @@
 package com.example.semiproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,12 +9,17 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonParser;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
@@ -34,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -43,12 +38,11 @@ import java.util.ArrayList;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
+import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
-import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
-
 import model.TestVO;
 import model.WeatherVO;
 
@@ -83,16 +77,10 @@ public class MainActivity extends AppCompatActivity {
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
 
-<<<<<<< HEAD
     SpeechRecognizer speechRecognizer;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     Intent intent;
-=======
-    // recycler_item_weatherinfo 관련
-    TextView roomTemp;
-    ImageView outWeather;
-    ImageView roomPM;
->>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -345,12 +333,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
-<<<<<<< HEAD
         Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
-=======
 
-        Log.i("test", "야2");
->>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
 //        weatherVO = new WeatherVO();
@@ -370,7 +354,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onNewIntent(intent);
     }
-<<<<<<< HEAD
 
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
@@ -421,18 +404,3 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
-=======
-//
-//    view = inflater.inflate(R.layout.fragment_a,container,false);
-//    context=container.getContext();
-//
-//    // 현제 온도 보여주기
-//    fragATV01 = view.findViewById(R.id.fragACurrentTemp);
-//    Bundle bundle = getArguments();
-//        if (bundle != null) {
-//        WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-//        fragATV01.setText(weather.getTemp());
-//    }
-//        return  view;
-}
->>>>>>> d4f9b36bc5aaaf32c5350f9f7d93501e80bcc138
