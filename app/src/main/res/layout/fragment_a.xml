@@ -17,10 +17,10 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center"
-        android:tooltipText="Auto"
         android:onClick="imageBtnClicked"
-        android:background="@drawable/imagebtn_selector"
+        android:background="@color/colorEmpty"
         android:src="@drawable/imagebtn_icon_selector"/>
+
     <TextView
         android:id="@+id/fragACurrentTemp"
         android:layout_width="wrap_content"

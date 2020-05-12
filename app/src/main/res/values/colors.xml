@@ -12,5 +12,6 @@
     <color name="recyclerItemCol">#191813</color>
     <color name="recyclerViewItemBack">#161A1E</color>
     <color name="recyclerViewItemFont">#BDB7B7</color>
+    <color name="colorEmpty">#00000000</color>
 
 </resources>
