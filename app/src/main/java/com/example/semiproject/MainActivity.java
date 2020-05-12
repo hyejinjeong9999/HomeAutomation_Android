@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     //Latte
 //                    socket = new Socket("70.12.229.165", 1357);
                     //PC
-                    socket = new Socket("192.168.1.9", 1357);
+                    socket = new Socket("ip", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
