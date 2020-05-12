@@ -3,32 +3,31 @@ package model;
 import java.io.Serializable;
 
 public  class TestVO implements Serializable{
-    String temp1 = "0";
-    String temp2 = "0";
-    String temp3 = "0";
+    String temp = "0";
+    String light =  "0";
+    String onOff = "0";
 
-    public String getTemp1() {
-        return temp1;
+    public String getTemp() {
+        return temp;
     }
 
-    public void setTemp1(String temp1) {
-        this.temp1 = temp1;
+    public void setTemp(String temp) {
+        this.temp = temp;
     }
 
-    public String getTemp2() {
-        return temp2;
+    public String getLight() {
+        return light;
     }
 
-    public void setTemp2(String temp2) {
-        this.temp2 = temp2;
+    public void setLight(String light) {
+        this.light = light;
     }
 
-    public String getTemp3() {
-        return temp3;
+    public String getOnOff() {
+        return onOff;
     }
 
-    public void setTemp3(String temp3) {
-        this.temp3 = temp3;
+    public void setOnOff(String onOff) {
+        this.onOff = onOff;
     }
-
 }
