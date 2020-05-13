@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,9 +46,14 @@ public class FragmentA extends Fragment {
     private SharedObject sharedObject;
     private BufferedReader bufferedReader;
     private Context context;
+    private RadioGroup grpBtn;
     private TextView fragATV01;
     private ToggleButton toggleBtn;
+    private ToggleButton windowToggleButton;
     private TimePicker picker;
+    private TextView setTv01;
+    private TextView setTv02;
+    private Button alarmSetBtn;
 
     public FragmentA(){
 
@@ -61,25 +67,80 @@ public class FragmentA extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_a,container,false);
+        assert container != null;
         context=container.getContext();
 
         // 창문 상태 (자동/수동)
 
 
-        // 창문 버튼 (자동/수동)
-        toggleBtn = view.findViewById(R.id.fragAToggleBtn);
+        // fragARadioBtn; 창문 버튼 (자동/수동)
+        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
+        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
+        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
+        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Button checkedBtn =  group.findViewById(checkedId);
+
+                switch (checkedId){
+                    case R.id.autoBtn:{
+                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+                        windowToggleButton.setVisibility(View.GONE);
+                        picker.setVisibility(View.VISIBLE);
+                        alarmSetBtn.setVisibility(View.VISIBLE);
+//                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
+//                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
+                        break;
+                    }
+                    case R.id.manualBtn:{
+                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+                        picker.setVisibility(View.GONE);
+                        alarmSetBtn.setVisibility(View.GONE);
+                        windowToggleButton.setVisibility(View.VISIBLE);
+//                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
+//                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
+                        break;
+                    }
+                }
+                }
+            });
+
+
+        // fragAToggleBtn; 창문 버튼 (자동/수동)
+        /*toggleBtn = view.findViewById(R.id.fragAToggleBtn);
         toggleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(toggleBtn.isChecked()){
-                   Toast.makeText(context, "수동~", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
+                    picker.setVisibility(View.VISIBLE);
+                    windowToggleButton.setVisibility(View.VISIBLE);
+                    alarmSetBtn.setVisibility(View.VISIBLE);
 
                 }else{
-                    Toast.makeText(context, "자동~", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
+                    picker.setVisibility(View.GONE);
+                    windowToggleButton.setVisibility(View.GONE);
+                    alarmSetBtn.setVisibility(View.GONE);
+                }
+            }
+        });*/
 
+        // 창문 수동 열기/닫기
+        windowToggleButton = view.findViewById(R.id.windowSwitch);
+        windowToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(windowToggleButton.isChecked()){
+                    Toast.makeText(context, "닫힘", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "수동: 닫힘");
+                }else{
+                    Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "수동: 열림");
                 }
             }
         });
+
 
         // 현제 온도 보여주기
         fragATV01 = view.findViewById(R.id.fragACurrentTemp);
@@ -94,8 +155,8 @@ public class FragmentA extends Fragment {
 
         // 알람 시간
 
-        picker = (TimePicker) view.findViewById(R.id.timePicker);
-        picker.setIs24HourView(true);
+        picker = view.findViewById(R.id.timePicker);
+        picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
         // 최근 설정한 값 or 현재시간
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("Daily Alarm", MODE_PRIVATE);
@@ -105,8 +166,10 @@ public class FragmentA extends Fragment {
         nextNotifyTime.setTimeInMillis(mills);
 
         Date nextDate = nextNotifyTime.getTime();
-        String date_text = new SimpleDateFormat("hh:mm:ss", Locale.getDefault()).format(nextDate);
+        String date_text = new SimpleDateFormat("a hh:mm:ss", Locale.getDefault()).format(nextDate);
         Toast.makeText(this.context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
+        Log.i("atest", "## 01 ##");
+        Log.i("atest", "date_text: " + date_text);
 
         // TimePicker 초기화
         Date currentTime  = nextNotifyTime.getTime();
@@ -126,8 +189,8 @@ public class FragmentA extends Fragment {
             picker.setCurrentMinute(preMinute);
         }
 
-        Button button = (Button) view.findViewById(R.id.alarmSetBtn);
-        button.setOnClickListener(new View.OnClickListener() {
+        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int hour, hour_24, minute;
@@ -143,10 +206,10 @@ public class FragmentA extends Fragment {
                 }
 
                 if (hour_24 > 12) {
-                    am_pm = "PM";
+                    am_pm = "오후";
                     hour = hour_24 - 12;
                 }else {
-                    am_pm = "AM";
+                    am_pm = "오전";
                     hour = hour_24;
                 }
 
@@ -163,8 +226,10 @@ public class FragmentA extends Fragment {
                 }
 
                 Date currentDateTime = calendar.getTime();
-                String date_text = new SimpleDateFormat("hh:mm", Locale.getDefault()).format(currentDateTime);
-                Toast.makeText(context, "다음 알람 " + date_text + "으로 설정.", Toast.LENGTH_LONG).show();
+                String date_text = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(currentDateTime);
+                Toast.makeText(context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
+                Log.i("atest", "## 02 ##");
+                Log.i("atest", "date_text: " + date_text);
 
                 // Preference 설정 값 저장
 //                SharedPreferences.Editor editor = getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
@@ -178,7 +243,7 @@ public class FragmentA extends Fragment {
         return  view;
 
     }
-    void diaryNotification(Calendar calendar){
+    private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 
         PackageManager pm = this.getActivity().getPackageManager();

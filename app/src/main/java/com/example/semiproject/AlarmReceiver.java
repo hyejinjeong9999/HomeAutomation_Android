@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -70,12 +71,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (notificationManager != null) {
 
             // 노티피케이션 동작시킴
-            notificationManager.notify(1234, builder.build());
+            notificationManager.notify(4321, builder.build());
 
             Calendar nextNotifyTime = Calendar.getInstance();
 
             // 내일 같은 시간으로 알람시간 결정
-            nextNotifyTime.add(Calendar.DATE, 1);
+            // nextNotifyTime.add(Calendar.DATE, 1);
+
+            // test; 5초 후 알람 재시작
+            nextNotifyTime.add(Calendar.SECOND, 5);
 
             //  Preference에 설정한 값 저장
             SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
@@ -83,8 +87,13 @@ public class AlarmReceiver extends BroadcastReceiver {
             editor.apply();
 
             Date currentDateTime = nextNotifyTime.getTime();
-            String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
-            Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_SHORT).show();
+            //String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
+            String date_text = new SimpleDateFormat("a hh시 mm분 ss초 ", Locale.getDefault()).format(currentDateTime);
+            Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_LONG).show();
+            Log.i("atest", "## 04 ##");
+            Log.i("atest", "date_text: " + date_text);
+
+
         }
     }
 }

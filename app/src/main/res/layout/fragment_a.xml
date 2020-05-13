@@ -2,39 +2,41 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fragment_background"
     android:clickable="true"
-    android:background="@drawable/fragment_background">
+    android:orientation="vertical">
 
 
     <ToggleButton
         android:id="@+id/fragAToggleBtn"
-        android:layout_width="207dp"
-        android:layout_height="199dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/toggle_btn_selector"
+        android:layout_marginTop="92dp"
+        android:background="#00000000"
         android:textOff="  "
         android:textOn=" "
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:contentDescription="window status"
         android:id="@+id/fragAImgBtn"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:layout_gravity="center"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@color/colorEmpty"
+        android:contentDescription="window status"
         android:src="@drawable/imgbtn_icon_selector"
         app:layout_constraintBottom_toBottomOf="@+id/fragAToggleBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/fragAToggleBtn"
         app:layout_constraintVertical_bias="1.0" />
@@ -47,50 +49,89 @@
         android:layout_marginTop="8dp"
         android:text="현재 온도"
         android:textAlignment="center"
-        android:textSize="28dp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragAToggleBtn" />
 
     <TimePicker
         android:id="@+id/timePicker"
-        android:layout_width="350dp"
-        android:layout_height="161dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="120dp"
         android:timePickerMode="spinner"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragACurrentTemp"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/alarmSetBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="실행"
+        android:text="SET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/setTv02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="예약 시간 2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/setTv01" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/setTv01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="예약 시간 1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
+
+    <ToggleButton
+        android:id="@+id/windowSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="닫아줘"
+        android:textOn="열어줘"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/fragARadioGroupBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/autoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="자동"
+            android:textAlignment="center"/>
+
+        <RadioButton
+            android:id="@+id/manualBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="수동"
+            android:textAlignment="center" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
