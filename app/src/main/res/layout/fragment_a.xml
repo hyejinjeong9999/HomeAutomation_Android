@@ -42,28 +42,55 @@
     <TextView
         android:id="@+id/fragACurrentTemp"
         android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_height="36dp"
         android:layout_gravity="center"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:text="현재 온도"
         android:textAlignment="center"
-        android:textSize="35sp"
+        android:textSize="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragAToggleBtn" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:ems="10"
-        android:inputType="time"
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="350dp"
+        android:layout_height="161dp"
+        android:layout_marginTop="8dp"
+        android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragACurrentTemp"
-        android:autofillHints="sample/date/hhmm"
-        android:hint="Time"
-        tools:text="@tools:sample/date/hhmm" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/alarmSetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="실행"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
