@@ -197,16 +197,17 @@ public class MainActivity extends AppCompatActivity {
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
         fragmentManager = getSupportFragmentManager();
-//        if (fragmentHome == null) {
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            bundle = new Bundle();
-//            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
-//            bundle.putSerializable("list", list);
-//            bundle.putSerializable("weather", weatherVO);
-//            fragmentHome.setArguments(bundle);
-//            fragmentTransaction.replace(
-//                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-//        }
+        if (fragmentHome == null) {
+            weatherVO = new WeatherVO();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            bundle = new Bundle();
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+            bundle.putSerializable("list", list);
+            bundle.putSerializable("weather", weatherVO);
+            fragmentHome.setArguments(bundle);
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+        }
 
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
@@ -240,8 +241,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
-                        bundle.putSerializable("list", list);
-                        bundle.putSerializable("weather", weathers[0]);
+//                        bundle.putSerializable("list", list);
+//                        bundle.putSerializable("weather", weathers[0]);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
@@ -316,10 +317,8 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
-
     }
 
 
@@ -373,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Service를 이요해 webServer에서 REST API 통신을 이용해 데이터를 가져온다
+     * Service를 이용해 webServer 에서 REST API 통신을 이용 데이터를 가져온다
      */
     @Override
     protected void onNewIntent(Intent intent) {
@@ -382,13 +381,8 @@ public class MainActivity extends AppCompatActivity {
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
         weatherVO = weathers[0];
-//        weatherVO = new WeatherVO();
-//        weatherVO = (WeatherVO) intent.getExtras().get("weatherResult");
-//        Log.v(TAG,"weatherVO.getTemp()=="+weatherVO.getTemp());
+        // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
-        if (fragmentHome == null) {
-
-        }
         bundle = new Bundle();
         fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
         bundle.putSerializable("list", list);
@@ -431,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
             swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
         }
     };
-
     /**
      * Speech recognition
      */

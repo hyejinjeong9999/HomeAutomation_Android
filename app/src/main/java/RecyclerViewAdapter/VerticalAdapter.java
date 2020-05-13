@@ -149,7 +149,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             ((SystemInfoWeather)holder).ivSituation.setImageResource(itemList.get(position).getImageView());
             ((SystemInfoWeather)holder).tvSituation.setText(itemList.get(position).getTitle());
-            ((SystemInfoWeather)holder).tvSituation.setText(testVO.getTemp());
+            ((SystemInfoWeather)holder).tvSituation.setText("testVO.getTemp()");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
