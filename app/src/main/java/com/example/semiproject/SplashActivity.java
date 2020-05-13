@@ -41,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
                     //true => 권한을 거부한적 있는 경우(일반적으로 dialog를 이용해서 다시 물어봄)
                     AlertDialog.Builder dialog = new AlertDialog.Builder(SplashActivity.this);
                     dialog.setTitle("권한 필요");
-                    dialog.setMessage("주소록 권한이 필요합니다, 수락할거니");
+                    dialog.setMessage("다음 항목 권한이 필요합니다, 수락할거니");
                     dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

@@ -12,5 +12,11 @@
         android:text="Light"
         android:textSize="50sp"
         android:gravity="center" />
+    <TextView
+        android:id="@+id/tvVoice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        android:gravity="center" />
 
 </LinearLayout>

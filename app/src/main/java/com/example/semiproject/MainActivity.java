@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
-    ObjectOutputStream objectOutputStream;
-    ObjectInputStream objectInputStream;
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
     String jsonData;
@@ -137,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                     //Latte
 //                    socket = new Socket("70.12.229.165", 1357);
                     //PC
-                    socket = new Socket("ip", 1357);
+                    socket = new Socket("70.12.60.98", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 //                    objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
                     name=name.trim();
-                    sharedObject.put(name+"IN");
+                    sharedObject.put(name+" IN");
                     Log.v(TAG,"name=="+name);
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
@@ -170,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                                         Log.v(TAG,"jsonObject_getTemp=="+temp);
                                         TestVO vo1 = (TestVO)jsonObject.get(jsonData);
                                         Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
-
                                     }
                                 }catch (IOException | JSONException e) {
                                     e.printStackTrace();
@@ -201,14 +199,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 //        if (fragmentHome == null) {
 //            fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+//            bundle = new Bundle();
+//            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
 //            bundle.putSerializable("list", list);
-//            bundle.putSerializable("weather", weathers[0]);
+//            bundle.putSerializable("weather", weatherVO);
 //            fragmentHome.setArguments(bundle);
 //            fragmentTransaction.replace(
 //                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-//            Log.v(TAG, "fragmentHome==");
 //        }
+
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+                            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
@@ -258,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
-                            fragmentRefrigerator = new FragmentRefrigerator(sharedObject,bufferedReader);
+                            fragmentRefrigerator = new FragmentRefrigerator(
+                                    sharedObject,bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
+
     }
 
 
@@ -376,25 +377,25 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+        Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
+        Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
+        weatherVO = weathers[0];
 //        weatherVO = new WeatherVO();
 //        weatherVO = (WeatherVO) intent.getExtras().get("weatherResult");
 //        Log.v(TAG,"weatherVO.getTemp()=="+weatherVO.getTemp());
-
+        fragmentTransaction = fragmentManager.beginTransaction();
         if (fragmentHome == null) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
-            bundle.putSerializable("list", list);
-            bundle.putSerializable("weather", weathers[0]);
-            fragmentHome.setArguments(bundle);
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            Log.v(TAG, "fragmentHome==");
+
         }
+        bundle = new Bundle();
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+        bundle.putSerializable("list", list);
+        bundle.putSerializable("weather", weatherVO);
+        fragmentHome.setArguments(bundle);
+        fragmentTransaction.replace(
+                R.id.frame, fragmentHome).commitAllowingStateLoss();
         super.onNewIntent(intent);
     }
 
@@ -453,6 +454,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onError(int i) {
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
+            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
+            speechRecognizer.startListening(intent);
         }
         @Override
         public void onResults(Bundle bundle) {
@@ -463,7 +466,15 @@ public class MainActivity extends AppCompatActivity {
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
             Log.v(TAG,"음성인식=="+rs[0]);
-//            tvSound.setText(rs[0]);
+            Toast.makeText(getApplicationContext(),"음성="+rs[0],Toast.LENGTH_LONG);
+            //Fragment 에 Data Send
+//            if(rs != null){
+//                bundle.putString("voice",rs[0]);
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentLight.setArguments(bundle);
+//                fragmentTransaction.replace(
+//                        R.id.frame, fragmentLight).commitAllowingStateLoss();
+//            }
         }
         @Override
         public void onPartialResults(Bundle bundle) {
@@ -478,14 +489,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        sharedObject.put(name+"OUT");
+        sharedObject.put(name+" OUT");
+        Log.v(TAG,"onDestroy()");
         try {
             printWriter.close();
             bufferedReader.close();
         } catch (IOException e) {
             Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
         }
-        Log.v(TAG,"onDestroy()");
         super.onDestroy();
     }
 }

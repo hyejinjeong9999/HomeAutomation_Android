@@ -47,7 +47,13 @@ public class FragmentTest extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.v(TAG,"onClick");
-                tvReceiveData.setText("바뀌니???");
+                if(tvReceiveData.getText().equals("ON")){
+                    sharedObject.put("/ANDROID>/TEMP OFF");
+                    tvReceiveData.setText("OFF");
+                }else {
+                    tvReceiveData.setText("ON");
+                    sharedObject.put("/ANDROID>/TEMP ON");
+                }
             }
         });
         /**
@@ -126,4 +132,5 @@ public class FragmentTest extends Fragment {
         super.onDetach();
         Log.v(TAG,"onDetach");
     }
+
 }
