@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     Intent serviceIntent;
     Bundle bundle;
-    TestVO testVO;
+    TestVO testVO = new TestVO();
     WeatherVO weatherVO;
     WeatherVO[] weathers;
     //Fragment
@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
                                         JSONObject jsonObject = new JSONObject(jsonData);
                                         String temp = jsonObject.getString("temp");
                                         Log.v(TAG,"jsonObject_getTemp=="+temp);
-                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
-                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+//                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
+//                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                     }
                                 }catch (IOException | JSONException e) {
                                     e.printStackTrace();

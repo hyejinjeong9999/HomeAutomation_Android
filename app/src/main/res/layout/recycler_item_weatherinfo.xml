@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="200dp"
     android:background="@drawable/round_border"
     android:layout_marginStart="25dp"
     android:layout_marginEnd="25dp"
@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_weight="3"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
@@ -30,19 +30,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:text="대기상태"
+            android:text="습도"
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/recyclerViewItemFont"/>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="5"
         android:orientation="horizontal">
-
         <TextView
-            android:id="@+id/tvTemp"
+            android:id="@+id/tvTempIn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -58,37 +56,75 @@
             android:layout_margin="10dp"
             android:layout_weight="10"
             android:adjustViewBounds="true" />
-
-        <ImageView
-            android:id="@+id/ivSituation"
+        <TextView
+            android:id="@+id/tvHumidity"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:adjustViewBounds="true" />
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textSize="30sp"
+            android:textColor="@color/recyclerViewItemFont"/>
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:text="실외온도"
+            android:textColor="@color/recyclerViewItemFont"
+            android:gravity="center_horizontal|center_vertical"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:text="미세먼지"
+            android:textColor="@color/recyclerViewItemFont"
+            android:gravity="center_horizontal|center_vertical"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:text="창문상태"
+            android:textColor="@color/recyclerViewItemFont"
+            android:gravity="center_horizontal|center_vertical"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/tvTempOut"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:text="상태"
-            android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_vertical|end"/>
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textSize="30sp"
+            android:textColor="@color/recyclerViewItemFont"/>
+        <ImageView
+            android:id="@+id/ivDust"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:adjustViewBounds="true" />
         <TextView
             android:id="@+id/tvSituation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="10dp"
             android:layout_weight="10"
-            android:text="환기중"
-            android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_horizontal|center_vertical"/>
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textSize="30sp"
+            android:textColor="@color/recyclerViewItemFont"/>
     </LinearLayout>
-
-
 </LinearLayout>
