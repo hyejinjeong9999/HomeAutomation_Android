@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +21,6 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
-import RecyclerViewAdapter.ViewType;
 import model.SystemInfoVO;
 import model.TestVO;
 import model.WeatherVO;

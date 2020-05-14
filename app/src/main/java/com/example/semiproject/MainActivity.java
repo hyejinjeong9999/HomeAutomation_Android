@@ -1,6 +1,5 @@
 package com.example.semiproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,25 +11,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
@@ -40,13 +33,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
@@ -61,6 +52,8 @@ import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
+    String name = "/ID:ANDROID";
+
     RecyclerView recyclerVIew;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -88,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     ObjectMapper objectMapper = new ObjectMapper();
-    Communication.SharedObject sharedObject = new Communication.SharedObject();
+    SharedObject sharedObject = new SharedObject();
     String jsonData;
     //Speech recognition
     SpeechRecognizer speechRecognizer;
@@ -99,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView outWeather;
     ImageView roomPM;
 
-    String name = "/ID:ANDROID";
     SwipeRefreshLayout swipeRefresh;
 
     @Override

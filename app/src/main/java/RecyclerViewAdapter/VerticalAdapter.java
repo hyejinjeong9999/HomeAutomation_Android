@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +21,7 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import model.SystemInfoVO;
 import model.TestVO;
 import model.WeatherVO;
@@ -31,7 +31,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     Context context;
     View view;
     BufferedReader bufferedReader;
-    Communication.SharedObject sharedObject;
+    SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
     TestVO testVO;
@@ -43,7 +43,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
-            Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO) {
+            SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO) {
         this.context = context;
         this.itemList = itemList;
         this.weathers = weathers;
@@ -108,18 +108,16 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
-            ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     Log.v(TAG, "onCheckedChanged/" + isChecked);
                     if(isChecked == true){
                         sharedObject.put("/ANDROID>/WINDOWS ON");
                     }else {
-
                         sharedObject.put("/ANDROID>/WINDOWS OFF");
                     }
-
                 }
             });
             // Switch Component onTouch Event (Double Touch 시 호출됨.....)
@@ -149,8 +147,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfoWeather)holder).tvHumidity.setText(testVO.getLight());
 
             ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp());
-
-            Log.v(TAG,"????????????"+testVO.getDustDensity());
             double dustDensity = Double.parseDouble(testVO.getDustDensity());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
@@ -161,9 +157,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
             }
-
             ((SystemInfoWeather)holder).tvSituation.setText(testVO.getDustDensity());
-
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
