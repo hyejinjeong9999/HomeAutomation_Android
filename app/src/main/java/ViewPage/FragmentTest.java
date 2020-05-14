@@ -48,11 +48,11 @@ public class FragmentTest extends Fragment {
             public void onClick(View v) {
                 Log.v(TAG,"onClick");
                 if(tvReceiveData.getText().equals("ON")){
-                    sharedObject.put("/ANDROID>/TEMP OFF");
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
                     tvReceiveData.setText("OFF");
                 }else {
                     tvReceiveData.setText("ON");
-                    sharedObject.put("/ANDROID>/TEMP ON");
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
                 }
             }
         });
