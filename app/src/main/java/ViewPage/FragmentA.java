@@ -54,6 +54,8 @@ public class FragmentA extends Fragment {
     private TextView setTv01;
     private TextView setTv02;
     private Button alarmSetBtn;
+    Button btnAuto,btnManual;
+    int btnSituation = 1;
 
     public FragmentA(){
 
@@ -70,40 +72,45 @@ public class FragmentA extends Fragment {
         assert container != null;
         context=container.getContext();
 
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
+
         // 창문 상태 (자동/수동)
 
 
         // fragARadioBtn; 창문 버튼 (자동/수동)
-        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
-        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
-        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
-        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Button checkedBtn =  group.findViewById(checkedId);
-
-                switch (checkedId){
-                    case R.id.autoBtn:{
-                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-                        windowToggleButton.setVisibility(View.GONE);
-                        picker.setVisibility(View.VISIBLE);
-                        alarmSetBtn.setVisibility(View.VISIBLE);
-//                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
-//                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
-                        break;
-                    }
-                    case R.id.manualBtn:{
-                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-                        picker.setVisibility(View.GONE);
-                        alarmSetBtn.setVisibility(View.GONE);
-                        windowToggleButton.setVisibility(View.VISIBLE);
-//                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
-//                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
-                        break;
-                    }
-                }
-                }
-            });
+//        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
+//        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
+//        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
+//        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                Button checkedBtn =  group.findViewById(checkedId);
+//
+//                switch (checkedId){
+//                    case R.id.autoBtn:{
+//                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        windowToggleButton.setVisibility(View.GONE);
+//                        picker.setVisibility(View.VISIBLE);
+//                        alarmSetBtn.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
+//                        break;
+//                    }
+//                    case R.id.manualBtn:{
+//                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        picker.setVisibility(View.GONE);
+//                        alarmSetBtn.setVisibility(View.GONE);
+//                        windowToggleButton.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
+//                        break;
+//                    }
+//                }
+//                }
+//            });
 
 
         // fragAToggleBtn; 창문 버튼 (자동/수동)
@@ -243,6 +250,30 @@ public class FragmentA extends Fragment {
         return  view;
 
     }
+    View.OnClickListener mClick = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.btnAuto:
+                    Log.v(TAG,"onClick"+btnAuto.getText());
+                    if(btnSituation == 0){
+                        Log.v(TAG,"AutoMode Logic");
+                        btnAuto.setBackgroundResource(R.drawable.win_btn_back_image_check);
+                        btnManual.setBackgroundResource(R.drawable.win_btn_back_image);
+                        btnSituation = 1;
+                    }
+                    break;
+                case R.id.btnManual:
+                    Log.v(TAG,"onClick"+btnManual.getText());
+                    if(btnSituation == 1){
+                        Log.v(TAG,"Manual Logic");
+                        btnManual.setBackgroundResource(R.drawable.win_btn_back_image_check);
+                        btnAuto.setBackgroundResource(R.drawable.win_btn_back_image);
+                        btnSituation = 0;
+                    }
+            }
+        }
+    };
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 

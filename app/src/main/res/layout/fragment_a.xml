@@ -8,38 +8,45 @@
     android:clickable="true"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/linearLayoutTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/win_btn_back_line"
+        android:layout_marginTop="10pt">
+        <Button
+            android:id="@+id/btnAuto"
+            android:layout_width="70pt"
+            android:layout_height="15pt"
+            android:text="자동"
+            android:background="@drawable/win_btn_back_image_check"/>
+        <Button
+            android:id="@+id/btnManual"
+            android:layout_width="70pt"
+            android:layout_height="15pt"
+            android:text="수동"
+            android:background="@drawable/win_btn_back_image"/>
+    </LinearLayout>
 
-    <ToggleButton
-        android:id="@+id/fragAToggleBtn"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="92dp"
-        android:background="#00000000"
-        android:textOff="  "
-        android:textOn=" "
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="120pt"
+        android:layout_height="120pt"
+        android:layout_marginTop="10pt"
+        android:background="@drawable/selector_frag_ib"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/fragAImgBtn"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/colorEmpty"
-        android:contentDescription="window status"
-        android:src="@drawable/imgbtn_icon_selector"
-        app:layout_constraintBottom_toBottomOf="@+id/fragAToggleBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fragAToggleBtn"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
+        <ImageView
+            android:layout_width="60pt"
+            android:layout_height="60pt"
+            android:layout_gravity="center"
+            android:src="@drawable/window1"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/fragACurrentTemp"
@@ -52,7 +59,7 @@
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragAToggleBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -105,33 +112,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/fragARadioGroupBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <RadioButton
-            android:id="@+id/autoBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="자동"
-            android:textAlignment="center"/>
-
-        <RadioButton
-            android:id="@+id/manualBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="수동"
-            android:textAlignment="center" />
-    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
