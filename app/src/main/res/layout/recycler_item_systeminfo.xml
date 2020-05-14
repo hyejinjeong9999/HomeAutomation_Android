@@ -17,18 +17,18 @@
     <TextView
         android:id="@+id/tvSystemName"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="10"
         android:gravity="center_vertical"
         android:textSize="23sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/recyclerViewItemFont"/>
     <TextView
         android:id="@+id/tvSituation"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="5"
         android:gravity="center_vertical|end"
         android:layout_marginEnd="10dp"
         android:textSize="15sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/recyclerViewItemFont"/>
 </LinearLayout>

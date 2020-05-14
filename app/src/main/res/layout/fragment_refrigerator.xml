@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="@drawable/fragment_background">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,8 +12,13 @@
         android:text="Refrigerator"
         android:textSize="30sp"/>
     <Button
-        android:id="@+id/btnQRcode"
+        android:id="@+id/btnOnVoice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="QRcode"/>
+    <TextView
+        android:id="@+id/tvSound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="목소리"/>
 </LinearLayout>

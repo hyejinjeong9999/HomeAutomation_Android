@@ -32,6 +32,9 @@ public class FragmentTest extends Fragment {
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
     }
+    public FragmentTest(Communication.SharedObject sharedObject){
+        this.sharedObject=sharedObject;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class FragmentTest extends Fragment {
          */
         Communication.DataReceiveAsyncTaskTest asyncTaskTest =
                 new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
-        asyncTaskTest.execute();
+//        asyncTaskTest.execute();
         /**
          * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
          */
@@ -61,7 +64,9 @@ public class FragmentTest extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Log.v(TAG,"onProgressChanged =="+progress);
-                sharedObject.put(String.valueOf(progress));
+                String msg= "/1TEMPRATURE"+String.valueOf(progress);
+                sharedObject.put(msg);
+//                sharedObject.put(String.valueOf(progress));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {

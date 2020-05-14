@@ -3,13 +3,13 @@ package model;
 import java.io.Serializable;
 
 public class WeatherVO implements Serializable {
-    String weather; // weather - main
-    String temp; // main - temp
-    String feelsLike; // main - feels_like
-    String tempMin; // main - temp_min
-    String tempMax; // main - temp_max
-    String humidity; // main - humidity
-    String name; // name, 지역명
+    String weather = ""; // weather - main
+    String temp = ""; // main - temp
+    String feelsLike =""; // main - feels_like
+    String tempMin =""; // main - temp_min
+    String tempMax =""; // main - temp_max
+    String humidity=""; // main - humidity
+    String name =""; // name, 지역명
 
     public String getName() {
         return name;
@@ -28,6 +28,8 @@ public class WeatherVO implements Serializable {
     }
 
     public String getTemp() {
+        // String 소숫점 한 자리까지 잘라오기
+        temp = String.format("%.4s",temp);
         return temp;
     }
 

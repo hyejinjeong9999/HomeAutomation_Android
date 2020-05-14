@@ -3,8 +3,14 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#363333</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="fragmentBack">#363333</color>
+    <color name="statusBarColor">#A46683</color>
+    <color name="fragmentBack">#FFFFFF</color>
     <color name="fragmentHomeFont">#BDB7B7</color>
-    <color name="tabIndicatorCol">#FFEB3B</color>
-    <color name="recyclerItemCol">#FFEB3B</color>
+    <color name="fragmentHomeFont1">#3092FF</color>
+    <color name="tabIndicatorCol">#12110D</color>
+    <color name="tabBackGroundCol">#70918F83</color>
+    <color name="recyclerItemCol">#191813</color>
+    <color name="recyclerViewItemBack">#5E0D1115</color>
+    <color name="recyclerViewItemFont">#BDB7B7</color>
+
 </resources>

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+//apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -23,6 +23,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.firebase:firebase-config:16.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -40,7 +41,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.7'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.7'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    implementation 'com.google.code.gson:gson:2.8.5'
     // QR code ZxingLibrary
     implementation 'com.google.zxing:core:3.2.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    //google Firebase
+//    implementation 'com.google.firebase:firebase-analytics:17.2.3'
+//
+//    implementation 'com.google.firebase:firebase-core:17.2.3'
+//    implementation 'com.google.firebase:firebase-database:19.2.1'
+//    implementation 'com.google.firebase:firebase-auth:16.1.0'
 }

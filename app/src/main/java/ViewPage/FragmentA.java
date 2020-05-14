@@ -19,18 +19,21 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import model.WeatherVO;
 
 public class FragmentA extends Fragment {
     String TAG="FragmentA";
     View view;
+    SharedObject sharedObject;
     BufferedReader bufferedReader;
     Context context;
-    TextView fragA_TV_01;
+    TextView fragATV01;
     public FragmentA(){
 
     }
-    public FragmentA(BufferedReader bufferedReader) {
+    public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
+        this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
     }
 
@@ -40,14 +43,17 @@ public class FragmentA extends Fragment {
         view = inflater.inflate(R.layout.fragment_a,container,false);
         context=container.getContext();
 
-        fragA_TV_01 = view.findViewById(R.id.fragA_TV_01);
+        // 현제 온도 보여주기
+        fragATV01 = view.findViewById(R.id.fragACurrentTemp);
         Bundle bundle = getArguments();
         if (bundle != null) {
             WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-            fragA_TV_01.setText(weather.getTemp());
+
+            Log.v(TAG,"weather=="+weather);
+            fragATV01.setText(weather.getTemp());
+            Log.v(TAG,"getTemp=="+weather.getTemp());
             Log.i("test", weather.getTemp());
         }
-
         return  view;
     }
 
