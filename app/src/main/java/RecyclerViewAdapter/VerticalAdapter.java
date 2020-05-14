@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import model.SystemInfoVO;
+import model.TestVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -33,18 +34,22 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     Communication.SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
+    TestVO testVO;
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
     // Item Position clicked before
     int prePosition = -1;
 
-    public VerticalAdapter(Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,Communication.SharedObject sharedObject, BufferedReader bufferedReader) {
+    public VerticalAdapter(
+            Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
+            Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO) {
         this.context = context;
         this.itemList = itemList;
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
+        this.testVO = testVO;
     }
     /**
      * getItemViewType() method에서 Return 받는 VIewType 형태의 아이템 뷰를 위한 뷰홀더 객체 생성
@@ -100,6 +105,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else if (holder instanceof SystemInfoSwitch){
             ((SystemInfoSwitch)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
             ((SystemInfoSwitch)holder).tvSystemName.setText(itemList.get(position).getTitle());
+
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
@@ -124,7 +130,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTempMin());
+            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTemp());
 
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
@@ -143,6 +149,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             ((SystemInfoWeather)holder).ivSituation.setImageResource(itemList.get(position).getImageView());
             ((SystemInfoWeather)holder).tvSituation.setText(itemList.get(position).getTitle());
+            ((SystemInfoWeather)holder).tvSituation.setText("testVO.getTemp()");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//

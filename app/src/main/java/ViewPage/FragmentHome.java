@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import RecyclerViewAdapter.VerticalAdapter;
 import RecyclerViewAdapter.ViewType;
 import model.SystemInfoVO;
+import model.TestVO;
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -34,14 +35,16 @@ public class FragmentHome extends Fragment {
 
     ArrayList<SystemInfoVO> list;
     WeatherVO weathers;
+    TestVO testVO;
 
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO){
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
+        this.testVO=testVO;
     }
 
     @Nullable
@@ -80,7 +83,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
 //        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
-        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader);
+        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader,testVO);
 //        recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);

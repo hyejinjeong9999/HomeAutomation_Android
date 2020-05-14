@@ -1,8 +1,27 @@
 package com.example.semiproject;
 
+<<<<<<< HEAD
 import android.Manifest;
+=======
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+>>>>>>> origin/dev
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -11,6 +30,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+<<<<<<< HEAD
+=======
+import android.widget.TextView;
+import android.widget.Toast;
+>>>>>>> origin/dev
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -54,11 +78,13 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout flFirstVIew;
     FrameLayout frame;
 
+    Intent intent;
+    Intent serviceIntent;
     Bundle bundle;
     TestVO testVO;
     WeatherVO weatherVO;
     WeatherVO[] weathers;
-
+    //Fragment
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
@@ -68,19 +94,32 @@ public class MainActivity extends AppCompatActivity {
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
-
+    //Socket Communication
     Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
-    ObjectOutputStream objectOutputStream;
-    ObjectInputStream objectInputStream;
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
+<<<<<<< HEAD
 
     SpeechRecognizer speechRecognizer;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     Intent intent;
 
+=======
+    String jsonData;
+    //Speech recognition
+    SpeechRecognizer speechRecognizer;
+    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+
+    // recycler_item_weatherinfo 관련
+    TextView roomTemp;
+    ImageView outWeather;
+    ImageView roomPM;
+
+    String name = "/ID:ANDROID";
+    SwipeRefreshLayout swipeRefresh;
+>>>>>>> origin/dev
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +128,15 @@ public class MainActivity extends AppCompatActivity {
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
-        Intent i = new Intent(getApplicationContext(), WeatherService.class);
-        startService(i);
+        serviceIntent = new Intent(getApplicationContext(), WeatherService.class);
+        startService(serviceIntent);
+
+        /**
+         * Implementing Pull to Refresh
+         * WeatherService Restart
+         */
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(onRefreshListener);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -106,34 +152,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("70.12.229.165", 1357);
+                    //Latte
+//                    socket = new Socket("70.12.229.165", 1357);
+                    //PC
+                    socket = new Socket("70.12.60.98", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
-                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                    objectInputStream = new ObjectInputStream(socket.getInputStream());
+//                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//                    objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
-                    printWriter.println("/IDAndroid");
-                    printWriter.flush();
+                    name=name.trim();
+                    sharedObject.put(name+" IN");
+                    Log.v(TAG,"name=="+name);
 //                    Communication.DataReceveAsyncTask asyncTask =
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
 
-                    ///ObjectBuffer
                     Thread thread1 = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             testVO = new TestVO();
                             while (true) {
                                 try {
-                                    String jsonData = bufferedReader.readLine();
-                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
-                                    testVO=objectMapper.readValue(jsonData, TestVO.class);
-                                    Log.v(TAG,"testVo.getTemp1=="+testVO.getTemp1());
+                                    jsonData = bufferedReader.readLine();
+//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    if(jsonData != null){
+                                        testVO=objectMapper.readValue(jsonData, TestVO.class);
+                                        Log.v(TAG,"testVo.getTemp=="+testVO.getTemp());
+                                        Log.v(TAG,"testVo.getLight=="+testVO.getLight());
+                                        Log.v(TAG,"testVo.getOnOff=="+testVO.getOnOff());
 
-                                    JSONObject jsonObject = new JSONObject(jsonData);
-                                    String temp1 = jsonObject.getString("temp1");
-                                    Log.v(TAG,"jsonObject_getTemp1=="+temp1);
+                                        JSONObject jsonObject = new JSONObject(jsonData);
+                                        String temp = jsonObject.getString("temp");
+                                        Log.v(TAG,"jsonObject_getTemp=="+temp);
+                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
+                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+                                    }
                                 }catch (IOException | JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -161,16 +216,18 @@ public class MainActivity extends AppCompatActivity {
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
         fragmentManager = getSupportFragmentManager();
-//        if (fragmentHome == null) {
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
-//            bundle.putSerializable("list", list);
-//            bundle.putSerializable("weather", weathers[0]);
-//            fragmentHome.setArguments(bundle);
-//            fragmentTransaction.replace(
-//                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-//            Log.v(TAG, "fragmentHome==");
-//        }
+        if (fragmentHome == null) {
+            weatherVO = new WeatherVO();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            bundle = new Bundle();
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+            bundle.putSerializable("list", list);
+            bundle.putSerializable("weather", weatherVO);
+            fragmentHome.setArguments(bundle);
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+        }
+
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
          */
@@ -198,13 +255,13 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
+                            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
-                        bundle.putSerializable("list", list);
-                        bundle.putSerializable("weather", weathers[0]);
+//                        bundle.putSerializable("list", list);
+//                        bundle.putSerializable("weather", weathers[0]);
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
@@ -220,7 +277,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
-                            fragmentRefrigerator = new FragmentRefrigerator(sharedObject,bufferedReader);
+                            fragmentRefrigerator = new FragmentRefrigerator(
+                                    sharedObject,bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
@@ -252,14 +310,16 @@ public class MainActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 Log.v(TAG, "onTabUnselected()_tab==" + tab.getPosition());
             }
-
             //텝이 다시 선택되었을 때 호출
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
             }
         });
-        //////////////////음성 인식/////////////////////
+
+        /**
+         * //////////////////Speech recognition/////////////////////
+         */
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -276,25 +336,10 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (fragmentTag != 0) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            bundle.putSerializable("list", list);
-            fragmentHome.setArguments(bundle);
-            fragmentTag = 0;
-
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
@@ -314,6 +359,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * BackButton Pressed
+     */
+    @Override
+    public void onBackPressed() {
+        if (fragmentTag != 0) {
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(
+                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+            bundle.putSerializable("list", list);
+            fragmentHome.setArguments(bundle);
+            fragmentTag = 0;
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
      *
      * @param iconImage
@@ -329,60 +391,88 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Service를 이요해 webServer에서 REST API 통신을 이용해 데이터를 가져온다
+     * Service를 이용해 webServer 에서 REST API 통신을 이용 데이터를 가져온다
      */
     @Override
     protected void onNewIntent(Intent intent) {
+<<<<<<< HEAD
         Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+=======
+        Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+>>>>>>> origin/dev
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        Log.v(TAG," weathers[0].getTemp()=="+weathers[0].getTemp());
-//        weatherVO = new WeatherVO();
-//        weatherVO = (WeatherVO) intent.getExtras().get("weatherResult");
-//        Log.v(TAG,"weatherVO.getTemp()=="+weatherVO.getTemp());
-
-        if (fragmentHome == null) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader);
-            bundle.putSerializable("list", list);
-            bundle.putSerializable("weather", weathers[0]);
-            fragmentHome.setArguments(bundle);
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            Log.v(TAG, "fragmentHome==");
-        }
+        Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
+        weatherVO = weathers[0];
+        // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
+        fragmentTransaction = fragmentManager.beginTransaction();
+        bundle = new Bundle();
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+        bundle.putSerializable("list", list);
+        bundle.putSerializable("weather", weatherVO);
+        fragmentHome.setArguments(bundle);
+        fragmentTransaction.replace(
+                R.id.frame, fragmentHome).commitAllowingStateLoss();
         super.onNewIntent(intent);
     }
 
+    /**
+     * ReFreshListener
+     */
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            /**
+             * 가장 위에 표시된 Fragment 를 얻어와(getSupportFragmentManager().getFragments()) 해당 Fragment Refresh
+             */
+            Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                if (currentFragment.isVisible()) {
+                    if(currentFragment instanceof FragmentHome){
+                        Log.v(TAG,"FragmentHome");
+                        startService(serviceIntent);
+                    }else if (currentFragment instanceof FragmentA){
+                        Log.v(TAG,"FragmentA");
+                    }
+                    else if (currentFragment instanceof FragmentRefrigerator){
+                        Log.v(TAG,"FragmentRefrigerator");
+                    }
+                    else if (currentFragment instanceof FragmentTest){
+                        Log.v(TAG,"FragmentTest");
+                    }
+                    else if (currentFragment instanceof FragmentLight){
+                        Log.v(TAG,"FragmentLight");
+                    }
+                }
+            }
+            swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
+        }
+    };
+    /**
+     * Speech recognition
+     */
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
         }
-
         @Override
         public void onBeginningOfSpeech() {
         }
-
         @Override
         public void onRmsChanged(float v) {
         }
-
         @Override
         public void onBufferReceived(byte[] bytes) {
         }
-
         @Override
         public void onEndOfSpeech() {
         }
-
         @Override
         public void onError(int i) {
-//            tvSound.setText("너무 늦게 말하면 오류뜹니다");
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
-
+            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
+            speechRecognizer.startListening(intent);
         }
-
         @Override
         public void onResults(Bundle bundle) {
             String key = "";
@@ -392,15 +482,42 @@ public class MainActivity extends AppCompatActivity {
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
             Log.v(TAG,"음성인식=="+rs[0]);
-//            tvSound.setText(rs[0]);
+            Toast.makeText(getApplicationContext(),"음성="+rs[0],Toast.LENGTH_LONG);
+            //Fragment 에 Data Send
+//            if(rs != null){
+//                bundle.putString("voice",rs[0]);
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentLight.setArguments(bundle);
+//                fragmentTransaction.replace(
+//                        R.id.frame, fragmentLight).commitAllowingStateLoss();
+//            }
         }
-
         @Override
         public void onPartialResults(Bundle bundle) {
         }
-
         @Override
         public void onEvent(int i, Bundle bundle) {
         }
     };
+<<<<<<< HEAD
 }
+=======
+
+    /**
+     * Server Socket Client Remove
+     */
+    @Override
+    protected void onDestroy() {
+        sharedObject.put(name+" OUT");
+        Log.v(TAG,"onDestroy()");
+        try {
+            printWriter.close();
+            bufferedReader.close();
+        } catch (IOException e) {
+            Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
+        }
+        super.onDestroy();
+    }
+}
+
+>>>>>>> origin/dev

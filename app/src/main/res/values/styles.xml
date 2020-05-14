@@ -15,4 +15,8 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
+    <style name="SwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="android:colorControlActivated">#7E0B0B</item>
+    </style>
+
 </resources>

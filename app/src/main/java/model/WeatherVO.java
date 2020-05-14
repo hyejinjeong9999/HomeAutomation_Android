@@ -25,11 +25,6 @@ public class WeatherVO implements Serializable {
 
     public void setWeather(String weather) {
         this.weather = weather;
-        if(weather != null){
-            if(weather.equals("Clouds")){
-
-            }
-        }
     }
 
     public String getTemp() {
