@@ -1,8 +1,5 @@
 package ViewPage;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RadioGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,8 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.semiproject.AlarmReceiver;
-import com.example.semiproject.DeviceBootReceiver;
+import DB.DBHelper;
+import com.example.semiproject.DBTestActivity;
 import com.example.semiproject.R;
 
 import java.io.BufferedReader;
@@ -37,8 +36,16 @@ import java.util.Locale;
 
 import Communication.SharedObject;
 import model.WeatherVO;
+import model.alarmVO;
 
 public class FragmentA extends Fragment {
+    String TAG="FragmentA";
+    View view;
+    SharedObject sharedObject;
+    BufferedReader bufferedReader;
+    Context context;
+    TextView fragATV01;
+    ArrayAdapter adapter;
     private String TAG="FragmentA";
     private View view;
     private SharedObject sharedObject;
@@ -70,65 +77,33 @@ public class FragmentA extends Fragment {
         assert container != null;
         context=container.getContext();
 
-        btnAuto = view.findViewById(R.id.btnAuto);
-        btnAuto.setOnClickListener(mClick);
-        btnManual = view.findViewById(R.id.btnManual);
-        btnManual.setOnClickListener(mClick);
-
-        // 창문 상태 (자동/수동)
+        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+        final ListView alarmListView = view.findViewById(R.id.alarmListView);
 
 
-        // fragARadioBtn; 창문 버튼 (자동/수동)
-//        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
-//        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
-//        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
-//        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                Button checkedBtn =  group.findViewById(checkedId);
-//
-//                switch (checkedId){
-//                    case R.id.autoBtn:{
-//                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-//                        windowToggleButton.setVisibility(View.GONE);
-//                        picker.setVisibility(View.VISIBLE);
-//                        alarmSetBtn.setVisibility(View.VISIBLE);
-////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
-////                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
-//                        break;
-//                    }
-//                    case R.id.manualBtn:{
-//                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-//                        picker.setVisibility(View.GONE);
-//                        alarmSetBtn.setVisibility(View.GONE);
-//                        windowToggleButton.setVisibility(View.VISIBLE);
-////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
-////                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
-//                        break;
-//                    }
-//                }
-//            }
-//        });
+        final DBHelper helper =
+                new DBHelper(context, "alarm", 1);
+        adapter =
+                new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+        alarmListView.setAdapter(adapter);
 
-        // fragAToggleBtn; 창문 버튼 (자동/수동)
-        /*toggleBtn = view.findViewById(R.id.fragAToggleBtn);
-        toggleBtn.setOnClickListener(new View.OnClickListener() {
+
+        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(toggleBtn.isChecked()){
-                   Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
-                    picker.setVisibility(View.VISIBLE);
-                    windowToggleButton.setVisibility(View.VISIBLE);
-                    alarmSetBtn.setVisibility(View.VISIBLE);
+                String hour = String.valueOf(timePicker.getHour());
+                String min = String.valueOf(timePicker.getMinute());
+                String time = hour +'.'+ min;
+                Log.i("test", time);
+                helper.insert(time);
 
-                }else{
-                    Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
-                    picker.setVisibility(View.GONE);
-                    windowToggleButton.setVisibility(View.GONE);
-                    alarmSetBtn.setVisibility(View.GONE);
-                }
+
+                adapter =
+                        new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+                alarmListView.setAdapter(adapter);
             }
-        });*/
+        });
 
         // 창문 수동 열기/닫기
         windowToggleButton = view.findViewById(R.id.windowSwitch);
@@ -151,8 +126,8 @@ public class FragmentA extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-            Log.v(TAG,"weather=="+weather);
 
+            Log.v(TAG,"weather=="+weather);
             fragATV01.setText(weather.getTemp());
             Log.v(TAG,"getTemp=="+weather.getTemp());
         }
@@ -317,31 +292,37 @@ public class FragmentA extends Fragment {
         super.onStart();
         Log.v(TAG,"onStart");
     }
+
     @Override
     public void onResume() {
         super.onResume();
         Log.v(TAG,"onResume");
     }
+
     @Override
     public void onPause() {
         super.onPause();
         Log.v(TAG,"onPause");
     }
+
     @Override
     public void onStop() {
         super.onStop();
         Log.v(TAG,"onStop");
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.v(TAG,"onDestroyView");
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v(TAG,"onDestroy");
     }
+
     @Override
     public void onDetach() {
         super.onDetach();
