@@ -257,6 +257,10 @@ public class FragmentA extends Fragment {
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image);
                         modeSituation = 0;
                         Log.v(TAG,"modeSituation_onClick()=="+btnAuto.getText());
+                            Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
+                            picker.setVisibility(View.VISIBLE);
+                            windowToggleButton.setVisibility(View.VISIBLE);
+                            alarmSetBtn.setVisibility(View.VISIBLE);
                     }
                     break;
                 case R.id.btnManual:
@@ -265,13 +269,14 @@ public class FragmentA extends Fragment {
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image);
                         modeSituation = 1;
                         Log.v(TAG,"modeSituation_onClick()=="+btnManual.getText());
+                        Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
+                        picker.setVisibility(View.GONE);
+                        windowToggleButton.setVisibility(View.GONE);
+                        alarmSetBtn.setVisibility(View.GONE);
                     }
             }
         }
     };
-
-
-
 
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
@@ -286,10 +291,7 @@ public class FragmentA extends Fragment {
 
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
-
-
             if (alarmManager != null) {
-
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
 
@@ -297,12 +299,10 @@ public class FragmentA extends Fragment {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
-
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
-
         }
     }
 
@@ -317,37 +317,31 @@ public class FragmentA extends Fragment {
         super.onStart();
         Log.v(TAG,"onStart");
     }
-
     @Override
     public void onResume() {
         super.onResume();
         Log.v(TAG,"onResume");
     }
-
     @Override
     public void onPause() {
         super.onPause();
         Log.v(TAG,"onPause");
     }
-
     @Override
     public void onStop() {
         super.onStop();
         Log.v(TAG,"onStop");
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.v(TAG,"onDestroyView");
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v(TAG,"onDestroy");
     }
-
     @Override
     public void onDetach() {
         super.onDetach();
