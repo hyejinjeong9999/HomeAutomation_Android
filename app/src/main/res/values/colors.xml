@@ -13,5 +13,8 @@
     <color name="recyclerViewItemBack">#000D1115</color>
     <color name="recyclerViewItemLine">#D3D7DC</color>
     <color name="recyclerViewItemFont">#BDB7B7</color>
+    <color name="colorEmpty">#00000000</color>
+    <color name="windowBtnBack">#00000000</color>
+    <color name="windowBtnLine">#9F9B9F</color>
 
 </resources>

@@ -41,12 +41,11 @@ import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
+import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
-import ViewPage.FragmentHome;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
-
 import model.TestVO;
 import model.WeatherVO;
 
@@ -81,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     ObjectMapper objectMapper = new ObjectMapper();
+
     SharedObject sharedObject = new SharedObject();
+
     String jsonData;
     //Speech recognition
     SpeechRecognizer speechRecognizer;
@@ -108,8 +109,20 @@ public class MainActivity extends AppCompatActivity {
          * Implementing Pull to Refresh
          * WeatherService Restart
          */
+
+        Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(onRefreshListener);
+
+//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//            if (currentFragment.isVisible()) {
+//                if (!(currentFragment instanceof FragmentHome)) {
+//                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
+//                    swipeRefresh = findViewById(R.id.swipeRefresh);
+//                    swipeRefresh.setOnRefreshListener(onRefreshListener);
+//                }
+//            }
+//        }
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -245,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
 //                        fragmentA.setArguments(bundleFagmentA);
-                        bundle.putSerializable("weather", weathers[0]);
+                        bundle.putSerializable("weather", weatherVO);
                         fragmentA.setArguments(bundle);
                         break;
                     case 2:
@@ -313,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
-
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -368,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
+
         Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
@@ -485,4 +498,3 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
-

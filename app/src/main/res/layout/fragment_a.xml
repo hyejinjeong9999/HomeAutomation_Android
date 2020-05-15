@@ -1,53 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fragment_background"
     android:clickable="true"
-    android:background="@drawable/fragment_background">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/fragATV01"
+    <LinearLayout
+        android:id="@+id/linearLayoutTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="창문"
-        android:textSize="50sp"
-        android:layout_gravity="center_vertical|center_horizontal"/>
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/win_btn_back_line"
+        android:layout_marginTop="10pt">
+        <Button
+            android:id="@+id/btnAuto"
+            android:layout_width="70pt"
+            android:layout_height="15pt"
+            android:text="자동"
+            android:background="@drawable/win_btn_back_image_check"/>
+        <Button
+            android:id="@+id/btnManual"
+            android:layout_width="70pt"
+            android:layout_height="15pt"
+            android:text="수동"
+            android:background="@drawable/win_btn_back_image"/>
+    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/fragARunBtn"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:tooltipText="Auto"
-        android:background="@drawable/imagebtn_selector"
-        android:src="@drawable/imagebtn_icon_selector"/>
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="120pt"
+        android:layout_height="120pt"
+        android:layout_marginTop="10pt"
+        android:background="@drawable/selector_frag_ib"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
+        <ImageView
+            android:layout_width="60pt"
+            android:layout_height="60pt"
+            android:layout_gravity="center"
+            android:src="@drawable/window1"/>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/fragACurrentTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
         android:text="현재 온도"
-        android:layout_gravity="center"/>
+        android:textAlignment="center"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-    <ToggleButton
-        android:id="@+id/fragATB01"
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="120dp"
+        android:timePickerMode="spinner"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/alarmSetBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="SET"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
-        android:layout_gravity="center"
-        android:gravity="center" />
     <ToggleButton
-        android:id="@+id/fragATB02"
-        android:layout_width="wrap_content"
+        android:id="@+id/windowSwitch"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textOff="닫아줘"
+        android:textOn="열어줘"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        android:layout_gravity="center"
-        android:gravity="center"/>
-    <ToggleButton
-        android:id="@+id/fragA_TB_03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        android:layout_gravity="center"
-        android:gravity="center"/>
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
