@@ -84,24 +84,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
-    <TextView
-        android:id="@+id/setTv02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="예약 시간 2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setTv01" />
-
-    <TextView
-        android:id="@+id/setTv01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="예약 시간 1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
-
     <ToggleButton
         android:id="@+id/windowSwitch"
         android:layout_width="match_parent"

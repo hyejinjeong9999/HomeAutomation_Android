@@ -1,27 +1,7 @@
 package com.example.semiproject;
-
-<<<<<<< HEAD
 import android.Manifest;
-=======
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
->>>>>>> origin/dev
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -30,18 +10,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-<<<<<<< HEAD
-=======
 import android.widget.TextView;
 import android.widget.Toast;
->>>>>>> origin/dev
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,8 +32,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -100,13 +77,7 @@ public class MainActivity extends AppCompatActivity {
     BufferedReader bufferedReader;
     ObjectMapper objectMapper = new ObjectMapper();
     Communication.SharedObject sharedObject = new Communication.SharedObject();
-<<<<<<< HEAD
 
-    SpeechRecognizer speechRecognizer;
-    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
-    Intent intent;
-
-=======
     String jsonData;
     //Speech recognition
     SpeechRecognizer speechRecognizer;
@@ -119,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
     String name = "/ID:ANDROID";
     SwipeRefreshLayout swipeRefresh;
->>>>>>> origin/dev
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +105,20 @@ public class MainActivity extends AppCompatActivity {
          * Implementing Pull to Refresh
          * WeatherService Restart
          */
+
+        Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(onRefreshListener);
+
+//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//            if (currentFragment.isVisible()) {
+//                if (!(currentFragment instanceof FragmentHome)) {
+//                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
+//                    swipeRefresh = findViewById(R.id.swipeRefresh);
+//                    swipeRefresh.setOnRefreshListener(onRefreshListener);
+//                }
+//            }
+//        }
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -272,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
 //                        fragmentA.setArguments(bundleFagmentA);
-                        bundle.putSerializable("weather", weathers[0]);
+                        bundle.putSerializable("weather", weatherVO);
                         fragmentA.setArguments(bundle);
                         break;
                     case 2:
@@ -340,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
-
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -395,11 +376,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
-<<<<<<< HEAD
-        Log.v(TAG,"intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
-=======
+
         Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
->>>>>>> origin/dev
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
@@ -499,9 +477,6 @@ public class MainActivity extends AppCompatActivity {
         public void onEvent(int i, Bundle bundle) {
         }
     };
-<<<<<<< HEAD
-}
-=======
 
     /**
      * Server Socket Client Remove
@@ -519,5 +494,3 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
-
->>>>>>> origin/dev
