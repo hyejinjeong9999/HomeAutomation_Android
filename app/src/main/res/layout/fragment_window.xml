@@ -34,18 +34,20 @@
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="120pt"
-        android:layout_height="120pt"
+        android:layout_width="100pt"
+        android:layout_height="100pt"
         android:layout_marginTop="10pt"
         android:background="@drawable/selector_frag_ib"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
+
         <ImageView
-            android:layout_width="60pt"
-            android:layout_height="60pt"
+            android:id="@+id/ivWindow"
+            android:layout_width="55pt"
+            android:layout_height="55pt"
             android:layout_gravity="center"
-            android:src="@drawable/window1"/>
+            android:src="@drawable/window1" />
     </FrameLayout>
 
     <TextView
@@ -91,17 +93,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
-
-    <ToggleButton
-        android:id="@+id/windowSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textOff="닫아줘"
-        android:textOn="열어줘"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,23 +1,8 @@
 package com.example.semiproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -26,16 +11,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,13 +33,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
@@ -100,19 +83,19 @@ public class MainActivity extends AppCompatActivity {
 
     SpeechRecognizer speechRecognizer;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
-    Intent intent;
+//    Intent intent;
 
     String jsonData;
     //Speech recognition
-    SpeechRecognizer speechRecognizer;
-    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+//    SpeechRecognizer speechRecognizer;
+//    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
 
     // recycler_item_weatherinfo 관련
     TextView roomTemp;
     ImageView outWeather;
     ImageView roomPM;
 
-    String name = "/ID:ANDROID";
+//    String name = "/ID:ANDROID";
     SwipeRefreshLayout swipeRefresh;
 
     @Override
