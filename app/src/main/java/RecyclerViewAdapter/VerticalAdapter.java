@@ -108,6 +108,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
+            if (windowVO.getOnOff().equals("1")){
+                ((SystemInfoSwitch)holder).swSituation.setChecked(true);
+            }else {
+                ((SystemInfoSwitch)holder).swSituation.setChecked(false);
+            }
             ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(
                     new CompoundButton.OnCheckedChangeListener() {
                 @Override

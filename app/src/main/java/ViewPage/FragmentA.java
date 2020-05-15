@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,10 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import Communication.DataReceiveAsyncTaskTest;
-import DB.DBHelper;
-
-import com.example.semiproject.DBTestActivity;
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
 import com.example.semiproject.R;
@@ -48,6 +45,7 @@ import Communication.SharedObject;
 import model.WeatherVO;
 import model.WindowVO;
 import model.alarmVO;
+
 
 public class FragmentA extends Fragment {
     String TAG = "FragmentA";
@@ -70,10 +68,15 @@ public class FragmentA extends Fragment {
     int modeSituation = 0;
     String jsonData;
     ImageButton imageButton;
+    ImageView ivWindow;
+    WeatherVO weathers;
+
     public FragmentA(SharedObject sharedObject,  String jsonData) {
+    }
+
+    public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.jsonData = jsonData;
-
     }
 
     @Nullable
@@ -88,8 +91,52 @@ public class FragmentA extends Fragment {
 //                new DataReceiveAsyncTaskTest(jsonData, imageButton);
 //        asyncTaskTest.execute();
 
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        weathers = (WeatherVO) getArguments().get("weather");
+        Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
+        windowVO = (WindowVO) getArguments().get("window");
+        Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
+        // 창문 상태 (자동/수동)
+        // fragARadioBtn; 창문 버튼 (자동/수동)
+//        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
+//        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
+//        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
+//        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                Button checkedBtn =  group.findViewById(checkedId);
+//
+//                switch (checkedId){
+//                    case R.id.autoBtn:{
+//                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        windowToggleButton.setVisibility(View.GONE);
+//                        picker.setVisibility(View.VISIBLE);
+//                        alarmSetBtn.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
+//                        break;
+//                    }
+//                    case R.id.manualBtn:{
+//                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        picker.setVisibility(View.GONE);
+//                        alarmSetBtn.setVisibility(View.GONE);
+//                        windowToggleButton.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
+//                        break;
+//                    }
+//                }
+//            }
+//        });
+
+        // fragAToggleBtn; 창문 버튼 (자동/수동)
+        /*toggleBtn = view.findViewById(R.id.fragAToggleBtn);
+        toggleBtn.setOnClickListener(new View.OnClickListener() {
+>>>>>>> a44accaf4a412714b84c11ad1bb1aac66e558a24
             @Override
             public void onClick(View v) {
                 if(windowVO.getOnOff().equals("1")){
@@ -163,8 +210,11 @@ public class FragmentA extends Fragment {
             }
         });
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a44accaf4a412714b84c11ad1bb1aac66e558a24
         // 현제 온도 보여주기
        /* fragATV01 = view.findViewById(R.id.fragACurrentTemp);
         Bundle bundle = getArguments();

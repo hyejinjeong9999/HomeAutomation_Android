@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 import Communication.SharedObject;
 import Communication.WeatherService;
+import Event.OnSwipeTouchListener;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
 import ViewPage.FragmentHome;
@@ -110,17 +111,17 @@ public class MainActivity extends AppCompatActivity {
          * Implementing Pull to Refresh
          * WeatherService Restart
          */
-
         Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(onRefreshListener);
 
 //        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
 //            if (currentFragment.isVisible()) {
-//                if (!(currentFragment instanceof FragmentHome)) {
+//                if (currentFragment instanceof FragmentHome) {
 //                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
-//                    swipeRefresh = findViewById(R.id.swipeRefresh);
-//                    swipeRefresh.setOnRefreshListener(onRefreshListener);
+//                    swipeRefresh.setVisibility(View.GONE);
+//                }else {
+//                    swipeRefresh.setVisibility(View.VISIBLE);
 //                }
 //            }
 //        }
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                                         windowVO =objectMapper.readValue(jsonData, WindowVO.class);
                                         Log.v(TAG,"testVo.getTemp=="+ windowVO.getTemp());
                                         Log.v(TAG,"testVo.getLight=="+ windowVO.getLight());
+                                        Log.v(TAG,"testVo.getDustDensity=="+ windowVO.getDustDensity());
                                         Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
 
                                         JSONObject jsonObject = new JSONObject(jsonData);
@@ -214,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
+            bundle.putSerializable("window", windowVO);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -257,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 0;
                         break;
                     case 1:
+//                        swipeRefresh.setVisibility(View.GONE);
                         if (fragmentA == null) {
                             fragmentA = new FragmentA(sharedObject, jsonData);
                         }
@@ -400,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
+        bundle.putSerializable("window", windowVO);
         fragmentHome.setArguments(bundle);
         fragmentTransaction.replace(
                 R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -422,7 +427,17 @@ public class MainActivity extends AppCompatActivity {
                         Log.v(TAG,"FragmentHome");
                         startService(serviceIntent);
                     }else if (currentFragment instanceof FragmentA){
-                        Log.v(TAG,"FragmentA");
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        if (fragmentA == null) {
+                            fragmentA = new FragmentA(sharedObject,bufferedReader);
+                        }
+                        fragmentTransaction.replace(
+                                R.id.frame, fragmentA).commitAllowingStateLoss();
+//                        fragmentA.setArguments(bundleFagmentA);
+                        bundle.putSerializable("weather", weatherVO);
+                        bundle.putSerializable("window", windowVO);
+                        fragmentA.setArguments(bundle);
+                        Log.v(TAG,"FragmentA_OnRefreshListener");
                     }
                     else if (currentFragment instanceof FragmentRefrigerator){
                         Log.v(TAG,"FragmentRefrigerator");
