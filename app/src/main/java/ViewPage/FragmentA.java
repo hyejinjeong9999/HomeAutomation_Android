@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -37,6 +38,7 @@ import java.util.Locale;
 
 import Communication.SharedObject;
 import model.WeatherVO;
+import model.WindowVO;
 
 public class FragmentA extends Fragment {
     private String TAG="FragmentA";
@@ -54,6 +56,9 @@ public class FragmentA extends Fragment {
     private Button alarmSetBtn;
     Button btnAuto,btnManual;
     int modeSituation = 0;
+    ImageView ivWindow;
+    WeatherVO weathers;
+    WindowVO windowVO;
 
     public FragmentA(){
 
@@ -74,10 +79,21 @@ public class FragmentA extends Fragment {
         btnAuto.setOnClickListener(mClick);
         btnManual = view.findViewById(R.id.btnManual);
         btnManual.setOnClickListener(mClick);
+        ivWindow=view.findViewById(R.id.ivWindow);
 
+        weathers = (WeatherVO) getArguments().get("weather");
+        Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
+        windowVO = (WindowVO) getArguments().get("window");
+        Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
         // 창문 상태 (자동/수동)
 
-
+        if (windowVO.getOnOff().equals("1")){
+            Log.v(TAG,"1111111111");
+            ivWindow.setImageResource(R.drawable.window2);
+        }else {
+            Log.v(TAG,"222222222");
+            ivWindow.setImageResource(R.drawable.window1);
+        }
         // fragARadioBtn; 창문 버튼 (자동/수동)
 //        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
 //        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
@@ -144,7 +160,6 @@ public class FragmentA extends Fragment {
                 }
             }
         });
-
 
         // 현제 온도 보여주기
         fragATV01 = view.findViewById(R.id.fragACurrentTemp);

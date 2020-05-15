@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
 import model.SystemInfoVO;
-import model.TestVO;
+import model.WindowVO;
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -33,16 +33,15 @@ public class FragmentHome extends Fragment {
 
     ArrayList<SystemInfoVO> list;
     WeatherVO weathers;
-    TestVO testVO;
+    WindowVO windowVO;
 
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO){
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
-        this.testVO=testVO;
     }
 
     @Nullable
@@ -60,6 +59,8 @@ public class FragmentHome extends Fragment {
         Log.v(TAG,"weathers=="+(WeatherVO) getArguments().get("weather"));
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
+        windowVO = (WindowVO) getArguments().get("window");
+        Log.v(TAG,"weather.getOnOff()=="+windowVO.getOnOff());
 //        Log.v(TAG,"bundle=="+bundle.getSerializable("weather").toString());
 //        weathers=(WeatherVO)bundle.getSerializable("weather");
 
@@ -81,7 +82,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
 //        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
-        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader,testVO);
+        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader, windowVO);
 //        recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);

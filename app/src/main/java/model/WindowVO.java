@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public  class TestVO implements Serializable{
+public  class WindowVO implements Serializable{
     String temp = "0";
     String light =  "0";
     String onOff = "0";

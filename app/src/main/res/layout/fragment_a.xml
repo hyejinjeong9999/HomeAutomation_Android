@@ -42,6 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
         <ImageView
+            android:id="@+id/ivWindow"
             android:layout_width="60pt"
             android:layout_height="60pt"
             android:layout_gravity="center"
