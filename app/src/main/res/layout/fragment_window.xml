@@ -52,7 +52,7 @@
             android:layout_gravity="center"
             android:background="@drawable/selector_window"
             android:textOn=""
-            android:textOff=""/>
+            android:textOff=""  />
     </FrameLayout>
 
 <!--    <TextView-->

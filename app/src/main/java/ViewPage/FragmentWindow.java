@@ -103,14 +103,35 @@ public class FragmentWindow extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(tglBtnWindow.isChecked()){
+                /*
+                // 자동일 때 창문on/off
+                if (modeSituation == 0){
+                  tglBtnWindow.setEnabled(false);
+//                    tglBtnWindow.setClickable(false);
+                }
+                if(modeSituation == 1) {
+                    tglBtnWindow.setEnabled(true);
+
+                    if (tglBtnWindow.isChecked()) {
+                        Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
+                        Log.i("atest", "Checked: 닫기");
+                    } else {
+                        Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
+                        Log.i("atest", "Unchecked: 열기");
+                    }
+                }*/
+
+                if (tglBtnWindow.isChecked()) {
                     Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
                     Log.i("atest", "Checked: 닫기");
-                }else {
+                } else {
                     Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
                     Log.i("atest", "Unchecked: 열기");
                 }
-                /*int index = 0;
+
+                /*
+                // ToggleButton 안쓰고하기
+                int index = 0;
 
                 if(index == 0 ){
                     Log.i("atest", "if: " + String.valueOf(index));
@@ -271,12 +292,9 @@ public class FragmentWindow extends Fragment {
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image_check);
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image);
                         frameLayout.setBackgroundResource(R.drawable.round_button_default);
-
                         picker.setVisibility(View.VISIBLE);
                         alarmSetBtn.setVisibility(View.VISIBLE);
                         picker.setEnabled(true);
-
-
                         modeSituation = 0;
                         Log.v(TAG,"modeSituation_onClick()=="+btnAuto.getText());
                         Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
@@ -288,12 +306,9 @@ public class FragmentWindow extends Fragment {
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image_check);
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image);
                         frameLayout.setBackgroundResource(R.drawable.round_button);
-
 //                        picker.setVisibility(View.GONE);
-//                        picker.setActivated(false);
                         picker.setEnabled(false);
                         alarmSetBtn.setVisibility(View.GONE);
-
                         modeSituation = 1;
                         Log.v(TAG,"modeSituation_onClick()=="+btnManual.getText());
                         Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
