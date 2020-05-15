@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             windowVO = new WindowVO();
+                            fragmentA = new FragmentA(sharedObject, jsonData);
                             while (true) {
                                 try {
                                     jsonData = bufferedReader.readLine();
@@ -173,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
                                         JSONObject jsonObject = new JSONObject(jsonData);
                                         String temp = jsonObject.getString("temp");
                                         Log.v(TAG,"jsonObject_getTemp=="+temp);
+
+                                        bundle.putSerializable("window", windowVO);
+                                        fragmentA.setArguments(bundle);
 //                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                     }

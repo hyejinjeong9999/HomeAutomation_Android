@@ -27,6 +27,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import Communication.DataReceiveAsyncTaskTest;
 import DB.DBHelper;
@@ -68,6 +69,7 @@ public class FragmentA extends Fragment {
     Button btnAuto, btnManual;
     int modeSituation = 0;
     String jsonData;
+    ImageButton imageButton;
     public FragmentA(SharedObject sharedObject,  String jsonData) {
         this.sharedObject = sharedObject;
         this.jsonData = jsonData;
@@ -81,10 +83,11 @@ public class FragmentA extends Fragment {
         assert container != null;
         context = container.getContext();
 
-        final ImageButton imageButton = view.findViewById(R.id.IBWindos);
-        DataReceiveAsyncTaskTest asyncTaskTest =
-                new DataReceiveAsyncTaskTest(jsonData, imageButton);
-        asyncTaskTest.execute();
+        imageButton = view.findViewById(R.id.IBWindos);
+//        DataReceiveAsyncTaskTest asyncTaskTest =
+//                new DataReceiveAsyncTaskTest(jsonData, imageButton);
+//        asyncTaskTest.execute();
+
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,10 +96,12 @@ public class FragmentA extends Fragment {
                     Log.v(TAG, "imageViewOnClick");
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                     imageButton.setBackgroundResource(R.drawable.window2);
+                    refresh();
                 }else{
                     Log.v(TAG, "imageViewOffClick");
                     sharedObject.put("/ANDROID>/WINDOWS ON");
                     imageButton.setBackgroundResource(R.drawable.window1);
+                    refresh();
                 }
             }
         });
@@ -114,6 +119,7 @@ public class FragmentA extends Fragment {
         if (bundle != null) {
             windowVO = (WindowVO) bundle.getSerializable("window");
             String onOff = (windowVO.getOnOff());
+            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
             if(onOff.equals("1")){
                 imageButton.setBackgroundResource(R.drawable.window2);
             }else{
@@ -156,6 +162,7 @@ public class FragmentA extends Fragment {
                 }
             }
         });
+
 
 
         // 현제 온도 보여주기
@@ -354,5 +361,23 @@ public class FragmentA extends Fragment {
     public void onDetach() {
         super.onDetach();
         Log.v(TAG, "FragmentAonResumeonDetach");
+    }
+
+    private void refresh(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            windowVO = (WindowVO) bundle.getSerializable("window");
+            String onOff = (windowVO.getOnOff());
+            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
+            if(onOff.equals("1")){
+                imageButton.setBackgroundResource(R.drawable.window2);
+            }else{
+                imageButton.setBackgroundResource(R.drawable.window1);
+            }
+        }
+        transaction.detach(this).attach(this).commit();
+
     }
 }
