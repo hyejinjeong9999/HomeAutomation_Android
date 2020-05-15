@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +21,9 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import model.SystemInfoVO;
-import model.TestVO;
+import model.WindowVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -31,10 +31,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     Context context;
     View view;
     BufferedReader bufferedReader;
-    Communication.SharedObject sharedObject;
+    SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
-    TestVO testVO;
+    WindowVO windowVO;
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
@@ -43,13 +43,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
-            Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO) {
+            SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO) {
         this.context = context;
         this.itemList = itemList;
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
-        this.testVO = testVO;
+        this.windowVO = windowVO;
     }
     /**
      * getItemViewType() method에서 Return 받는 VIewType 형태의 아이템 뷰를 위한 뷰홀더 객체 생성
@@ -94,7 +94,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
                 ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
                 ((SystemInfo)holder).tvSituation.setText(itemList.get(position).getSituation());
-
             }
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
@@ -109,18 +108,18 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
-            ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, "onCheckedChanged/" + isChecked);
                     if(isChecked == true){
-                        sharedObject.put("/aircon ON");
+                        sharedObject.put("/ANDROID>/WINDOWS ON");
                     }else {
-                        sharedObject.put("/aircon OFF");
+                        sharedObject.put("/ANDROID>/WINDOWS OFF");
                     }
                 }
             });
-
             // Switch Component onTouch Event (Double Touch 시 호출됨.....)
             ((SystemInfoSwitch)holder).swSituation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,10 +127,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Log.v(TAG,"swSituation onClick()");
                 }
             });
-
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTemp.setText(weathers.getTemp());
-
+            ((SystemInfoWeather)holder).tvTempIn.setText(windowVO.getTemp());
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
              */
@@ -147,9 +144,20 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-            ((SystemInfoWeather)holder).ivSituation.setImageResource(itemList.get(position).getImageView());
-            ((SystemInfoWeather)holder).tvSituation.setText(itemList.get(position).getTitle());
-            ((SystemInfoWeather)holder).tvSituation.setText("testVO.getTemp()");
+            ((SystemInfoWeather)holder).tvHumidity.setText(windowVO.getLight());
+
+            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp());
+            double dustDensity = Double.parseDouble(windowVO.getDustDensity());
+            if (dustDensity<=15){
+                ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
+            }else if (dustDensity<=35 && dustDensity<15){
+                ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_good);
+            }else if (dustDensity<=75 && dustDensity<35){
+                ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_bad);
+            }else {
+                ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
+            }
+            ((SystemInfoWeather)holder).tvSituation.setText(windowVO.getDustDensity());
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -233,18 +241,30 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class SystemInfoWeather extends RecyclerView.ViewHolder{
-        public TextView tvTemp;
+        public TextView tvTempIn;
         public ImageView ivWeather;
-        public ImageView ivSituation;
+        public TextView tvHumidity;
+
+        public TextView tvTempOut;
+        public ImageView ivDust;
         public TextView tvSituation;
         public SystemInfoWeather(@NonNull View itemView) {
             super(itemView);
-            tvTemp = itemView.findViewById(R.id.tvTemp);
-            ivWeather = itemView.findViewById(R.id.ivWeather);
-            ivSituation = itemView.findViewById(R.id.ivSituation);
-            tvSituation = itemView.findViewById(R.id.tvSituation);
+//            tvTemp = itemView.findViewById(R.id.tvTemp);
+//            ivWeather = itemView.findViewById(R.id.ivWeather);
+//            ivSituation = itemView.findViewById(R.id.ivSituation);
+//            tvSituation = itemView.findViewById(R.id.tvSituation);
+            tvTempIn =  itemView.findViewById(R.id.tvTempIn);
+            ivWeather =  itemView.findViewById(R.id.ivWeather);
+            tvHumidity =  itemView.findViewById(R.id.tvHumidity);
+
+            tvTempOut =  itemView.findViewById(R.id.tvTempOut);
+            ivDust =  itemView.findViewById(R.id.ivDust);
+            tvSituation =  itemView.findViewById(R.id.tvSituation);
         }
     }
+
+    //Test//
     public class SystemInfo1 extends RecyclerView.ViewHolder{
         public ImageView ivTitle;
         public TextView tvSystemName;

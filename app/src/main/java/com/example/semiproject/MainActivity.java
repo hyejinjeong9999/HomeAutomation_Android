@@ -1,7 +1,6 @@
 package com.example.semiproject;
 import android.Manifest;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,10 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -28,14 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
@@ -45,12 +34,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
@@ -59,11 +47,13 @@ import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentTest;
 import model.SystemInfoVO;
-import model.TestVO;
+import model.WindowVO;
 import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
+    String name = "/ID:ANDROID";
+
     RecyclerView recyclerVIew;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -73,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     Intent serviceIntent;
     Bundle bundle;
-    TestVO testVO;
+    WindowVO windowVO = new WindowVO();
     WeatherVO weatherVO;
     WeatherVO[] weathers;
     //Fragment
@@ -91,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     ObjectMapper objectMapper = new ObjectMapper();
-    Communication.SharedObject sharedObject = new Communication.SharedObject();
+
+    SharedObject sharedObject = new SharedObject();
 
     String jsonData;
     //Speech recognition
@@ -103,9 +94,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView outWeather;
     ImageView roomPM;
 
-    String name = "/ID:ANDROID";
     SwipeRefreshLayout swipeRefresh;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +110,20 @@ public class MainActivity extends AppCompatActivity {
          * Implementing Pull to Refresh
          * WeatherService Restart
          */
+
+        Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(onRefreshListener);
+
+//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//            if (currentFragment.isVisible()) {
+//                if (!(currentFragment instanceof FragmentHome)) {
+//                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
+//                    swipeRefresh = findViewById(R.id.swipeRefresh);
+//                    swipeRefresh.setOnRefreshListener(onRefreshListener);
+//                }
+//            }
+//        }
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //ViewPager Code//
@@ -158,21 +159,21 @@ public class MainActivity extends AppCompatActivity {
                     Thread thread1 = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            testVO = new TestVO();
+                            windowVO = new WindowVO();
                             while (true) {
                                 try {
                                     jsonData = bufferedReader.readLine();
 //                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
                                     if(jsonData != null){
-                                        testVO=objectMapper.readValue(jsonData, TestVO.class);
-                                        Log.v(TAG,"testVo.getTemp=="+testVO.getTemp());
-                                        Log.v(TAG,"testVo.getLight=="+testVO.getLight());
-                                        Log.v(TAG,"testVo.getOnOff=="+testVO.getOnOff());
+                                        windowVO =objectMapper.readValue(jsonData, WindowVO.class);
+                                        Log.v(TAG,"testVo.getTemp=="+ windowVO.getTemp());
+                                        Log.v(TAG,"testVo.getLight=="+ windowVO.getLight());
+                                        Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
 
                                         JSONObject jsonObject = new JSONObject(jsonData);
                                         String temp = jsonObject.getString("temp");
                                         Log.v(TAG,"jsonObject_getTemp=="+temp);
-//                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
+//                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                     }
                                 }catch (IOException | JSONException e) {
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         });
         thread.start();
 //        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
+//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
 //        asyncTaskTest.execute();
 
         /**
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             weatherVO = new WeatherVO();
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
             fragmentHome.setArguments(bundle);
@@ -241,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+                            fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
                             Log.v(TAG, "fragmentHome==");
                         }
                         fragmentTransaction.replace(
@@ -253,13 +254,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         if (fragmentA == null) {
-                            fragmentA = new FragmentA(sharedObject,bufferedReader);
+                            fragmentA = new FragmentA(sharedObject, jsonData);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
 
 //                        fragmentA.setArguments(bundleFagmentA);
-                        bundle.putSerializable("weather", weathers[0]);
+                        bundle.putSerializable("weather", weatherVO);
+                        bundle.putSerializable("window", windowVO);
                         fragmentA.setArguments(bundle);
                         break;
                     case 2:
@@ -330,7 +332,6 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
-
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -385,14 +386,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
-
+        Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
         weatherVO = weathers[0];
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
         bundle = new Bundle();
-        fragmentHome = new FragmentHome(sharedObject, bufferedReader, testVO);
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
         fragmentHome.setArguments(bundle);
@@ -484,7 +485,6 @@ public class MainActivity extends AppCompatActivity {
         public void onEvent(int i, Bundle bundle) {
         }
     };
-
 
     /**
      * Server Socket Client Remove

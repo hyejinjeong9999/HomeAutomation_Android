@@ -34,18 +34,21 @@
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="120pt"
-        android:layout_height="120pt"
+        android:layout_width="100pt"
+        android:layout_height="100pt"
         android:layout_marginTop="10pt"
         android:background="@drawable/selector_frag_ib"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
-        <ImageView
+        <ImageButton
             android:layout_width="60pt"
             android:layout_height="60pt"
             android:layout_gravity="center"
-            android:src="@drawable/window1"/>
+            android:id="@+id/IBWindos"
+            android:clickable="true"
+            android:background="@drawable/window1"
+            android:focusable="true" />
     </FrameLayout>
 
     <TextView
@@ -84,6 +87,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
+
 <!--    <TextView-->
 <!--        android:id="@+id/setTv02"-->
 <!--        android:layout_width="wrap_content"-->
@@ -119,6 +123,17 @@
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+    <ToggleButton
+        android:id="@+id/windowSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="닫아줘"
+        android:textOn="열어줘"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 

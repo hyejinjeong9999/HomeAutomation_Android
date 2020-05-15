@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,9 +21,8 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
-import RecyclerViewAdapter.ViewType;
 import model.SystemInfoVO;
-import model.TestVO;
+import model.WindowVO;
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -35,16 +33,16 @@ public class FragmentHome extends Fragment {
 
     ArrayList<SystemInfoVO> list;
     WeatherVO weathers;
-    TestVO testVO;
+    WindowVO windowVO;
 
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, TestVO testVO){
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO){
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
-        this.testVO=testVO;
+        this.windowVO = windowVO;
     }
 
     @Nullable
@@ -83,7 +81,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
 //        verticalAdapter = new VerticalAdapter(context, list, sharedObject,bufferedReader);
-        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader,testVO);
+        verticalAdapter = new VerticalAdapter(context, list, weathers, sharedObject,bufferedReader, windowVO);
 //        recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);

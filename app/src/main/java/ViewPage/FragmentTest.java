@@ -18,6 +18,8 @@ import com.example.semiproject.R;
 
 import java.io.BufferedReader;
 
+import Communication.SharedObject;
+
 public class FragmentTest extends Fragment {
     String TAG="FragmentTest";
     View view;
@@ -25,15 +27,12 @@ public class FragmentTest extends Fragment {
     SeekBar sbLED;
     TextView tvReceiveData;
     Button btnTest;
-    Communication.SharedObject sharedObject;
+    SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentTest(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
+    public FragmentTest(SharedObject sharedObject, BufferedReader bufferedReader){
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
-    }
-    public FragmentTest(Communication.SharedObject sharedObject){
-        this.sharedObject=sharedObject;
     }
     @Nullable
     @Override
@@ -51,16 +50,16 @@ public class FragmentTest extends Fragment {
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                     tvReceiveData.setText("OFF");
                 }else {
-                    tvReceiveData.setText("ON");
                     sharedObject.put("/ANDROID>/WINDOWS ON");
+                    tvReceiveData.setText("ON");
                 }
             }
         });
         /**
          * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
          */
-        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
-                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
+//        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
+//                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
 //        asyncTaskTest.execute();
         /**
          * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
