@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -38,17 +39,18 @@ import java.util.Locale;
 
 import Communication.SharedObject;
 import DB.DBHelper;
-import model.WeatherVO;
 
-public class FragmentA extends Fragment {
+public class FragmentWindow extends Fragment {
 
     ArrayAdapter adapter;
-    private String TAG="FragmentA";
+    private String TAG="FragmentWindow";
     private View view;
     private SharedObject sharedObject;
     private BufferedReader bufferedReader;
     private Context context;
     private TextView fragATV01;
+    FrameLayout frameLayout;
+    ToggleButton tglBtnWindow;
     private ToggleButton toggleBtn;
     private ToggleButton windowToggleButton;
     private TimePicker picker;
@@ -56,10 +58,10 @@ public class FragmentA extends Fragment {
     Button btnAuto,btnManual;
     int modeSituation = 0;
 
-    public FragmentA(){
+    public FragmentWindow(){
 
     }
-    public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
+    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
     }
@@ -71,17 +73,17 @@ public class FragmentA extends Fragment {
         assert container != null;
         context=container.getContext();
 
+        // timePicker or picker??
         final TimePicker timePicker = view.findViewById(R.id.timePicker);
-        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
         final ListView alarmListView = view.findViewById(R.id.alarmListView);
-
+        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
 
         final DBHelper helper =
                 new DBHelper(context, "alarm", 1);
-        adapter =
-                new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
         alarmListView.setAdapter(adapter);
 
+        // timePicker by seo
         alarmSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,10 +93,38 @@ public class FragmentA extends Fragment {
                 Log.i("test", time);
                 helper.insert(time);
 
-
-                adapter =
-                        new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
                 alarmListView.setAdapter(adapter);
+            }
+        });
+
+        tglBtnWindow = view.findViewById(R.id.tglBtnWindow);
+        tglBtnWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(tglBtnWindow.isChecked()){
+                    Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "Checked: 닫기");
+                }else {
+                    Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "Unchecked: 열기");
+                }
+                /*int index = 0;
+
+                if(index == 0 ){
+                    Log.i("atest", "if: " + String.valueOf(index));
+                    tglBtnWindow.setSelected(true);
+                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
+                    index += 1;
+                    Log.i("atest", "index += 1: " + String.valueOf(index));
+                }else{
+                    Log.i("atest", "else: " + String.valueOf(index));
+                    tglBtnWindow.setSelected(false);
+                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
+                    index = 0;
+                }*/
+
             }
         });
 
@@ -103,6 +133,9 @@ public class FragmentA extends Fragment {
         btnAuto.setOnClickListener(mClick);
         btnManual = view.findViewById(R.id.btnManual);
         btnManual.setOnClickListener(mClick);
+
+        // framyLayout
+        frameLayout = view.findViewById(R.id.frameLayout);
 
         // 창문 수동 열기/닫기
 /*        windowToggleButton = view.findViewById(R.id.windowSwitch);
@@ -119,8 +152,7 @@ public class FragmentA extends Fragment {
             }
         });*/
 
-
-        // 현제 온도 보여주기
+        /*// 현제 온도 보여주기
         fragATV01 = view.findViewById(R.id.fragACurrentTemp);
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -129,10 +161,18 @@ public class FragmentA extends Fragment {
             Log.v(TAG,"weather=="+weather);
             fragATV01.setText(weather.getTemp());
             Log.v(TAG,"getTemp=="+weather.getTemp());
-        }
+        }*/
+
+        // TimePickerDialog
+        /*TimePickerDialog timePickerDialog = new TimePickerDialog();
+        timePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });*/
 
         // 알람 시간
-
         picker = view.findViewById(R.id.timePicker);
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
@@ -227,27 +267,38 @@ public class FragmentA extends Fragment {
             switch (v.getId()){
                 case R.id.btnAuto:
                     if (modeSituation == 1){
-                        Log.i("atest", String.valueOf(modeSituation));
+                        Log.i("atest", "modeSituation" + String.valueOf(modeSituation));
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image_check);
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image);
+                        frameLayout.setBackgroundResource(R.drawable.round_button_default);
+
+                        picker.setVisibility(View.VISIBLE);
+                        alarmSetBtn.setVisibility(View.VISIBLE);
+                        picker.setEnabled(true);
+
+
                         modeSituation = 0;
                         Log.v(TAG,"modeSituation_onClick()=="+btnAuto.getText());
-                            Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
-                            picker.setVisibility(View.VISIBLE);
-                            //alarmSetBtn.setVisibility(View.VISIBLE);
+                        Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case R.id.btnManual:
                     if (modeSituation == 0){
-                        Log.i("atest", String.valueOf(modeSituation));
+                        Log.i("atest", "modeSituation" + String.valueOf(modeSituation));
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image_check);
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image);
+                        frameLayout.setBackgroundResource(R.drawable.round_button);
+
+//                        picker.setVisibility(View.GONE);
+//                        picker.setActivated(false);
+                        picker.setEnabled(false);
+                        alarmSetBtn.setVisibility(View.GONE);
+
                         modeSituation = 1;
                         Log.v(TAG,"modeSituation_onClick()=="+btnManual.getText());
-                        Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
-                        picker.setVisibility(View.GONE);
-                        //alarmSetBtn.setVisibility(View.GONE);
+                        Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
                     }
+                    break;
             }
         }
     };
@@ -278,6 +329,10 @@ public class FragmentA extends Fragment {
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
         }
+    }
+
+    public void imageBtnClicked(View view) {
+
     }
 
     @Override

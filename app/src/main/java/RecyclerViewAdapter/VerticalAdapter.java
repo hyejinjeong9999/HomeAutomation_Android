@@ -150,6 +150,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             double dustDensity = Double.parseDouble(testVO.getDustDensity());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
+//                ((SystemInfoWeather)holder).tvDust
+
             }else if (dustDensity<=35 && dustDensity<15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_good);
             }else if (dustDensity<=75 && dustDensity<35){

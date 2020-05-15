@@ -6,86 +6,103 @@
     android:layout_height="match_parent"
     android:background="@drawable/fragment_background"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linearLayoutTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
         android:background="@drawable/win_btn_back_line"
-        android:layout_marginTop="10pt">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <Button
             android:id="@+id/btnAuto"
             android:layout_width="70pt"
             android:layout_height="15pt"
-            android:text="자동"
-            android:background="@drawable/win_btn_back_image_check"/>
+            android:background="@drawable/win_btn_back_image_check"
+            android:text="자동" />
+
         <Button
             android:id="@+id/btnManual"
             android:layout_width="70pt"
             android:layout_height="15pt"
-            android:text="수동"
-            android:background="@drawable/win_btn_back_image"/>
+            android:background="@drawable/win_btn_back_image"
+            android:text="수동" />
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="100pt"
         android:layout_height="100pt"
-        android:layout_marginTop="10pt"
-        android:background="@drawable/selector_frag_ib"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/selector_frag_ib"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
 
-        <ImageView
-            android:id="@+id/ivWindow"
+        <ToggleButton
+            android:id="@+id/tglBtnWindow"
             android:layout_width="55pt"
             android:layout_height="55pt"
             android:layout_gravity="center"
-            android:src="@drawable/window1" />
+            android:background="@drawable/selector_window"
+            android:textOn=""
+            android:textOff=""/>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/fragACurrentTemp"
-        android:layout_width="120dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="현재 온도"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+<!--    <TextView-->
+<!--        android:id="@+id/fragACurrentTemp"-->
+<!--        android:layout_width="120dp"-->
+<!--        android:layout_height="36dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="현재 온도"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="28sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />-->
 
     <TimePicker
         android:id="@+id/timePicker"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="155dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="120dp"
-        android:timePickerMode="spinner"
-        android:clickable="false"
+        android:background="@drawable/round_border"
         android:descendantFocusability="blocksDescendants"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        />
 
     <Button
         android:id="@+id/alarmSetBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="140pt"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="SET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
+    <Button
+        android:id="@+id/alarmSetBtn2"
+        android:layout_width="140pt"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
     <ListView
         android:id="@+id/alarmListView"
         android:layout_width="wrap_content"

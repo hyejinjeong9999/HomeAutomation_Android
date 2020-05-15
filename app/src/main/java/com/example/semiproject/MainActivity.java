@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
-import ViewPage.FragmentA;
+import ViewPage.FragmentWindow;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
-    FragmentA fragmentA;
+    FragmentWindow fragmentWindow;
     FragmentRefrigerator fragmentRefrigerator;
     FragmentTest fragmentTest;
     FragmentLight fragmentLight;
@@ -243,14 +243,14 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 0;
                         break;
                     case 1:
-                        if (fragmentA == null) {
-                            fragmentA = new FragmentA(sharedObject,bufferedReader);
+                        if (fragmentWindow == null) {
+                            fragmentWindow = new FragmentWindow(sharedObject,bufferedReader);
                         }
                         fragmentTransaction.replace(
-                                R.id.frame, fragmentA).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
+                                R.id.frame, fragmentWindow).commitAllowingStateLoss();
+//                        fragmentWindow.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weathers[0]);
-                        fragmentA.setArguments(bundle);
+                        fragmentWindow.setArguments(bundle);
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -404,8 +404,8 @@ public class MainActivity extends AppCompatActivity {
                     if(currentFragment instanceof FragmentHome){
                         Log.v(TAG,"FragmentHome");
                         startService(serviceIntent);
-                    }else if (currentFragment instanceof FragmentA){
-                        Log.v(TAG,"FragmentA");
+                    }else if (currentFragment instanceof FragmentWindow){
+                        Log.v(TAG,"FragmentWindow");
                     }
                     else if (currentFragment instanceof FragmentRefrigerator){
                         Log.v(TAG,"FragmentRefrigerator");
