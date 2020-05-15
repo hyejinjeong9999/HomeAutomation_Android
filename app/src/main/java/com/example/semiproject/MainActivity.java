@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
     SwipeRefreshLayout swipeRefresh;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,18 +116,8 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh = findViewById(R.id.swipeRefresh);
         swipeRefresh.setOnRefreshListener(onRefreshListener);
 
-//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-//            if (currentFragment.isVisible()) {
-//                if (currentFragment instanceof FragmentHome) {
-//                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
-//                    swipeRefresh.setVisibility(View.GONE);
-//                }else {
-//                    swipeRefresh.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        }
-
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+
         //ViewPager Code//
 //        viewPager = findViewById(R.id.viewPager);
 //        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
@@ -142,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     //Latte
 //                    socket = new Socket("70.12.229.165", 1357);
                     //PC
-                    socket = new Socket("70.12.60.98", 1357);
+                    socket = new Socket("192.168.1.9", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
@@ -468,7 +460,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onError(int i) {
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
-            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
             speechRecognizer.startListening(intent);
         }
         @Override
@@ -480,7 +471,15 @@ public class MainActivity extends AppCompatActivity {
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
             Log.v(TAG,"음성인식=="+rs[0]);
-            Toast.makeText(getApplicationContext(),"음성="+rs[0],Toast.LENGTH_LONG);
+            Log.v(TAG,"음성인식size=="+mResult.size());
+            if(rs[0].contains("창문")){
+                if(rs[0].contains("열어")){
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                }else if(rs[0].contains("닫아")){
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                }
+            }
+
             //Fragment 에 Data Send
 //            if(rs != null){
 //                bundle.putString("voice",rs[0]);

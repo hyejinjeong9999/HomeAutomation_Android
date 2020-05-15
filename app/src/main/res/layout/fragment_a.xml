@@ -34,33 +34,22 @@
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="120pt"
-        android:layout_height="120pt"
+        android:layout_width="100pt"
+        android:layout_height="100pt"
         android:layout_marginTop="10pt"
         android:background="@drawable/selector_frag_ib"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
-        <ImageView
-            android:id="@+id/ivWindow"
+        <ImageButton
+            android:id="@+id/ibWindos"
             android:layout_width="60pt"
             android:layout_height="60pt"
             android:layout_gravity="center"
-            android:src="@drawable/window1"/>
+            android:clickable="true"
+            android:background="@drawable/window1"
+            android:focusable="true" />
     </FrameLayout>
-
-    <TextView
-        android:id="@+id/fragACurrentTemp"
-        android:layout_width="120dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="현재 온도"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -84,16 +73,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
-
-    <ToggleButton
-        android:id="@+id/windowSwitch"
-        android:layout_width="match_parent"
+    <ListView
+        android:id="@+id/alarmListView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOff="닫아줘"
-        android:textOn="열어줘"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
+
+<!--    <ToggleButton-->
+<!--        android:id="@+id/windowSwitch"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textOff="닫아줘"-->
+<!--        android:textOn="열어줘"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 
 

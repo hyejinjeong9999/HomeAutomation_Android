@@ -7,14 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.opengl.GLDebugHelper;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -24,6 +28,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
@@ -37,32 +42,33 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import Communication.SharedObject;
+import DB.DBHelper;
 import model.WeatherVO;
 import model.WindowVO;
 
 public class FragmentA extends Fragment {
-    private String TAG="FragmentA";
-    private View view;
-    private SharedObject sharedObject;
-    private BufferedReader bufferedReader;
-    private Context context;
+    String TAG="FragmentA";
+    View view;
+    SharedObject sharedObject;
+    BufferedReader bufferedReader;
+    Context context;
+    WeatherVO weathers;
+    WindowVO windowVO;
+
     private RadioGroup grpBtn;
     private TextView fragATV01;
     private ToggleButton toggleBtn;
-    private ToggleButton windowToggleButton;
+//    private ToggleButton windowToggleButton;
     private TimePicker picker;
     private TextView setTv01;
     private TextView setTv02;
     private Button alarmSetBtn;
     Button btnAuto,btnManual;
+    ImageButton ibWindos;
     int modeSituation = 0;
-    ImageView ivWindow;
-    WeatherVO weathers;
-    WindowVO windowVO;
+    ListView alarmListView;
+    ArrayAdapter adapter;
 
-    public FragmentA(){
-
-    }
     public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
@@ -75,105 +81,86 @@ public class FragmentA extends Fragment {
         assert container != null;
         context=container.getContext();
 
-        btnAuto = view.findViewById(R.id.btnAuto);
-        btnAuto.setOnClickListener(mClick);
-        btnManual = view.findViewById(R.id.btnManual);
-        btnManual.setOnClickListener(mClick);
-        ivWindow=view.findViewById(R.id.ivWindow);
-
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         windowVO = (WindowVO) getArguments().get("window");
         Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
-        // 창문 상태 (자동/수동)
 
-        if (windowVO.getOnOff().equals("1")){
-            Log.v(TAG,"1111111111");
-            ivWindow.setImageResource(R.drawable.window2);
-        }else {
-            Log.v(TAG,"222222222");
-            ivWindow.setImageResource(R.drawable.window1);
-        }
-        // fragARadioBtn; 창문 버튼 (자동/수동)
-//        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
-//        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
-//        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
-//        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                Button checkedBtn =  group.findViewById(checkedId);
-//
-//                switch (checkedId){
-//                    case R.id.autoBtn:{
-//                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-//                        windowToggleButton.setVisibility(View.GONE);
-//                        picker.setVisibility(View.VISIBLE);
-//                        alarmSetBtn.setVisibility(View.VISIBLE);
-////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
-////                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
-//                        break;
-//                    }
-//                    case R.id.manualBtn:{
-//                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
-//                        picker.setVisibility(View.GONE);
-//                        alarmSetBtn.setVisibility(View.GONE);
-//                        windowToggleButton.setVisibility(View.VISIBLE);
-////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
-////                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
-//                        break;
-//                    }
-//                }
-//            }
-//        });
-
-        // fragAToggleBtn; 창문 버튼 (자동/수동)
-        /*toggleBtn = view.findViewById(R.id.fragAToggleBtn);
-        toggleBtn.setOnClickListener(new View.OnClickListener() {
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
+        ibWindos = view.findViewById(R.id.ibWindos);
+        ibWindos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(toggleBtn.isChecked()){
-                   Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
-                    picker.setVisibility(View.VISIBLE);
-                    windowToggleButton.setVisibility(View.VISIBLE);
-                    alarmSetBtn.setVisibility(View.VISIBLE);
-
+                if(windowVO.getOnOff().equals("1")){
+                    Log.v(TAG, "imageViewOnClick");
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                    ibWindos.setBackgroundResource(R.drawable.window2);
+                    refresh();
                 }else{
-                    Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
-                    picker.setVisibility(View.GONE);
-                    windowToggleButton.setVisibility(View.GONE);
-                    alarmSetBtn.setVisibility(View.GONE);
-                }
-            }
-        });*/
-
-        // 창문 수동 열기/닫기
-        windowToggleButton = view.findViewById(R.id.windowSwitch);
-        windowToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(windowToggleButton.isChecked()){
-                    Toast.makeText(context, "닫힘", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "수동: 닫힘");
-                }else{
-                    Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "수동: 열림");
+                    Log.v(TAG, "imageViewOffClick");
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                    ibWindos.setBackgroundResource(R.drawable.window1);
+                    refresh();
                 }
             }
         });
 
-        // 현제 온도 보여주기
-        fragATV01 = view.findViewById(R.id.fragACurrentTemp);
+        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+        alarmListView = view.findViewById(R.id.alarmListView);
+
+        final DBHelper helper = new DBHelper(context, "alarm", 1);
+        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+        alarmListView.setAdapter(adapter);
+
         Bundle bundle = getArguments();
         if (bundle != null) {
-            WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-            Log.v(TAG,"weather=="+weather);
-
-            fragATV01.setText(weather.getTemp());
-            Log.v(TAG,"getTemp=="+weather.getTemp());
+            windowVO = (WindowVO) bundle.getSerializable("window");
+            String onOff = (windowVO.getOnOff());
+            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
+            if(onOff.equals("1")){
+                ibWindos.setBackgroundResource(R.drawable.window2);
+            }else{
+                ibWindos.setBackgroundResource(R.drawable.window1);
+            }
         }
 
-        // 알람 시간
+        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String hour = String.valueOf(timePicker.getHour());
+                String min = String.valueOf(timePicker.getMinute());
+                String time = hour + '.' + min;
+                Log.i("test", time);
+                helper.insert(time);
+                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+                alarmListView.setAdapter(adapter);
+            }
+        });
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
 
+        // 창문 수동 열기/닫기
+//        windowToggleButton = view.findViewById(R.id.windowSwitch);
+//        windowToggleButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(windowToggleButton.isChecked()){
+//                    Toast.makeText(context, "닫힘", Toast.LENGTH_SHORT).show();
+//                    Log.i("atest", "수동: 닫힘");
+//                }else{
+//                    Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
+//                    Log.i("atest", "수동: 열림");
+//                }
+//            }
+//        });
+
+        // 알람 시간
         picker = view.findViewById(R.id.timePicker);
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
@@ -243,7 +230,6 @@ public class FragmentA extends Fragment {
                 if(calendar.before(Calendar.getInstance())){
                     calendar.add(Calendar.DATE, 1);
                 }
-
                 Date currentDateTime = calendar.getTime();
                 String date_text = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(currentDateTime);
                 Toast.makeText(context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
@@ -260,8 +246,8 @@ public class FragmentA extends Fragment {
             }
         });
         return  view;
-
     }
+    // Auto/Manual mode ClickListener
     View.OnClickListener mClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -285,9 +271,6 @@ public class FragmentA extends Fragment {
         }
     };
 
-
-
-
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 
@@ -298,10 +281,8 @@ public class FragmentA extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
         AlarmManager alarmManager = (AlarmManager) this.getActivity().getSystemService(Context.ALARM_SERVICE);
 
-
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
-
 
             if (alarmManager != null) {
 
@@ -312,12 +293,10 @@ public class FragmentA extends Fragment {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
-
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
-
         }
     }
 
@@ -367,5 +346,21 @@ public class FragmentA extends Fragment {
     public void onDetach() {
         super.onDetach();
         Log.v(TAG,"onDetach");
+    }
+
+    private void refresh(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            windowVO = (WindowVO) bundle.getSerializable("window");
+            String onOff = (windowVO.getOnOff());
+            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
+            if(onOff.equals("1")){
+                ibWindos.setBackgroundResource(R.drawable.window2);
+            }else{
+                ibWindos.setBackgroundResource(R.drawable.window1);
+            }
+        }
+        transaction.detach(this).attach(this).commit();
     }
 }
