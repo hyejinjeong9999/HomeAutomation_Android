@@ -1,4 +1,15 @@
 package com.example.semiproject;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,16 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
@@ -36,6 +37,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentA;
@@ -49,6 +51,8 @@ import model.WeatherVO;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
+    String name = "/ID:ANDROID";
+
     RecyclerView recyclerVIew;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     Intent serviceIntent;
     Bundle bundle;
-    TestVO testVO;
+    TestVO testVO = new TestVO();
     WeatherVO weatherVO;
     WeatherVO[] weathers;
     //Fragment
@@ -76,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     ObjectMapper objectMapper = new ObjectMapper();
-    Communication.SharedObject sharedObject = new Communication.SharedObject();
+
+    SharedObject sharedObject = new SharedObject();
 
     String jsonData;
     //Speech recognition
@@ -88,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView outWeather;
     ImageView roomPM;
 
-    String name = "/ID:ANDROID";
     SwipeRefreshLayout swipeRefresh;
 
     @Override
@@ -168,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
                                         JSONObject jsonObject = new JSONObject(jsonData);
                                         String temp = jsonObject.getString("temp");
                                         Log.v(TAG,"jsonObject_getTemp=="+temp);
-                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
-                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+//                                        TestVO vo1 = (TestVO)jsonObject.get(jsonData);
+//                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                     }
                                 }catch (IOException | JSONException e) {
                                     e.printStackTrace();
