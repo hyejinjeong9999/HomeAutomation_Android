@@ -141,7 +141,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (weathers.getWeather().equals("Drizzle")){
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
             }else if (weathers.getWeather().equals("Mist")){
-                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.snow);
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
             }else if (weathers.getWeather().equals("Clouds")){
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.cloudy);
             }else if (weathers.getWeather().equals("Rain")){

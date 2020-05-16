@@ -113,11 +113,56 @@ public class MainActivity extends AppCompatActivity {
          * WeatherService Restart
          */
         Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
-        swipeRefresh = findViewById(R.id.swipeRefresh);
-        swipeRefresh.setOnRefreshListener(onRefreshListener);
+//        swipeRefresh = findViewById(R.id.swipeRefresh);
+//        swipeRefresh.setOnRefreshListener(onRefreshListener);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-
+        frame=findViewById(R.id.frame);
+        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+            public void onSwipeTop() {
+                Log.v(TAG,"onSwipeTop()");
+                speechRecognizer.startListening(intent);
+            }
+            public void onSwipeRight() {
+                Log.v(TAG,"onSwipeRight()");
+            }
+            public void onSwipeLeft() {
+                Log.v(TAG,"onSwipeLeft()");
+            }
+            public void onSwipeBottom() {
+                Log.v(TAG,"onSwipeBottom()");
+                Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                    if (currentFragment.isVisible()) {
+                        if(currentFragment instanceof FragmentHome){
+                            Log.v(TAG,"FragmentHome");
+                            startService(serviceIntent);
+                        }else if (currentFragment instanceof FragmentA){
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            if (fragmentA == null) {
+                                fragmentA = new FragmentA(sharedObject,bufferedReader);
+                            }
+                            fragmentTransaction.replace(
+                                    R.id.frame, fragmentA).commitAllowingStateLoss();
+//                        fragmentA.setArguments(bundleFagmentA);
+                            bundle.putSerializable("weather", weatherVO);
+                            bundle.putSerializable("window", windowVO);
+                            fragmentA.setArguments(bundle);
+                            Log.v(TAG,"FragmentA_OnRefreshListener");
+                        }
+                        else if (currentFragment instanceof FragmentRefrigerator){
+                            Log.v(TAG,"FragmentRefrigerator");
+                        }
+                        else if (currentFragment instanceof FragmentTest){
+                            Log.v(TAG,"FragmentTest");
+                        }
+                        else if (currentFragment instanceof FragmentLight){
+                            Log.v(TAG,"FragmentLight");
+                        }
+                    }
+                }
+            }
+        });
         //ViewPager Code//
 //        viewPager = findViewById(R.id.viewPager);
 //        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
@@ -134,12 +179,10 @@ public class MainActivity extends AppCompatActivity {
                     //Latte
 //                    socket = new Socket("70.12.229.165", 1357);
                     //PC
-                    socket = new Socket("192.168.1.9", 1357);
+                    socket = new Socket("70.12.60.98", 1357);
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
-//                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-//                    objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
                     name=name.trim();
                     sharedObject.put(name+" IN");
@@ -241,19 +284,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
-//                        bundle.putSerializable("list", list);
-//                        bundle.putSerializable("weather", weathers[0]);
+
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
                     case 1:
-//                        swipeRefresh.setVisibility(View.GONE);
                         if (fragmentA == null) {
                             fragmentA = new FragmentA(sharedObject,bufferedReader);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentA).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weatherVO);
                         bundle.putSerializable("window", windowVO);
                         fragmentA.setArguments(bundle);
@@ -323,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
+
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -365,8 +406,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private View createTabView(int iconImage) {
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
-//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
-//        tvTab.setText(tabName);
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;
@@ -377,7 +416,6 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
-
         Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
@@ -396,48 +434,6 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
-    /**
-     * ReFreshListener
-     */
-    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
-        @Override
-        public void onRefresh() {
-            /**
-             * 가장 위에 표시된 Fragment 를 얻어와(getSupportFragmentManager().getFragments()) 해당 Fragment Refresh
-             */
-            Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
-            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                if (currentFragment.isVisible()) {
-                    if(currentFragment instanceof FragmentHome){
-                        Log.v(TAG,"FragmentHome");
-                        startService(serviceIntent);
-                    }else if (currentFragment instanceof FragmentA){
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        if (fragmentA == null) {
-                            fragmentA = new FragmentA(sharedObject,bufferedReader);
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentA).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
-                        bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("window", windowVO);
-                        fragmentA.setArguments(bundle);
-                        Log.v(TAG,"FragmentA_OnRefreshListener");
-                    }
-                    else if (currentFragment instanceof FragmentRefrigerator){
-                        Log.v(TAG,"FragmentRefrigerator");
-                    }
-                    else if (currentFragment instanceof FragmentTest){
-                        Log.v(TAG,"FragmentTest");
-                    }
-                    else if (currentFragment instanceof FragmentLight){
-                        Log.v(TAG,"FragmentLight");
-                    }
-                }
-            }
-            swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
-        }
-    };
     /**
      * Speech recognition
      */
@@ -479,21 +475,55 @@ public class MainActivity extends AppCompatActivity {
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                 }
             }
-
-            //Fragment 에 Data Send
-//            if(rs != null){
-//                bundle.putString("voice",rs[0]);
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentLight.setArguments(bundle);
-//                fragmentTransaction.replace(
-//                        R.id.frame, fragmentLight).commitAllowingStateLoss();
-//            }
         }
         @Override
         public void onPartialResults(Bundle bundle) {
         }
         @Override
         public void onEvent(int i, Bundle bundle) {
+        }
+    };
+
+    /**
+     * ReFreshListener
+     */
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            /**
+             * 가장 위에 표시된 Fragment 를 얻어와(getSupportFragmentManager().getFragments()) 해당 Fragment Refresh
+             */
+            Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                if (currentFragment.isVisible()) {
+                    if(currentFragment instanceof FragmentHome){
+                        Log.v(TAG,"FragmentHome");
+                        startService(serviceIntent);
+                    }else if (currentFragment instanceof FragmentA){
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        if (fragmentA == null) {
+                            fragmentA = new FragmentA(sharedObject,bufferedReader);
+                        }
+                        fragmentTransaction.replace(
+                                R.id.frame, fragmentA).commitAllowingStateLoss();
+//                        fragmentA.setArguments(bundleFagmentA);
+                        bundle.putSerializable("weather", weatherVO);
+                        bundle.putSerializable("window", windowVO);
+                        fragmentA.setArguments(bundle);
+                        Log.v(TAG,"FragmentA_OnRefreshListener");
+                    }
+                    else if (currentFragment instanceof FragmentRefrigerator){
+                        Log.v(TAG,"FragmentRefrigerator");
+                    }
+                    else if (currentFragment instanceof FragmentTest){
+                        Log.v(TAG,"FragmentTest");
+                    }
+                    else if (currentFragment instanceof FragmentLight){
+                        Log.v(TAG,"FragmentLight");
+                    }
+                }
+            }
+            swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
         }
     };
 
