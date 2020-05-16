@@ -41,28 +41,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop">
-        <ImageButton
+        <ToggleButton
+            android:id="@+id/tglBtnWindow"
             android:layout_width="60pt"
             android:layout_height="60pt"
             android:layout_gravity="center"
-            android:id="@+id/IBWindow"
             android:clickable="true"
             android:background="@drawable/window1"
             android:focusable="true" />
     </FrameLayout>
-
-    <TextView
-        android:id="@+id/fragACurrentTemp"
-        android:layout_width="120dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="현재 온도"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -87,25 +74,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
-
-<!--    <TextView-->
-<!--        android:id="@+id/setTv02"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="예약 시간 2"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/setTv01" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/setTv01"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="예약 시간 1"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />-->
-
     <ListView
         android:id="@+id/alarmListView"
         android:layout_width="wrap_content"
@@ -113,28 +81,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmSetBtn" />
-
-<!--    <ToggleButton-->
-<!--        android:id="@+id/windowSwitch"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textOff="닫아줘"-->
-<!--        android:textOn="열어줘"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
-
-    <ToggleButton
-        android:id="@+id/windowSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textOff="닫아줘"
-        android:textOn="열어줘"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
