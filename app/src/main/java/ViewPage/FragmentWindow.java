@@ -39,6 +39,8 @@ import java.util.Locale;
 
 import Communication.SharedObject;
 import DB.DBHelper;
+import model.WeatherVO;
+import model.WindowVO;
 
 public class FragmentWindow extends Fragment {
 
@@ -57,6 +59,8 @@ public class FragmentWindow extends Fragment {
     private Button alarmSetBtn;
     Button btnAuto,btnManual;
     int modeSituation = 0;
+    WeatherVO weathers;
+    WindowVO windowVO;
 
     public FragmentWindow(){
 
@@ -155,11 +159,75 @@ public class FragmentWindow extends Fragment {
         btnManual = view.findViewById(R.id.btnManual);
         btnManual.setOnClickListener(mClick);
 
+        weathers = (WeatherVO) getArguments().get("weather");
+        Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
+        windowVO = (WindowVO) getArguments().get("window");
+        Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
+        // 창문 상태 (자동/수동)
+
+        if (windowVO.getOnOff().equals("1")){
+            Log.v(TAG,"11111111111   OPEn    11111111");
+            tglBtnWindow.setBackgroundResource(R.drawable.window2);
+        }else {
+            Log.v(TAG,"222222222");
+            tglBtnWindow.setBackgroundResource(R.drawable.window1);
+        }
+        // fragARadioBtn; 창문 버튼 (자동/수동)
+//        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
+//        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
+//        Log.i("atest", "getChecked: " +(grpBtn.getCheckedRadioButtonId()));
+//        grpBtn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                Button checkedBtn =  group.findViewById(checkedId);
+//
+//                switch (checkedId){
+//                    case R.id.autoBtn:{
+//                        Toast.makeText(context, "AUTO;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        windowToggleButton.setVisibility(View.GONE);
+//                        picker.setVisibility(View.VISIBLE);
+//                        alarmSetBtn.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_open));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_open);
+//                        break;
+//                    }
+//                    case R.id.manualBtn:{
+//                        Toast.makeText(context, "MANUAL;  " + checkedBtn.getText(), Toast.LENGTH_SHORT).show();
+//                        picker.setVisibility(View.GONE);
+//                        alarmSetBtn.setVisibility(View.GONE);
+//                        windowToggleButton.setVisibility(View.VISIBLE);
+////                        toggleBtn.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.btn_close));
+////                        toggleBtn.setBackgroundResource(R.drawable.btn_close);
+//                        break;
+//                    }
+//                }
+//            }
+//        });
+
+        // fragAToggleBtn; 창문 버튼 (자동/수동)
+        /*toggleBtn = view.findViewById(R.id.fragAToggleBtn);
+        toggleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(toggleBtn.isChecked()){
+                   Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
+                    picker.setVisibility(View.VISIBLE);
+                    windowToggleButton.setVisibility(View.VISIBLE);
+                    alarmSetBtn.setVisibility(View.VISIBLE);
+
+                }else{
+                    Toast.makeText(context, "모드; 자동", Toast.LENGTH_SHORT).show();
+                    picker.setVisibility(View.GONE);
+                    windowToggleButton.setVisibility(View.GONE);
+                    alarmSetBtn.setVisibility(View.GONE);
+                }
+            }
+        });*/
         // framyLayout
         frameLayout = view.findViewById(R.id.frameLayout);
 
         // 창문 수동 열기/닫기
-/*        windowToggleButton = view.findViewById(R.id.windowSwitch);
+        windowToggleButton = view.findViewById(R.id.tglBtnWindow);
         windowToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,29 +239,24 @@ public class FragmentWindow extends Fragment {
                     Log.i("atest", "수동: 열림");
                 }
             }
-        });*/
+        });
 
-        /*// 현제 온도 보여주기
+/*
+
+        // 현제 온도 보여주기
         fragATV01 = view.findViewById(R.id.fragACurrentTemp);
         Bundle bundle = getArguments();
         if (bundle != null) {
             WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-
             Log.v(TAG,"weather=="+weather);
+
             fragATV01.setText(weather.getTemp());
             Log.v(TAG,"getTemp=="+weather.getTemp());
-        }*/
-
-        // TimePickerDialog
-        /*TimePickerDialog timePickerDialog = new TimePickerDialog();
-        timePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
+        }
+*/
 
         // 알람 시간
+
         picker = view.findViewById(R.id.timePicker);
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
@@ -318,6 +381,9 @@ public class FragmentWindow extends Fragment {
         }
     };
 
+
+
+
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 
@@ -331,7 +397,10 @@ public class FragmentWindow extends Fragment {
 
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
+
+
             if (alarmManager != null) {
+
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
 
@@ -339,10 +408,12 @@ public class FragmentWindow extends Fragment {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
+
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
+
         }
     }
 

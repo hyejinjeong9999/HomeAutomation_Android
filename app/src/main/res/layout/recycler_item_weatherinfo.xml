@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="120pt"
@@ -18,27 +17,27 @@
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="실내온도"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|bottom"
             android:textColor="@color/recyclerViewItemFont"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="날씨"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|bottom"
             android:textColor="@color/recyclerViewItemFont"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:text="습도"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|bottom"
             android:textColor="@color/recyclerViewItemFont"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_weight="4"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/tvTempIn"
@@ -46,10 +45,10 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_horizontal"
             android:text="0"
             android:textSize="30sp"
-            android:textColor="@color/recyclerViewItemFont"/>
+            android:textColor="@color/recyclerViewItemFontValue"/>
         <ImageView
             android:id="@+id/ivWeather"
             android:layout_width="0dp"
@@ -63,10 +62,10 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_horizontal"
             android:text="0"
             android:textSize="30sp"
-            android:textColor="@color/recyclerViewItemFont"/>
+            android:textColor="@color/recyclerViewItemFontValue"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,70 +78,54 @@
             android:layout_weight="5"
             android:text="실외온도"
             android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_horizontal|center_vertical"/>
+            android:gravity="center_horizontal|bottom"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:text="미세먼지"
             android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_horizontal|center_vertical"/>
+            android:gravity="center_horizontal|bottom"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:text="창문상태"
             android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_horizontal|center_vertical"/>
+            android:gravity="center_horizontal|bottom"/>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
-        android:orientation="horizontal">
-
+        android:layout_weight="4"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
         <TextView
             android:id="@+id/tvTempOut"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_horizontal"
             android:text="0"
-            android:textColor="@color/recyclerViewItemFont"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/tvDust"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="10"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="0"
-            android:textColor="@color/recyclerViewItemFont"
             android:textSize="30sp"
-            android:visibility="gone" />
-
+            android:textColor="@color/recyclerViewItemFontValue"/>
         <ImageView
             android:id="@+id/ivDust"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:adjustViewBounds="true"
-            android:visibility="visible" />
-
+            android:adjustViewBounds="true" />
         <TextView
             android:id="@+id/tvSituation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_horizontal"
             android:text="0"
-            android:textColor="@color/recyclerViewItemFont"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textColor="@color/recyclerViewItemFontValue"/>
     </LinearLayout>
 </LinearLayout>
