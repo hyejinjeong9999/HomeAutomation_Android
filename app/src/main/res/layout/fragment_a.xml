@@ -45,7 +45,7 @@
             android:layout_width="60pt"
             android:layout_height="60pt"
             android:layout_gravity="center"
-            android:id="@+id/IBWindos"
+            android:id="@+id/IBWindow"
             android:clickable="true"
             android:background="@drawable/window1"
             android:focusable="true" />

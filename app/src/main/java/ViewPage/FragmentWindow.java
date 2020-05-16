@@ -47,8 +47,8 @@ import model.WindowVO;
 import model.alarmVO;
 
 
-public class FragmentA extends Fragment {
-    String TAG = "FragmentA";
+public class FragmentWindow extends Fragment {
+    String TAG = "FragmentWindow";
     View view;
     SharedObject sharedObject;
     BufferedReader bufferedReader;
@@ -71,10 +71,10 @@ public class FragmentA extends Fragment {
     ImageView ivWindow;
     WeatherVO weathers;
 
-    public FragmentA(SharedObject sharedObject,  String jsonData) {
+    public FragmentWindow(SharedObject sharedObject, String jsonData) {
     }
 
-    public FragmentA(SharedObject sharedObject, BufferedReader bufferedReader) {
+    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.jsonData = jsonData;
     }
@@ -86,7 +86,7 @@ public class FragmentA extends Fragment {
         assert container != null;
         context = container.getContext();
 
-        imageButton = view.findViewById(R.id.IBWindos);
+        imageButton = view.findViewById(R.id.IBWindow);
 //        DataReceiveAsyncTaskTest asyncTaskTest =
 //                new DataReceiveAsyncTaskTest(jsonData, imageButton);
 //        asyncTaskTest.execute();
