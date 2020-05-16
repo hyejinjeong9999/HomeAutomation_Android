@@ -27,7 +27,6 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
@@ -101,85 +100,23 @@ public class FragmentWindow extends Fragment {
         adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
         alarmListView.setAdapter(adapter);
 
-        // timePicker by seo
-        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String hour = String.valueOf(timePicker.getHour());
-                String min = String.valueOf(timePicker.getMinute());
-                String time = hour +'.'+ min;
-                Log.i("test", time);
-                helper.insert(time);
-
-                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-                alarmListView.setAdapter(adapter);
-            }
-        });
-
-        tglBtnWindow = view.findViewById(R.id.tglBtnWindow);
-        tglBtnWindow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /*
-                // 자동일 때 창문on/off
-                if (modeSituation == 0){
-                  tglBtnWindow.setEnabled(false);
-//                    tglBtnWindow.setClickable(false);
-                }
-                if(modeSituation == 1) {
-                    tglBtnWindow.setEnabled(true);
-
-                    if (tglBtnWindow.isChecked()) {
-                        Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
-                        Log.i("atest", "Checked: 닫기");
-                    } else {
-                        Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
-                        Log.i("atest", "Unchecked: 열기");
-                    }
-                }*/
-
-                if (tglBtnWindow.isChecked()) {
-                    Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "Checked: 닫기");
-                } else {
-                    Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "Unchecked: 열기");
-                }
-
-                /*
-                // ToggleButton 안쓰고하기
-                int index = 0;
-
-                if(index == 0 ){
-                    Log.i("atest", "if: " + String.valueOf(index));
-                    tglBtnWindow.setSelected(true);
-                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
-                    index += 1;
-                    Log.i("atest", "index += 1: " + String.valueOf(index));
-                }else{
-                    Log.i("atest", "else: " + String.valueOf(index));
-                    tglBtnWindow.setSelected(false);
-                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
-                    index = 0;
-                }*/
-
-            }
-        });
-
-
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         windowVO = (WindowVO) getArguments().get("window");
         Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
 
-        // 창문 상태 (자동/수동)
-        if (windowVO.getOnOff().equals("1")){
-            Log.v(TAG,"11111111111   OPEn    11111111");
-            tglBtnWindow.setBackgroundResource(R.drawable.window2);
-        }else {
-            Log.v(TAG,"222222222");
-            tglBtnWindow.setBackgroundResource(R.drawable.window1);
+        // 창문 상태 체크 (열림/닫힘)
+        try {
+            if (windowVO.getOnOff().equals("1")){
+                Log.v(TAG,"11111111111   OPEn    11111111");
+                tglBtnWindow.setBackgroundResource(R.drawable.window2);
+            }else {
+                Log.v(TAG,"222222222");
+                tglBtnWindow.setBackgroundResource(R.drawable.window1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "서버가 꺼졋나봐;;", Toast.LENGTH_SHORT).show();
         }
 
         // fragARadioBtn; 창문 버튼 (자동/수동)
@@ -236,31 +173,84 @@ public class FragmentWindow extends Fragment {
         // framyLayout
         frameLayout = view.findViewById(R.id.frameLayout);
 
-        // 창문 수동 열기/닫기
-        windowToggleButton = view.findViewById(R.id.tglBtnWindow);
-        windowToggleButton.setOnClickListener(new View.OnClickListener() {
+        // 상단 LinearLayout btnAuto/Manual
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
+
+        // 창문 ToggleBtn 수동 열기/닫기
+        tglBtnWindow = view.findViewById(R.id.tglBtnWindow);
+        tglBtnWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(windowToggleButton.isChecked()){
-                    Toast.makeText(context, "닫힘", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "수동: 닫힘");
+
+                /*
+                // 자동일 때 창문on/off
+                if (modeSituation == 0){
+                  tglBtnWindow.setEnabled(false);
+//                    tglBtnWindow.setClickable(false);
+                }
+                if(modeSituation == 1) {
+                    tglBtnWindow.setEnabled(true);
+
+                    if (tglBtnWindow.isChecked()) {
+                        Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
+                        Log.i("atest", "Checked: 닫기");
+                    } else {
+                        Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
+                        Log.i("atest", "Unchecked: 열기");
+                    }
+                }*/
+
+                if (tglBtnWindow.isChecked()) {
+                    Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "Checked: 닫기");
+                } else {
+                    Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
+                    Log.i("atest", "Unchecked: 열기");
+                }
+
+                /*
+                // ToggleButton 안쓰고하기
+                int index = 0;
+
+                if(index == 0 ){
+                    Log.i("atest", "if: " + String.valueOf(index));
+                    tglBtnWindow.setSelected(true);
+                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
+                    index += 1;
+                    Log.i("atest", "index += 1: " + String.valueOf(index));
                 }else{
-                    Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "수동: 열림");
-                }
-                }
+                    Log.i("atest", "else: " + String.valueOf(index));
+                    tglBtnWindow.setSelected(false);
+                    Toast.makeText(context, "열린다", Toast.LENGTH_SHORT).show();
+                    index = 0;
+                }*/
+            }
         });
-//        final TimePicker timePicker = view.findViewById(R.id.timePicker);
-        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
-//        final ListView alarmListView = view.findViewById(R.id.alarmListView);
 
+        //
+//        // timePicker by seo
+//        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String hour = String.valueOf(timePicker.getHour());
+//                String min = String.valueOf(timePicker.getMinute());
+//                String time = hour +'.'+ min;
+//                Log.i("test", time);
+//                helper.insert(time);
 //
-//        final DBHelper helper =
-//                new DBHelper(context, "alarm", 1);
-        adapter =
-                new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-        alarmListView.setAdapter(adapter);
+//                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+//                alarmListView.setAdapter(adapter);
+//            }
+//        });
 
+        /*// alarmSetBtn
+        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+
+        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+        alarmListView.setAdapter(adapter);
 
         alarmSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,21 +261,12 @@ public class FragmentWindow extends Fragment {
                 Log.i("test", time);
                 helper.insert(time);
 
-
-                adapter =
-                        new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
                 alarmListView.setAdapter(adapter);
             }
-        });
-        btnAuto = view.findViewById(R.id.btnAuto);
-        btnAuto.setOnClickListener(mClick);
-        btnManual = view.findViewById(R.id.btnManual);
-        btnManual.setOnClickListener(mClick);
-
-
+        });*/
 
         // 알람 시간
-
         picker = view.findViewById(R.id.timePicker);
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
@@ -298,7 +279,7 @@ public class FragmentWindow extends Fragment {
 
         Date nextDate = nextNotifyTime.getTime();
         String date_text = new SimpleDateFormat("a hh:mm:ss", Locale.getDefault()).format(nextDate);
-        Toast.makeText(context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "현제 시각 " + date_text + " 입니다", Toast.LENGTH_LONG).show();
         Log.i("atest", "## 01 ##");
         Log.i("atest", "date_text: " + date_text);
 
@@ -306,12 +287,12 @@ public class FragmentWindow extends Fragment {
         Date currentTime = nextNotifyTime.getTime();
         SimpleDateFormat hourFormat = new SimpleDateFormat("kk", Locale.getDefault());
         SimpleDateFormat minutesFormat = new SimpleDateFormat("mm", Locale.getDefault());
-        SimpleDateFormat secondFormat = new SimpleDateFormat("ss", Locale.getDefault());
+//        SimpleDateFormat secondFormat = new SimpleDateFormat("ss", Locale.getDefault());
         int preHour = Integer.parseInt(hourFormat.format(currentTime));
         int preMinute = Integer.parseInt(minutesFormat.format(currentTime));
-        int preSecond = Integer.parseInt(secondFormat.format(currentTime));
+//        int preSecond = Integer.parseInt(secondFormat.format(currentTime));
 
-        //  배려
+        //  SDK 23 Marshmallow 배려
         if(Build.VERSION.SDK_INT >= 23){
             picker.setHour(preHour);
             picker.setMinute(preMinute);
@@ -327,7 +308,7 @@ public class FragmentWindow extends Fragment {
                 int hour, hour_24, minute;
                 String am_pm;
 
-                //  배려
+                //  SDK 23 Marshmallow 배려
                 if(Build.VERSION.SDK_INT >= 23){
                     hour_24 = picker.getHour();
                     minute = picker.getMinute();
@@ -363,9 +344,9 @@ public class FragmentWindow extends Fragment {
                 Log.i("atest", "date_text: " + date_text);
 
                 // Preference 설정 값 저장
-//                SharedPreferences.Editor editor = getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
-//                editor.putLong("NextNofityTime", (long)calendar.getTimeInMillis());
-//                editor.apply();
+                SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", Context.MODE_PRIVATE).edit();
+                editor.putLong("NextNofityTime", (long)calendar.getTimeInMillis());
+                editor.apply();
 
                 // method:diaryNotification
                 diaryNotification(calendar);
@@ -374,6 +355,8 @@ public class FragmentWindow extends Fragment {
         return  view;
 
     }
+
+
     View.OnClickListener mClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -386,6 +369,7 @@ public class FragmentWindow extends Fragment {
                         frameLayout.setBackgroundResource(R.drawable.round_button_default);
                         picker.setVisibility(View.VISIBLE);
                         alarmSetBtn.setVisibility(View.VISIBLE);
+                        tglBtnWindow.setEnabled(false);
                         picker.setEnabled(true);
                         modeSituation = 0;
                         Log.v(TAG,"modeSituation_onClick()=="+btnAuto.getText());
@@ -398,20 +382,20 @@ public class FragmentWindow extends Fragment {
                         btnManual.setBackgroundResource(R.drawable.win_btn_back_image_check);
                         btnAuto.setBackgroundResource(R.drawable.win_btn_back_image);
                         frameLayout.setBackgroundResource(R.drawable.round_button);
-//                        picker.setVisibility(View.GONE);
+//                      picker.setVisibility(View.GONE);
+                        tglBtnWindow.setEnabled(true);
                         picker.setEnabled(false);
                         alarmSetBtn.setVisibility(View.GONE);
                         modeSituation = 1;
                         Log.v(TAG,"modeSituation_onClick()=="+btnManual.getText());
                         Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
                     }
+                    break;
             }
         }
     };
 
-
-
-
+    // Noti띄우기
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 
@@ -488,7 +472,7 @@ public class FragmentWindow extends Fragment {
         Log.v(TAG,"FragmentAonResumeonDetach");
     }
 
-    private void refresh(){
+   /* private void refresh(){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         Bundle bundle = getArguments();
@@ -503,6 +487,5 @@ public class FragmentWindow extends Fragment {
             }
         }
         transaction.detach(this).attach(this).commit();
-
-    }
+    }*/
 }
