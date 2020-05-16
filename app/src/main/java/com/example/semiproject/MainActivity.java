@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefresh;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,8 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
-//                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-//                    objectInputStream = new ObjectInputStream(socket.getInputStream());
+
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
                     name=name.trim();
                     sharedObject.put(name+" IN");

@@ -96,8 +96,7 @@ public class FragmentWindow extends Fragment {
 
         final DBHelper helper = new DBHelper(
                 context, "alarm", 1);
-        adapter = new ArrayAdapter(
-                context, android.R.layout.simple_list_item_1, helper.getResult());
+        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
         alarmListView.setAdapter(adapter);
 
         weathers = (WeatherVO) getArguments().get("weather");
@@ -358,7 +357,7 @@ public class FragmentWindow extends Fragment {
         if (windowVO.getOnOff().equals("1")){
             Log.v(TAG,"11111111111   OPEn    11111111");
             tglBtnWindow.setBackgroundResource(R.drawable.window2);
-        }else {
+        }else if(windowVO.getOnOff().equals("2")){
             Log.v(TAG,"222222222");
             tglBtnWindow.setBackgroundResource(R.drawable.window1);
         }
