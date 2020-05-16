@@ -17,5 +17,9 @@
     <color name="colorEmpty">#00000000</color>
     <color name="windowBtnBack">#00000000</color>
     <color name="windowBtnLine">#9F9B9F</color>
+    <color name="weatherColorVeryGood">#1273eb</color>
+    <color name="weatherColorGood">#69e781</color>
+    <color name="weatherColorBad">#ffb229</color>
+    <color name="weatherColorVeryBad">#c12020</color>
 
 </resources>

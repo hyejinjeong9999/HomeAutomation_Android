@@ -133,7 +133,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTempIn.setText(windowVO.getTemp());
+            ((SystemInfoWeather)holder).tvTempIn.setText(windowVO.getTemp() + " ℃");
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
              */
@@ -141,7 +141,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (weathers.getWeather().equals("Drizzle")){
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
             }else if (weathers.getWeather().equals("Mist")){
-                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.rainy);
+                ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.mist);
             }else if (weathers.getWeather().equals("Clouds")){
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.cloudy);
             }else if (weathers.getWeather().equals("Rain")){
@@ -149,12 +149,14 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-            ((SystemInfoWeather)holder).tvHumidity.setText(windowVO.getLight());
+            ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
 
-            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp());
+            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
             double dustDensity = Double.parseDouble(windowVO.getDustDensity());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
+//                ((SystemInfoWeather)holder).tvDust
+
             }else if (dustDensity<=35 && dustDensity<15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_good);
             }else if (dustDensity<=75 && dustDensity<35){
@@ -162,7 +164,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
             }
-            ((SystemInfoWeather)holder).tvSituation.setText(windowVO.getDustDensity());
+            ((SystemInfoWeather)holder).tvSituation.setText(windowVO.getDustDensity() + " μg/m³");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//

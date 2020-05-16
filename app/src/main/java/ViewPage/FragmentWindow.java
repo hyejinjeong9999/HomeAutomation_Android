@@ -1,5 +1,6 @@
 package ViewPage;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -11,19 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,13 +26,11 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
 import com.example.semiproject.R;
 
-import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,40 +41,30 @@ import Communication.SharedObject;
 import DB.DBHelper;
 import model.WeatherVO;
 import model.WindowVO;
-import model.alarmVO;
-
 
 public class FragmentWindow extends Fragment {
 
-    ArrayAdapter adapter;
     private String TAG="FragmentWindow";
     private View view;
     private SharedObject sharedObject;
-    private BufferedReader bufferedReader;
     private Context context;
-    private TextView fragATV01;
+    private boolean touchEventSituation = false;
 
+    private FrameLayout frameLayout;
+    private ToggleButton tglBtnWindow;
 
-    FrameLayout frameLayout;
-    ToggleButton tglBtnWindow;
-    private ToggleButton toggleBtn;
-    private ToggleButton windowToggleButton;
     private TimePicker picker;
-    private TextView setTv01;
-    private TextView setTv02;
     private Button alarmSetBtn;
-    Button btnAuto, btnManual;
+    private Button btnAuto, btnManual;
     int modeSituation = 0;
-    String jsonData;
-    ImageButton imageButton;
-    ImageView ivWindow;
-    WeatherVO weathers;
-    WindowVO windowVO;
+    private WeatherVO weathers;
+    private WindowVO windowVO;
 
     public FragmentWindow(SharedObject sharedObject) {
         this.sharedObject = sharedObject;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,34 +72,20 @@ public class FragmentWindow extends Fragment {
         assert container != null;
         context=container.getContext();
 
-        // timePicker or picker??
-        final TimePicker timePicker = view.findViewById(R.id.timePicker);
-        final ListView alarmListView = view.findViewById(R.id.alarmListView);
-        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
-
-        final DBHelper helper = new DBHelper(
-                context, "alarm", 1);
-        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-        alarmListView.setAdapter(adapter);
+//        // timePicker or picker??
+//        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+//        final ListView alarmListView = view.findViewById(R.id.alarmListView);
+//        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+//
+//        final DBHelper helper = new DBHelper(
+//                context, "alarm", 1);
+//        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, helper.getResult());
+//        alarmListView.setAdapter(adapter);
 
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         windowVO = (WindowVO) getArguments().get("window");
         Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
-
-        // 창문 상태 체크 (열림/닫힘)
-        try {
-            if (windowVO.getOnOff().equals("1")){
-                Log.v(TAG,"11111111111   OPEn    11111111");
-                tglBtnWindow.setBackgroundResource(R.drawable.window2);
-            }else {
-                Log.v(TAG,"222222222");
-                tglBtnWindow.setBackgroundResource(R.drawable.window1);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(context, "서버가 꺼졋나봐;;", Toast.LENGTH_SHORT).show();
-        }
 
         // framyLayout
         frameLayout = view.findViewById(R.id.frameLayout);
@@ -129,66 +98,36 @@ public class FragmentWindow extends Fragment {
 
         // 창문 ToggleBtn 수동 열기/닫기
         tglBtnWindow = view.findViewById(R.id.tglBtnWindow);
+        tglBtnWindow.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.v(TAG,"tglBtnWindow_onTouch()==============="+tglBtnWindow.isInTouchMode());
+                touchEventSituation = true;
+                return false;
+            }
+        });
         tglBtnWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(TAG,"windowVO.getOnOff()"+windowVO.getOnOff());
-                if(tglBtnWindow.isChecked()){
+                if(tglBtnWindow.isChecked() && touchEventSituation == true){
                     Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                    touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                     tglBtnWindow.setBackgroundResource(R.drawable.window2);
-                }else {
+                }else if (!(tglBtnWindow.isChecked()) && touchEventSituation == true){
                     Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                    touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS ON");
                     tglBtnWindow.setBackgroundResource(R.drawable.window1);
                 }
-
-//                if (tglBtnWindow.isChecked()) {
-//                    Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
-//                    Log.i("atest", "Checked: 닫기");
-//                } else {
-//                    Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
-//                    Log.i("atest", "Unchecked: 열기");
-//                }
-
             }
         });
-
-        //
-//        // timePicker by seo
-//        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String hour = String.valueOf(timePicker.getHour());
-//                String min = String.valueOf(timePicker.getMinute());
-//                String time = hour +'.'+ min;
-//                Log.i("test", time);
-//                helper.insert(time);
-//
-//                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-//                alarmListView.setAdapter(adapter);
-//            }
-//        });
-
-        /*// alarmSetBtn
-        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
-
-        adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-        alarmListView.setAdapter(adapter);
-
-        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String hour = String.valueOf(timePicker.getHour());
-                String min = String.valueOf(timePicker.getMinute());
-                String time = hour +'.'+ min;
-                Log.i("test", time);
-                helper.insert(time);
-
-                adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
-                alarmListView.setAdapter(adapter);
-            }
-        });*/
+        // mClick btnAuto/Manual
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
 
         // 알람 시간
         picker = view.findViewById(R.id.timePicker);
@@ -276,10 +215,10 @@ public class FragmentWindow extends Fragment {
                 diaryNotification(calendar);
             }
         });
-        return  view;
+        return view;
     }
 
-
+    // btnAuto/Manual 작동과 창문 tglBtnWindow 관계
     View.OnClickListener mClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -317,7 +256,6 @@ public class FragmentWindow extends Fragment {
             }
         }
     };
-
     // Noti띄우기
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
@@ -329,21 +267,15 @@ public class FragmentWindow extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
         AlarmManager alarmManager = (AlarmManager) this.getActivity().getSystemService(Context.ALARM_SERVICE);
 
-
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
-
-
             if (alarmManager != null) {
-
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
-
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
@@ -354,12 +286,18 @@ public class FragmentWindow extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (windowVO.getOnOff().equals("1")){
-            Log.v(TAG,"11111111111   OPEn    11111111");
-            tglBtnWindow.setBackgroundResource(R.drawable.window2);
-        }else if(windowVO.getOnOff().equals("2")){
-            Log.v(TAG,"222222222");
-            tglBtnWindow.setBackgroundResource(R.drawable.window1);
+        // 창문 상태 체크 (열림/닫힘)
+        try {
+            if (windowVO.getOnOff().equals("1")){
+                Log.v(TAG,"11111111111   OPEn    11111111");
+                tglBtnWindow.setBackgroundResource(R.drawable.window2);
+            }else {
+                Log.v(TAG,"222222222");
+                tglBtnWindow.setBackgroundResource(R.drawable.window1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "서버가 꺼졋나봐;;", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -378,36 +316,37 @@ public class FragmentWindow extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG,"onResume");
+        Log.v(TAG, "FragmentAonResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.v(TAG,"onPause");
+        Log.v(TAG, "FragmentAonResumeonPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG,"onStop");
+        Log.v(TAG, "FragmentAonResumeonStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.v(TAG,"onDestroyView");
+        Log.v(TAG, "FragmentAonResumeonDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG,"onDestroy");
+        Log.v(TAG, "FragmentAonResumeonDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.v(TAG,"onDetach");
+        Log.v(TAG,"FragmentAonResumeonDetach");
     }
+
 }

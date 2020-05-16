@@ -1,15 +1,5 @@
 package com.example.semiproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -24,6 +14,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
@@ -42,14 +42,15 @@ import Communication.SharedObject;
 import Communication.WeatherService;
 import Event.OnSwipeTouchListener;
 import RecyclerViewAdapter.ViewType;
-import ViewPage.FragmentWindow;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentTest;
+import ViewPage.FragmentWindow;
 import model.SystemInfoVO;
-import model.WindowVO;
 import model.WeatherVO;
+import model.WindowVO;
+
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
@@ -96,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView roomPM;
 
     SwipeRefreshLayout swipeRefresh;
-
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -145,11 +145,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             fragmentTransaction.replace(
                                     R.id.frame, fragmentWindow).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
                             bundle.putSerializable("weather", weatherVO);
                             bundle.putSerializable("window", windowVO);
                             fragmentWindow.setArguments(bundle);
-                            Log.v(TAG,"FragmentA_OnRefreshListener");
+                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
                         }
                         else if (currentFragment instanceof FragmentRefrigerator){
                             Log.v(TAG,"FragmentRefrigerator");
@@ -295,15 +294,17 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTag = 0;
                         break;
                     case 1:
+//                        swipeRefresh.setVisibility(View.GONE);
                         if (fragmentWindow == null) {
                             fragmentWindow = new FragmentWindow(sharedObject);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
-
+//                        fragmentWindow.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weatherVO);
                         bundle.putSerializable("window", windowVO);
                         fragmentWindow.setArguments(bundle);
+
                         break;
                     case 2:
                         if (fragmentRefrigerator == null) {
@@ -332,9 +333,6 @@ public class MainActivity extends AppCompatActivity {
                                 R.id.frame, fragmentLight).commitAllowingStateLoss();
                         speechRecognizer.startListening(intent);
                         fragmentTag = 4;
-
-//                        startActivity(new Intent(getApplicationContext(), DBTestActivity.class));
-                        Log.v(TAG,"voice==================");
                 }
             }
 
@@ -382,13 +380,13 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
         list.add(new SystemInfoVO(
-                R.drawable.angel, "에어컨", ViewType.ItemVerticalSwitch));
+                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(
-                R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
+                R.drawable.ic_light_on, "조명", "켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
+                R.drawable.ic_refrigerator, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
+                R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
     }
 
     /**
@@ -447,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
-    /**
+    /*
      * Speech recognition
      */
     private RecognitionListener recognitionListener = new RecognitionListener() {

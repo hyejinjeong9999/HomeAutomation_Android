@@ -47,7 +47,7 @@
             android:layout_weight="10"
             android:gravity="center_horizontal"
             android:text="0"
-            android:textSize="30sp"
+            android:textSize="28sp"
             android:textColor="@color/recyclerViewItemFontValue"/>
         <ImageView
             android:id="@+id/ivWeather"
@@ -86,20 +86,20 @@
             android:text="미세먼지"
             android:textColor="@color/recyclerViewItemFont"
             android:gravity="center_horizontal|bottom"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:text="창문상태"
-            android:textColor="@color/recyclerViewItemFont"
-            android:gravity="center_horizontal|bottom"/>
+<!--        <TextView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="5"-->
+<!--            android:text="창문상태"-->
+<!--            android:textColor="@color/recyclerViewItemFont"-->
+<!--            android:gravity="center_horizontal|bottom"/>-->
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="10dp">
         <TextView
             android:id="@+id/tvTempOut"
             android:layout_width="0dp"
@@ -108,24 +108,34 @@
             android:layout_weight="10"
             android:gravity="center_horizontal"
             android:text="0"
-            android:textSize="30sp"
+            android:textSize="28sp"
             android:textColor="@color/recyclerViewItemFontValue"/>
-        <ImageView
-            android:id="@+id/ivDust"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="10"
-            android:adjustViewBounds="true" />
-        <TextView
-            android:id="@+id/tvSituation"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_horizontal"
-            android:text="0"
-            android:textSize="30sp"
-            android:textColor="@color/recyclerViewItemFontValue"/>
+            android:orientation="vertical"
+            android:layout_margin="10dp" >
+
+            <ImageView
+                android:id="@+id/ivDust"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                android:adjustViewBounds="true" />
+            <TextView
+                android:id="@+id/tvSituation"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="@color/recyclerViewItemFontValue"
+                android:textSize="10sp" />
+
+
+        </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
