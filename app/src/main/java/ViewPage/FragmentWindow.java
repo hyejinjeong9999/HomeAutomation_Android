@@ -13,8 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +29,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
@@ -41,6 +46,7 @@ import Communication.SharedObject;
 import DB.DBHelper;
 import model.WeatherVO;
 import model.WindowVO;
+import model.alarmVO;
 
 public class FragmentWindow extends Fragment {
 
@@ -51,23 +57,30 @@ public class FragmentWindow extends Fragment {
     private BufferedReader bufferedReader;
     private Context context;
     private TextView fragATV01;
+    ArrayAdapter adapter;
+
+
     FrameLayout frameLayout;
     ToggleButton tglBtnWindow;
     private ToggleButton toggleBtn;
     private ToggleButton windowToggleButton;
     private TimePicker picker;
+    private TextView setTv01;
+    private TextView setTv02;
     private Button alarmSetBtn;
     Button btnAuto,btnManual;
     int modeSituation = 0;
+    String jsonData;
+    ImageButton imageButton;
+    ImageView ivWindow;
     WeatherVO weathers;
-    WindowVO windowVO;
 
-    public FragmentWindow(){
-
+    public FragmentWindow() {
     }
+
     public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
-        this.bufferedReader = bufferedReader;
+        this.jsonData = jsonData;
     }
 
     @Nullable
@@ -238,22 +251,39 @@ public class FragmentWindow extends Fragment {
                     Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
                     Log.i("atest", "수동: 열림");
                 }
+        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+        Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+        final ListView alarmListView = view.findViewById(R.id.alarmListView);
+
+
+        final DBHelper helper =
+                new DBHelper(context, "alarm", 1);
+        adapter =
+                new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+        alarmListView.setAdapter(adapter);
+
+
+        alarmSetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String hour = String.valueOf(timePicker.getHour());
+                String min = String.valueOf(timePicker.getMinute());
+                String time = hour +'.'+ min;
+                Log.i("test", time);
+                helper.insert(time);
+
+
+                adapter =
+                        new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
+                alarmListView.setAdapter(adapter);
             }
         });
+        btnAuto = view.findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(mClick);
+        btnManual = view.findViewById(R.id.btnManual);
+        btnManual.setOnClickListener(mClick);
 
-/*
 
-        // 현제 온도 보여주기
-        fragATV01 = view.findViewById(R.id.fragACurrentTemp);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            WeatherVO weather = (WeatherVO) bundle.getSerializable("weather");
-            Log.v(TAG,"weather=="+weather);
-
-            fragATV01.setText(weather.getTemp());
-            Log.v(TAG,"getTemp=="+weather.getTemp());
-        }
-*/
 
         // 알람 시간
 
@@ -261,7 +291,7 @@ public class FragmentWindow extends Fragment {
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
         // 최근 설정한 값 or 현재시간
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("Daily Alarm", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Daily Alarm", Context.MODE_PRIVATE);
         long mills = sharedPreferences.getLong("nextNotifyTime", Calendar.getInstance().getTimeInMillis());
 
         Calendar nextNotifyTime = new GregorianCalendar();
@@ -269,12 +299,12 @@ public class FragmentWindow extends Fragment {
 
         Date nextDate = nextNotifyTime.getTime();
         String date_text = new SimpleDateFormat("a hh:mm:ss", Locale.getDefault()).format(nextDate);
-        Toast.makeText(this.context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "다음 알람 " + date_text + "으로 설정", Toast.LENGTH_LONG).show();
         Log.i("atest", "## 01 ##");
         Log.i("atest", "date_text: " + date_text);
 
         // TimePicker 초기화
-        Date currentTime  = nextNotifyTime.getTime();
+        Date currentTime = nextNotifyTime.getTime();
         SimpleDateFormat hourFormat = new SimpleDateFormat("kk", Locale.getDefault());
         SimpleDateFormat minutesFormat = new SimpleDateFormat("mm", Locale.getDefault());
         SimpleDateFormat secondFormat = new SimpleDateFormat("ss", Locale.getDefault());
@@ -376,7 +406,6 @@ public class FragmentWindow extends Fragment {
                         Log.v(TAG,"modeSituation_onClick()=="+btnManual.getText());
                         Toast.makeText(context, "모드; 수동", Toast.LENGTH_SHORT).show();
                     }
-                    break;
             }
         }
     };
@@ -397,28 +426,18 @@ public class FragmentWindow extends Fragment {
 
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
-
-
             if (alarmManager != null) {
-
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
-
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
-
         }
-    }
-
-    public void imageBtnClicked(View view) {
-
     }
 
     @Override
@@ -436,36 +455,54 @@ public class FragmentWindow extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG,"onResume");
+        Log.v(TAG,"FragmentAonResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.v(TAG,"onPause");
+        Log.v(TAG,"FragmentAonResumeonPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG,"onStop");
+        Log.v(TAG,"FragmentAonResumeonStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.v(TAG,"onDestroyView");
+        Log.v(TAG,"FragmentAonResumeonDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG,"onDestroy");
+        Log.v(TAG,"FragmentAonResumeonDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.v(TAG,"onDetach");
+        Log.v(TAG,"FragmentAonResumeonDetach");
+    }
+
+    private void refresh(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            windowVO = (WindowVO) bundle.getSerializable("window");
+            String onOff = (windowVO.getOnOff());
+            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
+            if(onOff.equals("1")){
+                imageButton.setBackgroundResource(R.drawable.window2);
+            }else{
+                imageButton.setBackgroundResource(R.drawable.window1);
+            }
+        }
+        transaction.detach(this).attach(this).commit();
+
     }
 }

@@ -39,9 +39,10 @@ public class FragmentHome extends Fragment {
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
-        this.sharedObject=sharedObject;
-        this.bufferedReader=bufferedReader;
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO) {
+        this.sharedObject = sharedObject;
+        this.bufferedReader = bufferedReader;
+        this.windowVO = windowVO;
     }
 
     @Nullable
@@ -60,7 +61,7 @@ public class FragmentHome extends Fragment {
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         windowVO = (WindowVO) getArguments().get("window");
-//        Log.v(TAG,"weather.getOnOff()=="+windowVO.getOnOff());
+        Log.v(TAG,"weather.getOnOff()=="+windowVO.getOnOff());
 //        Log.v(TAG,"bundle=="+bundle.getSerializable("weather").toString());
 //        weathers=(WeatherVO)bundle.getSerializable("weather");
 

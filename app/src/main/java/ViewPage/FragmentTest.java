@@ -58,8 +58,8 @@ public class FragmentTest extends Fragment {
         /**
          * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
          */
-        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
-                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
+//        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
+//                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
 //        asyncTaskTest.execute();
         /**
          * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
