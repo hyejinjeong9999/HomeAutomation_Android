@@ -75,13 +75,16 @@ public class FragmentWindow extends Fragment {
     public FragmentWindow() {
     }
 
-    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
+    public FragmentWindow(SharedObject sharedObject) {
         this.sharedObject = sharedObject;
-        this.jsonData = jsonData;
     }
-
-    public FragmentWindow(SharedObject sharedObject, String jsonData) {
-    }
+//    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
+//        this.sharedObject = sharedObject;
+//        this.jsonData = jsonData;
+//    }
+//
+//    public FragmentWindow(SharedObject sharedObject, String jsonData) {
+//    }
 
     @Nullable
     @Override
@@ -105,19 +108,6 @@ public class FragmentWindow extends Fragment {
         windowVO = (WindowVO) getArguments().get("window");
         Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
 
-        // 창문 상태 체크 (열림/닫힘)
-        try {
-            if (windowVO.getOnOff().equals("1")){
-                Log.v(TAG,"11111111111   OPEn    11111111");
-                tglBtnWindow.setBackgroundResource(R.drawable.window2);
-            }else {
-                Log.v(TAG,"222222222");
-                tglBtnWindow.setBackgroundResource(R.drawable.window1);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(context, "서버가 꺼졋나봐;;", Toast.LENGTH_SHORT).show();
-        }
 
         // fragARadioBtn; 창문 버튼 (자동/수동)
 //        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
@@ -202,13 +192,15 @@ public class FragmentWindow extends Fragment {
                         Log.i("atest", "Unchecked: 열기");
                     }
                 }*/
-
-                if (tglBtnWindow.isChecked()) {
-                    Toast.makeText(context, "닫히는 중", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "Checked: 닫기");
-                } else {
-                    Toast.makeText(context, "열리는 중", Toast.LENGTH_SHORT).show();
-                    Log.i("atest", "Unchecked: 열기");
+                Log.v(TAG,"windowVO.getOnOff()"+windowVO.getOnOff());
+                if(tglBtnWindow.isChecked()){
+                    Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                    tglBtnWindow.setBackgroundResource(R.drawable.window2);
+                }else {
+                    Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                    tglBtnWindow.setBackgroundResource(R.drawable.window1);
                 }
 
                 /*
@@ -423,6 +415,24 @@ public class FragmentWindow extends Fragment {
         }
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 창문 상태 체크 (열림/닫힘)
+        try {
+            if (windowVO.getOnOff().equals("1")){
+                Log.v(TAG,"11111111111   OPEn    11111111");
+                tglBtnWindow.setBackgroundResource(R.drawable.window2);
+            }else {
+                Log.v(TAG,"222222222");
+                tglBtnWindow.setBackgroundResource(R.drawable.window1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "서버가 꺼졋나봐;;", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

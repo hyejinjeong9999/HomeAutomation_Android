@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             windowVO = new WindowVO();
-                            fragmentWindow = new FragmentWindow(sharedObject, jsonData);
+                            fragmentWindow = new FragmentWindow(sharedObject);
                             while (true) {
                                 try {
                                     jsonData = bufferedReader.readLine();
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
 //                        swipeRefresh.setVisibility(View.GONE);
                         if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject, jsonData);
+                            fragmentWindow = new FragmentWindow(sharedObject);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                     }else if (currentFragment instanceof FragmentWindow){
                         fragmentTransaction = fragmentManager.beginTransaction();
                         if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject,bufferedReader);
+                            fragmentWindow = new FragmentWindow(sharedObject);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
