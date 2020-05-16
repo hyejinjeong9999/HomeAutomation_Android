@@ -1,18 +1,6 @@
 package com.example.semiproject;
 
 import android.Manifest;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -51,8 +39,8 @@ import java.util.ArrayList;
 
 import Communication.SharedObject;
 import Communication.WeatherService;
+import Event.OnSwipeTouchListener;
 import RecyclerViewAdapter.ViewType;
-import ViewPage.FragmentWindow;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
@@ -155,11 +143,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             fragmentTransaction.replace(
                                     R.id.frame, fragmentWindow).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
                             bundle.putSerializable("weather", weatherVO);
                             bundle.putSerializable("window", windowVO);
                             fragmentWindow.setArguments(bundle);
-                            Log.v(TAG,"FragmentA_OnRefreshListener");
+                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
                         }
                         else if (currentFragment instanceof FragmentRefrigerator){
                             Log.v(TAG,"FragmentRefrigerator");
