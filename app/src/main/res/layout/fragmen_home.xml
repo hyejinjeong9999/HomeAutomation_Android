@@ -6,6 +6,7 @@
 
     android:background="@drawable/fragment_background">
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewVertical"
         android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -50,6 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void update(String item, String price) {
         SQLiteDatabase db = getWritableDatabase();
+
         db.close();
     }
 
@@ -75,4 +76,5 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.i("DBTEST", "select 호출");
         return alarmList;
     }
+
 }

@@ -39,9 +39,10 @@ public class FragmentHome extends Fragment {
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader){
-        this.sharedObject=sharedObject;
-        this.bufferedReader=bufferedReader;
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO) {
+        this.sharedObject = sharedObject;
+        this.bufferedReader = bufferedReader;
+        this.windowVO = windowVO;
     }
 
     @Nullable
@@ -127,30 +128,30 @@ public class FragmentHome extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(TAG,"onStart");
+        Log.v(TAG,"FragmentHomeonResumeonStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG,"onResume");
+        Log.v(TAG,"FragmentHomeonResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.v(TAG,"onPause");
+        Log.v(TAG,"FragmentHomeonPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG,"onStop");
+        Log.v(TAG,"FragmentHomeonStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.v(TAG,"onDestroyView");
+        Log.v(TAG,"FragmentHomeonDestroyView");
     }
 }
