@@ -1,6 +1,18 @@
 package com.example.semiproject;
 
 import android.Manifest;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -40,6 +52,7 @@ import java.util.ArrayList;
 import Communication.SharedObject;
 import Communication.WeatherService;
 import RecyclerViewAdapter.ViewType;
+import ViewPage.FragmentWindow;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
@@ -84,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
     SharedObject sharedObject = new SharedObject();
 
-
     String jsonData;
     //Speech recognition
     SpeechRecognizer speechRecognizer;
@@ -96,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView roomPM;
 
     SwipeRefreshLayout swipeRefresh;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,21 +124,56 @@ public class MainActivity extends AppCompatActivity {
          * WeatherService Restart
          */
         Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
-        swipeRefresh = findViewById(R.id.swipeRefresh);
-        swipeRefresh.setOnRefreshListener(onRefreshListener);
-
-//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-//            if (currentFragment.isVisible()) {
-//                if (currentFragment instanceof FragmentHome) {
-//                    Log.v(TAG, "FragmentHome" + currentFragment.toString());
-//                    swipeRefresh.setVisibility(View.GONE);
-//                }else {
-//                    swipeRefresh.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        }
+//        swipeRefresh = findViewById(R.id.swipeRefresh);
+//        swipeRefresh.setOnRefreshListener(onRefreshListener);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        frame=findViewById(R.id.frame);
+        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+            public void onSwipeTop() {
+                Log.v(TAG,"onSwipeTop()");
+                speechRecognizer.startListening(intent);
+            }
+            public void onSwipeRight() {
+                Log.v(TAG,"onSwipeRight()");
+            }
+            public void onSwipeLeft() {
+                Log.v(TAG,"onSwipeLeft()");
+            }
+            public void onSwipeBottom() {
+                Log.v(TAG,"onSwipeBottom()");
+                Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                    if (currentFragment.isVisible()) {
+                        if(currentFragment instanceof FragmentHome){
+                            Log.v(TAG,"FragmentHome");
+                            startService(serviceIntent);
+                        }else if (currentFragment instanceof FragmentWindow){
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            if (fragmentWindow == null) {
+                                fragmentWindow = new FragmentWindow(sharedObject);
+                            }
+                            fragmentTransaction.replace(
+                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+//                        fragmentA.setArguments(bundleFagmentA);
+                            bundle.putSerializable("weather", weatherVO);
+                            bundle.putSerializable("window", windowVO);
+                            fragmentWindow.setArguments(bundle);
+                            Log.v(TAG,"FragmentA_OnRefreshListener");
+                        }
+                        else if (currentFragment instanceof FragmentRefrigerator){
+                            Log.v(TAG,"FragmentRefrigerator");
+                        }
+                        else if (currentFragment instanceof FragmentTest){
+                            Log.v(TAG,"FragmentTest");
+                        }
+                        else if (currentFragment instanceof FragmentLight){
+                            Log.v(TAG,"FragmentLight");
+                        }
+                    }
+                }
+            }
+        });
         //ViewPager Code//
 //        viewPager = findViewById(R.id.viewPager);
 //        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
@@ -202,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         });
         thread.start();
 //        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, testVO);
+//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
 //        asyncTaskTest.execute();
 
         /**
@@ -255,8 +301,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentHome).commitAllowingStateLoss();
-//                        bundle.putSerializable("list", list);
-//                        bundle.putSerializable("weather", weathers[0]);
+
                         fragmentHome.setArguments(bundle);
                         fragmentTag = 0;
                         break;
@@ -338,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(recognitionListener);
     }
 
+
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
      */
@@ -346,13 +392,13 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
         list.add(new SystemInfoVO(
-                R.drawable.angel, "에어컨", ViewType.ItemVerticalSwitch));
+                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(
-                R.drawable.angry, "조명", "켜짐", ViewType.ItemVertical));
+                R.drawable.ic_light_on, "조명", "켜짐", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.angel, "냉장고", "????", ViewType.ItemVertical));
+                R.drawable.ic_refrigerator, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.angry, "현관문", "켜짐", ViewType.ItemVertical));
+                R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
     }
 
     /**
@@ -411,6 +457,57 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
+    /*
+     * Speech recognition
+     */
+    private RecognitionListener recognitionListener = new RecognitionListener() {
+        @Override
+        public void onReadyForSpeech(Bundle bundle) {
+        }
+        @Override
+        public void onBeginningOfSpeech() {
+        }
+        @Override
+        public void onRmsChanged(float v) {
+        }
+        @Override
+        public void onBufferReceived(byte[] bytes) {
+        }
+        @Override
+        public void onEndOfSpeech() {
+        }
+        @Override
+        public void onError(int i) {
+            Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
+            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
+            speechRecognizer.startListening(intent);
+        }
+        @Override
+        public void onResults(Bundle bundle) {
+            String key = "";
+            key = SpeechRecognizer.RESULTS_RECOGNITION;
+            ArrayList<String> mResult = bundle.getStringArrayList(key);
+
+            String[] rs = new String[mResult.size()];
+            mResult.toArray(rs);
+            Log.v(TAG,"음성인식=="+rs[0]);
+            Log.v(TAG,"음성인식size=="+mResult.size());
+            if(rs[0].contains("창문")){
+                if(rs[0].contains("열어")){
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                }else if(rs[0].contains("닫아")){
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                }
+            }
+        }
+        @Override
+        public void onPartialResults(Bundle bundle) {
+        }
+        @Override
+        public void onEvent(int i, Bundle bundle) {
+        }
+    };
+
     /**
      * ReFreshListener
      */
@@ -451,57 +548,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
-        }
-    };
-    /**
-     * Speech recognition
-     */
-    private RecognitionListener recognitionListener = new RecognitionListener() {
-        @Override
-        public void onReadyForSpeech(Bundle bundle) {
-        }
-        @Override
-        public void onBeginningOfSpeech() {
-        }
-        @Override
-        public void onRmsChanged(float v) {
-        }
-        @Override
-        public void onBufferReceived(byte[] bytes) {
-        }
-        @Override
-        public void onEndOfSpeech() {
-        }
-        @Override
-        public void onError(int i) {
-            Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
-            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
-            speechRecognizer.startListening(intent);
-        }
-        @Override
-        public void onResults(Bundle bundle) {
-            String key = "";
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = bundle.getStringArrayList(key);
-
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
-            Log.v(TAG,"음성인식=="+rs[0]);
-            Toast.makeText(getApplicationContext(),"음성="+rs[0],Toast.LENGTH_LONG);
-            //Fragment 에 Data Send
-//            if(rs != null){
-//                bundle.putString("voice",rs[0]);
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentLight.setArguments(bundle);
-//                fragmentTransaction.replace(
-//                        R.id.frame, fragmentLight).commitAllowingStateLoss();
-//            }
-        }
-        @Override
-        public void onPartialResults(Bundle bundle) {
-        }
-        @Override
-        public void onEvent(int i, Bundle bundle) {
         }
     };
 

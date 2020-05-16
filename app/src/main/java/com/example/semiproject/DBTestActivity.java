@@ -14,49 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class DBTestActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_db_test);
-
-        final EditText _dbTest_timeEditText = findViewById(R.id._dbTest_timeEditText);
-        Button _dbTestInsertBtn = findViewById(R.id._dbTestInsertBtn);
-        Button _dbTestDeleteBtn = findViewById(R.id._dbTestDeleteBtn);
-        final Button _dbTestSelectBtn = findViewById(R.id._dbTestSelectBtn);
-        final TextView _dbTestTv = findViewById(R.id._dbTestTv);
-
-        final DBHelper helper =
-                new DBHelper(DBTestActivity.this, "alarm", 1);
-        //helper를 통해서 db refeernce를 획득
-
-        _dbTestInsertBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String time = _dbTest_timeEditText.getText().toString();
-                helper.insert(time);
-
-            }
-        });
-
-        _dbTestDeleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                helper.delete();
-            }
-        });
-
-        _dbTestSelectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _dbTestTv.setText(helper.getResult());
-            }
-        });
-    }
-}
-
-
 class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context, String dbName, int version) {
         super(context, dbName, null, version);
