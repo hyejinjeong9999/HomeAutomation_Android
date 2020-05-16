@@ -13,13 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,7 +44,6 @@ import Communication.SharedObject;
 import DB.DBHelper;
 import model.WeatherVO;
 import model.WindowVO;
-import model.alarmVO;
 
 public class FragmentWindow extends Fragment {
 
@@ -57,7 +54,6 @@ public class FragmentWindow extends Fragment {
     private BufferedReader bufferedReader;
     private Context context;
     private TextView fragATV01;
-    ArrayAdapter adapter;
 
 
     FrameLayout frameLayout;
@@ -74,6 +70,8 @@ public class FragmentWindow extends Fragment {
     ImageButton imageButton;
     ImageView ivWindow;
     WeatherVO weathers;
+    WindowVO windowVO;
+
 
     public FragmentWindow() {
     }
@@ -81,6 +79,9 @@ public class FragmentWindow extends Fragment {
     public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.jsonData = jsonData;
+    }
+
+    public FragmentWindow(SharedObject sharedObject, String jsonData) {
     }
 
     @Nullable
@@ -166,18 +167,13 @@ public class FragmentWindow extends Fragment {
             }
         });
 
-        // 자동/수동 버튼
-        btnAuto = view.findViewById(R.id.btnAuto);
-        btnAuto.setOnClickListener(mClick);
-        btnManual = view.findViewById(R.id.btnManual);
-        btnManual.setOnClickListener(mClick);
 
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         windowVO = (WindowVO) getArguments().get("window");
         Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
-        // 창문 상태 (자동/수동)
 
+        // 창문 상태 (자동/수동)
         if (windowVO.getOnOff().equals("1")){
             Log.v(TAG,"11111111111   OPEn    11111111");
             tglBtnWindow.setBackgroundResource(R.drawable.window2);
@@ -185,6 +181,7 @@ public class FragmentWindow extends Fragment {
             Log.v(TAG,"222222222");
             tglBtnWindow.setBackgroundResource(R.drawable.window1);
         }
+
         // fragARadioBtn; 창문 버튼 (자동/수동)
 //        grpBtn = view.findViewById(R.id.fragARadioGroupBtn);
 //        grpBtn.check(R.id.autoBtn);     // 일단 자동에 설정
@@ -251,13 +248,15 @@ public class FragmentWindow extends Fragment {
                     Toast.makeText(context, "열림", Toast.LENGTH_SHORT).show();
                     Log.i("atest", "수동: 열림");
                 }
-        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+                }
+        });
+//        final TimePicker timePicker = view.findViewById(R.id.timePicker);
         Button alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
-        final ListView alarmListView = view.findViewById(R.id.alarmListView);
+//        final ListView alarmListView = view.findViewById(R.id.alarmListView);
 
-
-        final DBHelper helper =
-                new DBHelper(context, "alarm", 1);
+//
+//        final DBHelper helper =
+//                new DBHelper(context, "alarm", 1);
         adapter =
                 new ArrayAdapter(context, android.R.layout.simple_list_item_1, helper.getResult());
         alarmListView.setAdapter(adapter);
@@ -439,6 +438,7 @@ public class FragmentWindow extends Fragment {
                     PackageManager.DONT_KILL_APP);
         }
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
