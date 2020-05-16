@@ -14,8 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,6 +31,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.semiproject.AlarmReceiver;
 import com.example.semiproject.DeviceBootReceiver;
@@ -43,6 +48,8 @@ import Communication.SharedObject;
 import DB.DBHelper;
 import model.WeatherVO;
 import model.WindowVO;
+import model.alarmVO;
+
 
 public class FragmentWindow extends Fragment {
 
@@ -63,7 +70,7 @@ public class FragmentWindow extends Fragment {
     private TextView setTv01;
     private TextView setTv02;
     private Button alarmSetBtn;
-    Button btnAuto,btnManual;
+    Button btnAuto, btnManual;
     int modeSituation = 0;
     String jsonData;
     ImageButton imageButton;
@@ -326,13 +333,18 @@ public class FragmentWindow extends Fragment {
 
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
+
+
             if (alarmManager != null) {
+
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
             }
+
             // 부팅 후 실행되는 리시버 사용가능하게 설정
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
@@ -367,53 +379,36 @@ public class FragmentWindow extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG,"FragmentAonResume");
+        Log.v(TAG,"onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.v(TAG,"FragmentAonResumeonPause");
+        Log.v(TAG,"onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG,"FragmentAonResumeonStop");
+        Log.v(TAG,"onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.v(TAG,"FragmentAonResumeonDestroyView");
+        Log.v(TAG,"onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG,"FragmentAonResumeonDestroy");
+        Log.v(TAG,"onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.v(TAG,"FragmentAonResumeonDetach");
+        Log.v(TAG,"onDetach");
     }
-
-   /* private void refresh(){
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            windowVO = (WindowVO) bundle.getSerializable("window");
-            String onOff = (windowVO.getOnOff());
-            Log.v(TAG, "String onOff = (windowVO.getOnOff());==" + onOff);
-            if(onOff.equals("1")){
-                imageButton.setBackgroundResource(R.drawable.window2);
-            }else{
-                imageButton.setBackgroundResource(R.drawable.window1);
-            }
-        }
-        transaction.detach(this).attach(this).commit();
-    }*/
 }

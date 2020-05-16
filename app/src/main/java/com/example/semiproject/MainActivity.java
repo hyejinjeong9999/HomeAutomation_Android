@@ -1,5 +1,4 @@
 package com.example.semiproject;
-import android.Manifest;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -11,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import android.annotation.SuppressLint;
-
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,7 +22,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     SwipeRefreshLayout swipeRefresh;
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
                     bufferedReader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
                     printWriter = new PrintWriter(socket.getOutputStream());
+//                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//                    objectInputStream = new ObjectInputStream(socket.getInputStream());
                     Log.v(TAG, "Socket Situation==" + socket.isConnected());
                     name=name.trim();
                     sharedObject.put(name+" IN");
@@ -415,6 +415,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private View createTabView(int iconImage) {
         View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
+//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
+//        tvTab.setText(tabName);
         ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
         ivTab.setImageResource(iconImage);
         return tabView;
@@ -425,7 +427,9 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onNewIntent(Intent intent) {
+
         Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
         weatherVO = weathers[0];
@@ -464,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onError(int i) {
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
+            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
             speechRecognizer.startListening(intent);
         }
         @Override
