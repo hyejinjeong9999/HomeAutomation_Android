@@ -103,141 +103,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
         serviceIntent = new Intent(getApplicationContext(), WeatherService.class);
         startService(serviceIntent);
-
+        //Communication Thread Start//
+        thread.start();
         /**
          * Implementing Pull to Refresh
          * WeatherService Restart
          */
-        Log.v(TAG,"getFragments()--"+getSupportFragmentManager().getFragments());
-//        swipeRefresh = findViewById(R.id.swipeRefresh);
-//        swipeRefresh.setOnRefreshListener(onRefreshListener);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        frame=findViewById(R.id.frame);
-        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
-            public void onSwipeTop() {
-                Log.v(TAG,"onSwipeTop()");
-                speechRecognizer.startListening(intent);
-            }
-            public void onSwipeRight() {
-                Log.v(TAG,"onSwipeRight()");
-            }
-            public void onSwipeLeft() {
-                Log.v(TAG,"onSwipeLeft()");
-            }
-            public void onSwipeBottom() {
-                Log.v(TAG,"onSwipeBottom()");
-                Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
-                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                    if (currentFragment.isVisible()) {
-                        if(currentFragment instanceof FragmentHome){
-                            Log.v(TAG,"FragmentHome");
-                            startService(serviceIntent);
-                        }else if (currentFragment instanceof FragmentWindow){
-                            fragmentTransaction = fragmentManager.beginTransaction();
-                            if (fragmentWindow == null) {
-                                fragmentWindow = new FragmentWindow(sharedObject);
-                            }
-                            fragmentTransaction.replace(
-                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                            bundle.putSerializable("weather", weatherVO);
-                            bundle.putSerializable("window", windowVO);
-                            fragmentWindow.setArguments(bundle);
-                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
-                        }
-                        else if (currentFragment instanceof FragmentRefrigerator){
-                            Log.v(TAG,"FragmentRefrigerator");
-                        }
-                        else if (currentFragment instanceof FragmentTest){
-                            Log.v(TAG,"FragmentTest");
-                        }
-                        else if (currentFragment instanceof FragmentLight){
-                            Log.v(TAG,"FragmentLight");
-                        }
-                    }
-                }
-            }
-        });
-        //ViewPager Code//
-//        viewPager = findViewById(R.id.viewPager);
-//        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
-//        viewPager.setAdapter(pagerAdapter);
-//        tabLayout=findViewById(R.id.tabLayout);
-//        tabLayout.setupWithViewPager(viewPager);
-        /**
-         * SocketCommunication with Server
-         */
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //Latte
-//                    socket = new Socket("70.12.229.165", 1357);
-                    //PC
-                    socket = new Socket("70.12.60.98", 1357);
-                    bufferedReader = new BufferedReader(
-                            new InputStreamReader(socket.getInputStream()));
-                    printWriter = new PrintWriter(socket.getOutputStream());
-
-                    Log.v(TAG, "Socket Situation==" + socket.isConnected());
-                    name=name.trim();
-                    sharedObject.put(name+" IN");
-                    Log.v(TAG,"name=="+name);
-//                    Communication.DataReceveAsyncTask asyncTask =
-//                            new Communication.DataReceveAsyncTask(bufferedReader);
-//                    asyncTask.execute();
-
-                    Thread thread1 = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            windowVO = new WindowVO();
-                            fragmentWindow = new FragmentWindow(sharedObject);
-                            while (true) {
-                                try {
-                                    jsonData = bufferedReader.readLine();
-//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
-                                    if(jsonData != null){
-                                        windowVO =objectMapper.readValue(jsonData, WindowVO.class);
-                                        Log.v(TAG,"testVo.getTemp=="+ windowVO.getTemp());
-                                        Log.v(TAG,"testVo.getLight=="+ windowVO.getLight());
-                                        Log.v(TAG,"testVo.getDustDensity=="+ windowVO.getDustDensity());
-                                        Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
-
-                                        JSONObject jsonObject = new JSONObject(jsonData);
-                                        String temp = jsonObject.getString("temp");
-                                        Log.v(TAG,"jsonObject_getTemp=="+temp);
-
-                                        bundle.putSerializable("window", windowVO);
-                                        fragmentWindow.setArguments(bundle);
-//                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
-//                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
-                                    }
-                                }catch (IOException | JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                    thread1.start();
-                    while (true) {
-                        String msg = sharedObject.pop();
-                        printWriter.println(msg);
-                        printWriter.flush();
-                    }
-                } catch (IOException e) {
-                    Log.v(TAG, "Socket Communication IOException==" + e);
-                }
-            }
-        });
-        thread.start();
-//        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
-//        asyncTaskTest.execute();
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+        swipeRefresh.setOnRefreshListener(onRefreshListener);
 
         /**
          * App 실행시 처음 표시해줄 Fragment
@@ -256,10 +135,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
         }
-
         /**
          * //TabLayout 항목 추가(추가 항목 수에따라 TabLayout 항목이 생성)
+         * TabLayout SelectListenerEvent
          */
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.house_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().
@@ -267,110 +147,90 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().
-                setCustomView(createTabView(R.drawable.border_vertical_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
-        /**
-         * TabLayout SelectListenerEvent
-         * Fragment Call
-         */
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            //텝이 선택 되었을때 호출
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Log.v(TAG, "onTabSelected()_getPosition==" + tab.getPosition());
-                fragmentTransaction = fragmentManager.beginTransaction();
-//                bundle = new Bundle();
-                switch (tab.getPosition()) {
-                    case 0:
-                        if (fragmentHome == null) {
-                            fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
-                            Log.v(TAG, "fragmentHome==");
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentHome).commitAllowingStateLoss();
-
-                        fragmentHome.setArguments(bundle);
-                        fragmentTag = 0;
-                        break;
-                    case 1:
-//                        swipeRefresh.setVisibility(View.GONE);
-                        if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject);
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentWindow).commitAllowingStateLoss();
-//                        fragmentWindow.setArguments(bundleFagmentA);
-                        bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("window", windowVO);
-                        fragmentWindow.setArguments(bundle);
-
-                        break;
-                    case 2:
-                        if (fragmentRefrigerator == null) {
-                            fragmentRefrigerator = new FragmentRefrigerator(
-                                    sharedObject,bufferedReader);
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
-                        fragmentRefrigerator.setArguments(bundle);
-                        fragmentTag = 2;
-                        break;
-                    case 3:
-                        if (fragmentTest == null) {
-                            fragmentTest = new FragmentTest(sharedObject, bufferedReader);
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentTest).commitAllowingStateLoss();
-                        fragmentTest.setArguments(bundle);
-                        fragmentTag = 3;
-                        break;
-                    case 4:
-                        if (fragmentLight == null) {
-                            fragmentLight = new FragmentLight(sharedObject,bufferedReader);
-                        }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentLight).commitAllowingStateLoss();
-                        speechRecognizer.startListening(intent);
-                        fragmentTag = 4;
-                }
-            }
-
-            //텝이 선택되지 않았을 때 호출
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                Log.v(TAG, "onTabUnselected()_tab==" + tab.getPosition());
-            }
-            //텝이 다시 선택되었을 때 호출
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
-            }
-        });
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.voice_black)));
+        tabLayout.addOnTabSelectedListener(mTabSelect);
 
         /**
          * //////////////////Speech recognition/////////////////////
          */
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.RECORD_AUDIO)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO
-                );
-            }
-        }
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.RECORD_AUDIO)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.RECORD_AUDIO)) {
+//            } else {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO
+//                );
+//            }
+//        }
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
-    }
 
+
+        //        frame=findViewById(R.id.frame);
+//        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+//            public void onSwipeTop() {
+//                Log.v(TAG,"onSwipeTop()");
+//                speechRecognizer.startListening(intent);
+//            }
+//            public void onSwipeRight() {
+//                Log.v(TAG,"onSwipeRight()");
+//            }
+//            public void onSwipeLeft() {
+//                Log.v(TAG,"onSwipeLeft()");
+//            }
+//            public void onSwipeBottom() {
+//                Log.v(TAG,"onSwipeBottom()");
+//                Log.v(TAG,"onRefresh()_Fragment=="+getSupportFragmentManager().getFragments().toString());
+//                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//                    if (currentFragment.isVisible()) {
+//                        if(currentFragment instanceof FragmentHome){
+//                            Log.v(TAG,"FragmentHome");
+//                            startService(serviceIntent);
+//                        }else if (currentFragment instanceof FragmentWindow){
+//                            fragmentTransaction = fragmentManager.beginTransaction();
+//                            if (fragmentWindow == null) {
+//                                fragmentWindow = new FragmentWindow(sharedObject);
+//                            }
+//                            fragmentTransaction.replace(
+//                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+//                            bundle.putSerializable("weather", weatherVO);
+//                            bundle.putSerializable("window", windowVO);
+//                            fragmentWindow.setArguments(bundle);
+//                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
+//                        }
+//                        else if (currentFragment instanceof FragmentRefrigerator){
+//                            Log.v(TAG,"FragmentRefrigerator");
+//                        }
+//                        else if (currentFragment instanceof FragmentTest){
+//                            Log.v(TAG,"FragmentTest");
+//                        }
+//                        else if (currentFragment instanceof FragmentLight){
+//                            Log.v(TAG,"FragmentLight");
+//                        }
+//                    }
+//                }
+//            }
+//        });
+        //ViewPager Code//
+//        viewPager = findViewById(R.id.viewPager);
+//        ContentViewPagerAdapter pagerAdapter = new ContentViewPagerAdapter(getSupportFragmentManager());
+//        viewPager.setAdapter(pagerAdapter);
+//        tabLayout=findViewById(R.id.tabLayout);
+//        tabLayout.setupWithViewPager(viewPager);
+
+//        Communication.DataReceveAsyncTask111 asyncTaskTest =
+//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
+//        asyncTaskTest.execute();
+
+
+    }
 
     /**
      * FragmentHome의  RecyclerView에 표시할 데이터 정보 Method
@@ -387,6 +247,43 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_refrigerator, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
                 R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
+    }
+
+    /**
+     * 인자를 받아 Custom TabLayout 생성하는 Method
+     * @param iconImage
+     * @return
+     */
+    private View createTabView(int iconImage) {
+        View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
+//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
+//        tvTab.setText(tabName);
+        ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
+        ivTab.setImageResource(iconImage);
+        return tabView;
+    }
+
+    /**
+     * Service 를 이용해 webServer 에서 REST API 통신을 이용 데이터를 가져온다
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+
+        weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
+        Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
+        weatherVO = weathers[0];
+        // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
+        fragmentTransaction = fragmentManager.beginTransaction();
+        bundle = new Bundle();
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
+        bundle.putSerializable("list", list);
+        bundle.putSerializable("weather", weatherVO);
+        bundle.putSerializable("window", windowVO);
+        fragmentHome.setArguments(bundle);
+        fragmentTransaction.replace(
+                R.id.frame, fragmentHome).commitAllowingStateLoss();
+        super.onNewIntent(intent);
     }
 
     /**
@@ -407,46 +304,179 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 인자를 받아 Custom TabLayout 생성하는 Method
-     *
-     * @param iconImage
-     * @return
+     * Server Socket Client Remove
      */
-    private View createTabView(int iconImage) {
-        View tabView = getLayoutInflater().inflate(R.layout.custom_tab, null);
-//        TextView tvTab = (TextView) tabView.findViewById(R.id.tvTab);
-//        tvTab.setText(tabName);
-        ImageView ivTab = (ImageView) tabView.findViewById(R.id.ivTab);
-        ivTab.setImageResource(iconImage);
-        return tabView;
+    @Override
+    protected void onDestroy() {
+        sharedObject.put(name+" OUT");
+        Log.v(TAG,"onDestroy()");
+        try {
+            printWriter.close();
+            bufferedReader.close();
+        } catch (IOException e) {
+            Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
+        }
+        super.onDestroy();
     }
 
     /**
-     * Service를 이용해 webServer 에서 REST API 통신을 이용 데이터를 가져온다
+     * Socket Communication witA Server
      */
-    @Override
-    protected void onNewIntent(Intent intent) {
+    Thread thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                //Latte
+//                    socket = new Socket("70.12.229.165", 1357);
+                //PC
+                socket = new Socket("70.12.60.98", 1357);
+                bufferedReader = new BufferedReader(
+                        new InputStreamReader(socket.getInputStream()));
+                printWriter = new PrintWriter(socket.getOutputStream());
 
-        Log.v(TAG,"onNewIntent()_intent.getExtras()=="+intent.getExtras().get("weatherResult").toString());
+                Log.v(TAG, "Socket Situation==" + socket.isConnected());
+                name=name.trim();
+                sharedObject.put(name+" IN");
+                Log.v(TAG,"name=="+name);
+//                    Communication.DataReceveAsyncTask asyncTask =
+//                            new Communication.DataReceveAsyncTask(bufferedReader);
+//                    asyncTask.execute();
+                Thread thread1 = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        windowVO = new WindowVO();
+                        fragmentWindow = new FragmentWindow(sharedObject);
+                        while (true) {
+                            try {
+                                jsonData = bufferedReader.readLine();
+//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                if(jsonData != null){
+                                    windowVO =objectMapper.readValue(jsonData, WindowVO.class);
+                                    Log.v(TAG,"testVo.getTemp=="+ windowVO.getTemp());
+                                    Log.v(TAG,"testVo.getLight=="+ windowVO.getLight());
+                                    Log.v(TAG,"testVo.getDustDensity=="+ windowVO.getDustDensity());
+                                    Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
 
-        weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
-        Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
-        weatherVO = weathers[0];
-        // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
-        fragmentTransaction = fragmentManager.beginTransaction();
-        bundle = new Bundle();
-        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
-        bundle.putSerializable("list", list);
-        bundle.putSerializable("weather", weatherVO);
-        bundle.putSerializable("window", windowVO);
-        fragmentHome.setArguments(bundle);
-        fragmentTransaction.replace(
-                R.id.frame, fragmentHome).commitAllowingStateLoss();
-        super.onNewIntent(intent);
-    }
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    String temp = jsonObject.getString("temp");
+                                    Log.v(TAG,"jsonObject_getTemp=="+temp);
 
-    /*
-     * Speech recognition
+                                    bundle.putSerializable("window", windowVO);
+                                    fragmentWindow.setArguments(bundle);
+//                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
+//                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+                                }
+                            }catch (IOException | JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                thread1.start();
+                while (true) {
+                    String msg = sharedObject.pop();
+                    printWriter.println(msg);
+                    printWriter.flush();
+                }
+            } catch (IOException e) {
+                Log.v(TAG, "Socket Communication IOException==" + e);
+            }
+        }
+    });
+     //*************************** EventListener ***************************//
+    /**
+     * TabLayout SelectListenerEvent
+     * Fragment Call
+     */
+    TabLayout.OnTabSelectedListener mTabSelect = new TabLayout.OnTabSelectedListener() {
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            Log.v(TAG, "onTabSelected()_getPosition==" + tab.getPosition());
+            fragmentTransaction = fragmentManager.beginTransaction();
+            //FragmentWindow 에 TimePicker Component 가 swipeRefresh 떄문에 이벤트 터치가 겹처 작동하지 않아 해당 Fragment 에서는 비활성
+            if(swipeRefresh.isEnabled() == false){
+                swipeRefresh.setEnabled(true);
+            };
+            switch (tab.getPosition()) {
+                case 0:
+                    if (fragmentHome == null) {
+                        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
+                    }
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentHome).commitAllowingStateLoss();
+                    fragmentHome.setArguments(bundle);
+                    fragmentTag = 0;
+                    break;
+                case 1:
+                    swipeRefresh.setEnabled(false);
+                    if (fragmentWindow == null) {
+                        fragmentWindow = new FragmentWindow(sharedObject);
+                    }
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentWindow).commitAllowingStateLoss();
+//                        fragmentWindow.setArguments(bundleFagmentA);
+                    bundle.putSerializable("weather", weatherVO);
+                    bundle.putSerializable("window", windowVO);
+                    fragmentWindow.setArguments(bundle);
+                    break;
+                case 2:
+                    if (fragmentRefrigerator == null) {
+                        fragmentRefrigerator = new FragmentRefrigerator(
+                                sharedObject,bufferedReader);
+                    }
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
+                    fragmentRefrigerator.setArguments(bundle);
+                    fragmentTag = 2;
+                    break;
+                case 3:
+                    if (fragmentTest == null) {
+                        fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+                    }
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentTest).commitAllowingStateLoss();
+                    fragmentTest.setArguments(bundle);
+                    fragmentTag = 3;
+                    break;
+                case 4:
+                    Log.v(TAG,"onTabSelected()_speechRecognizer");
+                    speechRecognizer.startListening(intent);
+//                    if (fragmentLight == null) {
+//                        fragmentLight = new FragmentLight(sharedObject,bufferedReader);
+//                    }
+//                    fragmentTransaction.replace(
+//                            R.id.frame, fragmentLight).commitAllowingStateLoss();
+//                    fragmentTag = 4;
+            }
+        }
+        //텝이 선택되지 않았을 때 호출
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+            Log.v(TAG, "onTabUnselected()_tab==" + tab.getPosition());
+        }
+        //텝이 다시 선택되었을 때 호출
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+            Log.v(TAG, "onTabReselected()_tab==" + tab.getPosition());
+            switch (tab.getPosition()){
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    Log.v(TAG,"onTabSelected()_speechRecognizer");
+                    speechRecognizer.startListening(intent);
+                    break;
+            }
+        }
+    };
+
+    /**
+     * * Speech recognition
      */
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
@@ -538,20 +568,4 @@ public class MainActivity extends AppCompatActivity {
             swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
         }
     };
-
-    /**
-     * Server Socket Client Remove
-     */
-    @Override
-    protected void onDestroy() {
-        sharedObject.put(name+" OUT");
-        Log.v(TAG,"onDestroy()");
-        try {
-            printWriter.close();
-            bufferedReader.close();
-        } catch (IOException e) {
-            Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
-        }
-        super.onDestroy();
-    }
 }

@@ -97,6 +97,9 @@ public class FragmentWindow extends Fragment {
         btnManual.setOnClickListener(mClick);
 
         // 창문 ToggleBtn 수동 열기/닫기
+        /**
+         * onTouch() 함수를 이용해 사용자로부터 Touch 가 인식 되었을 때만 IoT 기기에 Data 전달해준다
+         */
         tglBtnWindow = view.findViewById(R.id.tglBtnWindow);
         tglBtnWindow.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -123,13 +126,8 @@ public class FragmentWindow extends Fragment {
                 }
             }
         });
-        // mClick btnAuto/Manual
-        btnAuto = view.findViewById(R.id.btnAuto);
-        btnAuto.setOnClickListener(mClick);
-        btnManual = view.findViewById(R.id.btnManual);
-        btnManual.setOnClickListener(mClick);
 
-        // 알람 시간
+        // 알람 시간//
         picker = view.findViewById(R.id.timePicker);
         picker.setIs24HourView(false);      // true: 24시간, false: 12시간
 
@@ -146,7 +144,7 @@ public class FragmentWindow extends Fragment {
         Log.i("atest", "## 01 ##");
         Log.i("atest", "date_text: " + date_text);
 
-        // TimePicker 초기화
+        // TimePicker 초기화//
         Date currentTime = nextNotifyTime.getTime();
         SimpleDateFormat hourFormat = new SimpleDateFormat("kk", Locale.getDefault());
         SimpleDateFormat minutesFormat = new SimpleDateFormat("mm", Locale.getDefault());
@@ -155,7 +153,7 @@ public class FragmentWindow extends Fragment {
         int preMinute = Integer.parseInt(minutesFormat.format(currentTime));
 //        int preSecond = Integer.parseInt(secondFormat.format(currentTime));
 
-        //  SDK 23 Marshmallow 배려
+        //  SDK 23 Marshmallow 배려//
         if(Build.VERSION.SDK_INT >= 23){
             picker.setHour(preHour);
             picker.setMinute(preMinute);
@@ -188,14 +186,14 @@ public class FragmentWindow extends Fragment {
                     hour = hour_24;
                 }
 
-                //지정된 시간으로 알람 시간 설정
+                //지정된 시간으로 알람 시간 설정//
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
                 calendar.set(Calendar.HOUR_OF_DAY, hour_24);
                 calendar.set(Calendar.MINUTE, minute);
                 calendar.set(Calendar.SECOND, 0);   // 필요한가?
 
-                // 이미 지난 시간이면 다음날 같은 시간
+                // 이미 지난 시간이면 다음날 같은 시간//
                 if(calendar.before(Calendar.getInstance())){
                     calendar.add(Calendar.DATE, 1);
                 }
@@ -206,12 +204,12 @@ public class FragmentWindow extends Fragment {
                 Log.i("atest", "## 02 ##");
                 Log.i("atest", "date_text: " + date_text);
 
-                // Preference 설정 값 저장
+                // Preference 설정 값 저장//
                 SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", Context.MODE_PRIVATE).edit();
                 editor.putLong("NextNofityTime", (long)calendar.getTimeInMillis());
                 editor.apply();
 
-                // method:diaryNotification
+                // method:diaryNotification//
                 diaryNotification(calendar);
             }
         });
@@ -256,7 +254,7 @@ public class FragmentWindow extends Fragment {
             }
         }
     };
-    // Noti띄우기
+    // Noti띄우기//
     private void  diaryNotification(Calendar calendar){
         Boolean dailyNotify = true;     //  항상 알람 사용
 
