@@ -113,16 +113,18 @@ public class FragmentWindow extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.v(TAG,"windowVO.getOnOff()"+windowVO.getOnOff());
-                if(tglBtnWindow.isChecked() && touchEventSituation == true){
-                    Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                Log.v(TAG,"tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                if(tglBtnWindow.isChecked() && touchEventSituation){
+                    Log.v(TAG, "window == OFF");
                     touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
-                    tglBtnWindow.setBackgroundResource(R.drawable.window2);
-                }else if (!(tglBtnWindow.isChecked()) && touchEventSituation == true){
-                    Log.v(TAG, "tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
+                    tglBtnWindow.setBackgroundResource(R.drawable.window1);
+
+                }else if (!tglBtnWindow.isChecked() && touchEventSituation){
+                    Log.v(TAG, "window == ON");
                     touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS ON");
-                    tglBtnWindow.setBackgroundResource(R.drawable.window1);
+                    tglBtnWindow.setBackgroundResource(R.drawable.window2);
                 }
             }
         });
@@ -260,10 +262,13 @@ public class FragmentWindow extends Fragment {
 
         PackageManager pm = this.getActivity().getPackageManager();
         // 재부팅 후에도 알람이 작동하기 위해
-        ComponentName receiver = new ComponentName(getActivity(), DeviceBootReceiver.class);     // 여기까지
+        ComponentName receiver =
+                new ComponentName(getActivity(), DeviceBootReceiver.class);     // 여기까지
         Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
-        AlarmManager alarmManager = (AlarmManager) this.getActivity().getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
+        AlarmManager alarmManager =
+                (AlarmManager) this.getActivity().getSystemService(Context.ALARM_SERVICE);
 
         // 사용자가 매일 알람을 허용했다면
         if (dailyNotify) {
@@ -271,11 +276,15 @@ public class FragmentWindow extends Fragment {
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            pendingIntent);
                 }
             }
             // 부팅 후 실행되는 리시버 사용가능하게 설정
-            pm.setComponentEnabledSetting(receiver,
+            pm.setComponentEnabledSetting(
+                    receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
         }
@@ -286,11 +295,13 @@ public class FragmentWindow extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // 창문 상태 체크 (열림/닫힘)
         try {
-            if (windowVO.getOnOff().equals("1")){
+            if (windowVO.getOnOff().equals("0")){
                 Log.v(TAG,"11111111111   OPEn    11111111");
+                tglBtnWindow.setChecked(true);
                 tglBtnWindow.setBackgroundResource(R.drawable.window2);
             }else {
                 Log.v(TAG,"222222222");
+                tglBtnWindow.setChecked(false);
                 tglBtnWindow.setBackgroundResource(R.drawable.window1);
             }
         }catch (Exception e){
@@ -346,5 +357,4 @@ public class FragmentWindow extends Fragment {
         super.onDetach();
         Log.v(TAG,"FragmentAonResumeonDetach");
     }
-
 }

@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
         fragmentManager = getSupportFragmentManager();
+
         if (fragmentHome == null) {
             weatherVO = new WeatherVO();
             fragmentTransaction = fragmentManager.beginTransaction();
@@ -498,6 +499,7 @@ public class MainActivity extends AppCompatActivity {
         public void onError(int i) {
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
             Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
+            //////////////////////////
             speechRecognizer.startListening(intent);
         }
         @Override
@@ -515,6 +517,25 @@ public class MainActivity extends AppCompatActivity {
                     sharedObject.put("/ANDROID>/WINDOWS ON");
                 }else if(rs[0].contains("닫아")){
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
+                }
+                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                    if (currentFragment.isVisible()) {
+                        if (currentFragment instanceof FragmentHome) {
+                            Log.v(TAG, "FragmentHome");
+                            startService(serviceIntent);
+                        } else if(currentFragment instanceof FragmentWindow) {
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            if (fragmentWindow == null) {
+                                fragmentWindow = new FragmentWindow(sharedObject);
+                            }
+                            fragmentTransaction.replace(
+                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+                            bundle.putSerializable("weather", weatherVO);
+                            bundle.putSerializable("window", windowVO);
+                            fragmentWindow.setArguments(bundle);
+                            Log.v(TAG, "FragmentA_OnRefreshListener");
+                        }
+                    }
                 }
             }
         }
