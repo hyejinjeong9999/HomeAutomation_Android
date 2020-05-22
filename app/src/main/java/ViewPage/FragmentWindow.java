@@ -52,7 +52,7 @@ public class FragmentWindow extends Fragment {
 
     private FrameLayout frameLayout;
     private ToggleButton tglBtnWindow;
-
+    ArrayAdapter adapter;
     private TimePicker picker;
     private Button alarmSetBtn;
     private Button btnAuto, btnManual;
@@ -73,14 +73,14 @@ public class FragmentWindow extends Fragment {
         context=container.getContext();
 
 //        // timePicker or picker??
-//        final TimePicker timePicker = view.findViewById(R.id.timePicker);
-//        final ListView alarmListView = view.findViewById(R.id.alarmListView);
-//        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
-//
-//        final DBHelper helper = new DBHelper(
-//                context, "alarm", 1);
-//        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, helper.getResult());
-//        alarmListView.setAdapter(adapter);
+        final TimePicker timePicker = view.findViewById(R.id.timePicker);
+        final ListView alarmListView = view.findViewById(R.id.alarmListView);
+        alarmSetBtn = view.findViewById(R.id.alarmSetBtn);
+
+        final DBHelper helper = new DBHelper(
+                context, "alarm", 1);
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, helper.getResult());
+        alarmListView.setAdapter(adapter);
 
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
