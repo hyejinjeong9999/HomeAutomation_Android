@@ -16,15 +16,11 @@ import com.example.semiproject.R;
 public class FragmentB extends Fragment {
     View view;
     Context context;
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_b,container,false);
         context=container.getContext();
-
-
         return  view;
     }
 }
