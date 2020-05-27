@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import Communication.SharedObject;
 import model.SystemInfoVO;
-import model.WindowVO;
+import model.SensorDataVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -34,7 +34,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
-    WindowVO windowVO;
+    SensorDataVO sensorDataVO;
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
@@ -43,13 +43,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
-            SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO) {
+            SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
         this.context = context;
         this.itemList = itemList;
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
-        this.windowVO = windowVO;
+        this.sensorDataVO = sensorDataVO;
     }
     /**
      * getItemViewType() method에서 Return 받는 VIewType 형태의 아이템 뷰를 위한 뷰홀더 객체 생성
@@ -108,7 +108,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
-            if (windowVO.getOnOff().equals("0")){
+            if (sensorDataVO.getWindowStatus().equals("0")){
                 ((SystemInfoSwitch)holder).swSituation.setChecked(true);
             }else {
                 ((SystemInfoSwitch)holder).swSituation.setChecked(false);
@@ -133,7 +133,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTempIn.setText(windowVO.getTemp() + " ℃");
+            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
              */
@@ -149,14 +149,25 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-            ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
 
-            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
-            double dustDensity = Double.parseDouble(windowVO.getDustDensity());
+            double dustDensityOut = Double.parseDouble(weathers.getPm10Value());
+            if (dustDensityOut<=15){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verygood);
+            }else if (dustDensityOut<=35 && dustDensityOut<15){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_good);
+            }else if (dustDensityOut<=75 && dustDensityOut<35){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_bad);
+            }else {
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verybad);
+            }
+            ((SystemInfoWeather)holder).tvDustOutSituation.setText(weathers.getPm10Value() +  " μg/m³");
+
+
+            ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
+            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
+            double dustDensity = Double.parseDouble(sensorDataVO.getDustDensity());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
-//                ((SystemInfoWeather)holder).tvDust
-
             }else if (dustDensity<=35 && dustDensity<15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_good);
             }else if (dustDensity<=75 && dustDensity<35){
@@ -164,7 +175,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
             }
-            ((SystemInfoWeather)holder).tvSituation.setText(windowVO.getDustDensity() + " μg/m³");
+            ((SystemInfoWeather)holder).tvSituation.setText(sensorDataVO.getDustDensity() + " μg/m³");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -250,9 +261,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class SystemInfoWeather extends RecyclerView.ViewHolder{
         public TextView tvTempIn;
         public ImageView ivWeather;
-        public TextView tvHumidity;
+        public ImageView ivDustOut;
+        public TextView tvDustOutSituation;
 
         public TextView tvTempOut;
+        public TextView tvModeSituation;
         public ImageView ivDust;
         public TextView tvSituation;
         public SystemInfoWeather(@NonNull View itemView) {
@@ -263,9 +276,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            tvSituation = itemView.findViewById(R.id.tvSituation);
             tvTempIn =  itemView.findViewById(R.id.tvTempIn);
             ivWeather =  itemView.findViewById(R.id.ivWeather);
-            tvHumidity =  itemView.findViewById(R.id.tvHumidity);
+            ivDustOut =  itemView.findViewById(R.id.ivDustOut);
+            tvDustOutSituation =  itemView.findViewById(R.id.tvDustOutSituation);
 
             tvTempOut =  itemView.findViewById(R.id.tvTempOut);
+            tvModeSituation= itemView.findViewById(R.id.tvModeSituation);
             ivDust =  itemView.findViewById(R.id.ivDust);
             tvSituation =  itemView.findViewById(R.id.tvSituation);
         }

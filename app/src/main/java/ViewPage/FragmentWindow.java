@@ -15,10 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -38,9 +36,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import Communication.SharedObject;
-import DB.DBHelper;
 import model.WeatherVO;
-import model.WindowVO;
+import model.SensorDataVO;
 
 public class FragmentWindow extends Fragment {
 
@@ -58,7 +55,7 @@ public class FragmentWindow extends Fragment {
     private Button btnAuto, btnManual;
     int modeSituation = 0;
     private WeatherVO weathers;
-    private WindowVO windowVO;
+    private SensorDataVO sensorDataVO;
 
     public FragmentWindow(SharedObject sharedObject) {
         this.sharedObject = sharedObject;
@@ -84,8 +81,8 @@ public class FragmentWindow extends Fragment {
 
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
-        windowVO = (WindowVO) getArguments().get("window");
-        Log.v(TAG,"window.getONOFF=="+windowVO.getOnOff());
+        sensorDataVO = (SensorDataVO) getArguments().get("window");
+        Log.v(TAG,"window.getWindowStatus=="+ sensorDataVO.getWindowStatus());
 
         // framyLayout
         frameLayout = view.findViewById(R.id.frameLayout);
@@ -112,7 +109,7 @@ public class FragmentWindow extends Fragment {
         tglBtnWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(TAG,"windowVO.getOnOff()"+windowVO.getOnOff());
+                Log.v(TAG,"windowVO.getWindowStatus()"+ sensorDataVO.getWindowStatus());
                 Log.v(TAG,"tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
                 if(tglBtnWindow.isChecked() && touchEventSituation){
                     Log.v(TAG, "window == OFF");
@@ -295,7 +292,7 @@ public class FragmentWindow extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // 창문 상태 체크 (열림/닫힘)
         try {
-            if (windowVO.getOnOff().equals("0")){
+            if (sensorDataVO.getWindowStatus().equals("0")){
                 Log.v(TAG,"11111111111   OPEn    11111111");
                 tglBtnWindow.setChecked(true);
                 tglBtnWindow.setBackgroundResource(R.drawable.window2);

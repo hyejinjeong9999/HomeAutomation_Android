@@ -3,13 +3,17 @@ package model;
 import java.io.Serializable;
 
 public class WeatherVO implements Serializable {
-    String weather = ""; // weather - main
-    String temp = ""; // main - temp
-    String feelsLike =""; // main - feels_like
-    String tempMin =""; // main - temp_min
-    String tempMax =""; // main - temp_max
-    String humidity=""; // main - humidity
-    String name =""; // name, 지역명
+    String weather = "0"; // weather - main
+    String temp = "0"; // main - temp
+    String feelsLike ="0"; // main - feels_like
+    String tempMin ="0"; // main - temp_min
+    String tempMax ="0"; // main - temp_max
+    String humidity="0"; // main - humidity
+    String name ="0"; // name, 지역명
+    String pm10Value ="0";
+    String pm10Value24="0";
+    String pm25Value="0";
+    String pm25Value24="0";
 
     public String getName() {
         return name;
@@ -69,4 +73,35 @@ public class WeatherVO implements Serializable {
         this.humidity = humidity;
     }
 
+    public String getPm10Value() {
+        return pm10Value;
+    }
+
+    public void setPm10Value(String pm10Value) {
+        this.pm10Value = pm10Value;
+    }
+
+    public String getPm10Value24() {
+        return pm10Value24;
+    }
+
+    public void setPm10Value24(String pm10Value24) {
+        this.pm10Value24 = pm10Value24;
+    }
+
+    public String getPm25Value() {
+        return pm25Value;
+    }
+
+    public void setPm25Value(String pm25Value) {
+        this.pm25Value = pm25Value;
+    }
+
+    public String getPm25Value24() {
+        return pm25Value24;
+    }
+
+    public void setPm25Value24(String pm25Value24) {
+        this.pm25Value24 = pm25Value24;
+    }
 }
