@@ -162,9 +162,14 @@ public class MainActivity extends AppCompatActivity {
 //                );
 //            }
 //        }
-        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+
+        try {
+            intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        }catch (Exception e){
+            Log.v(TAG,"RecognizerIntent Exception=="+e);
+        }
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
 
@@ -477,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
+            Log.v(TAG,"onReadyForSpeech()");
         }
         @Override
         public void onBeginningOfSpeech() {
@@ -489,6 +495,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onEndOfSpeech() {
+            Log.v(TAG,"onEndOfSpeech()");
         }
         @Override
         public void onError(int i) {
@@ -505,6 +512,7 @@ public class MainActivity extends AppCompatActivity {
 
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
+
             Log.v(TAG,"음성인식=="+rs[0]);
             Log.v(TAG,"음성인식size=="+mResult.size());
             if(rs[0].contains("창문")){
