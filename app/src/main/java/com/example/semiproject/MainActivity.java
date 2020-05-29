@@ -1,9 +1,7 @@
 package com.example.semiproject;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -16,8 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,16 +36,22 @@ import java.util.ArrayList;
 
 import Communication.SharedObject;
 import Communication.WeatherService;
-import Event.OnSwipeTouchListener;
+import Event.ClapMain;
+import Event.DetectorThread;
+import Event.RecorderThread;
 import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
 import ViewPage.FragmentTest;
 import ViewPage.FragmentWindow;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import model.SensorDateVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
-import model.WindowVO;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     Intent serviceIntent;
     Bundle bundle;
-    WindowVO windowVO = new WindowVO();
+    SensorDateVO sensorDateVO = new SensorDateVO();
     WeatherVO weatherVO;
     WeatherVO[] weathers;
     //Fragment
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
+    ArrayList<SystemInfoVO> listFragmentWindow;
     //Socket Communication
     Socket socket;
     PrintWriter printWriter;
@@ -104,6 +107,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AudioDispatcher dispatcher =
+                AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+        double threshold = 5;
+        double sensitivity = 35;
+
+        PercussionOnsetDetector mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
+                new OnsetHandler() {
+
+                    @Override
+                    public void handleOnset(double time, double salience) {
+                        Log.v(TAG, "time : " + time + ", salience : " + salience);
+                        Log.v(TAG, "Clap detected!");
+                    }
+                }, sensitivity, threshold);
+
+        dispatcher.addAudioProcessor(mPercussionDetector);
+        new Thread(dispatcher,"Audio Dispatcher").start();
+
+
+
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
@@ -128,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
             weatherVO = new WeatherVO();
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
-            bundle.putSerializable("window", windowVO);
+            bundle.putSerializable("window", sensorDateVO);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -202,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 //                            fragmentTransaction.replace(
 //                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                            bundle.putSerializable("weather", weatherVO);
-//                            bundle.putSerializable("window", windowVO);
+//                            bundle.putSerializable("window", sensorDateVO);
 //                            fragmentWindow.setArguments(bundle);
 //                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
 //                        }
@@ -227,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout.setupWithViewPager(viewPager);
 
 //        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
+//                new Communication.DataReceveAsyncTask111(objectInputStream, sensorDateVO);
 //        asyncTaskTest.execute();
 
 
@@ -248,7 +271,12 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_refrigerator, "냉장고", "????", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
                 R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
+
+        listFragmentWindow = new ArrayList<>();
+        listFragmentWindow.add(new SystemInfoVO("대기질상태", ViewType.ItemVerticalAir));
+        listFragmentWindow.add(new SystemInfoVO(R.drawable.window1,"대기질컨트롤", ViewType.ItemVerticalAirControl));
     }
+
 
     /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
@@ -277,10 +305,10 @@ public class MainActivity extends AppCompatActivity {
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
         bundle = new Bundle();
-        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
-        bundle.putSerializable("window", windowVO);
+        bundle.putSerializable("window", sensorDateVO);
         fragmentHome.setArguments(bundle);
         fragmentTransaction.replace(
                 R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -345,26 +373,26 @@ public class MainActivity extends AppCompatActivity {
                 Thread thread1 = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        windowVO = new WindowVO();
-                        fragmentWindow = new FragmentWindow(sharedObject);
+                        sensorDateVO = new SensorDateVO();
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
                         while (true) {
                             try {
                                 jsonData = bufferedReader.readLine();
 //                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
                                 if(jsonData != null){
-                                    windowVO =objectMapper.readValue(jsonData, WindowVO.class);
-                                    Log.v(TAG,"testVo.getTemp=="+ windowVO.getTemp());
-                                    Log.v(TAG,"testVo.getLight=="+ windowVO.getLight());
-                                    Log.v(TAG,"testVo.getDustDensity=="+ windowVO.getDustDensity());
-                                    Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
+                                    sensorDateVO =objectMapper.readValue(jsonData, SensorDateVO.class);
+                                    Log.v(TAG,"testVo.getTemp=="+ sensorDateVO.getTemp());
+                                    //Log.v(TAG,"testVo.getLight=="+ sensorDateVO.getLight());
+                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDateVO.getDustDensity());
+                                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDateVO.getOnOff());
 
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     String temp = jsonObject.getString("temp");
                                     Log.v(TAG,"jsonObject_getTemp=="+temp);
 
-                                    bundle.putSerializable("window", windowVO);
+                                    bundle.putSerializable("window", sensorDateVO);
                                     fragmentWindow.setArguments(bundle);
-//                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
+//                                        SensorDateVO vo1 = (SensorDateVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                 }
                             }catch (IOException | JSONException e) {
@@ -401,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
             switch (tab.getPosition()) {
                 case 0:
                     if (fragmentHome == null) {
-                        fragmentHome = new FragmentHome(sharedObject, bufferedReader, windowVO);
+                        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -411,13 +439,14 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     swipeRefresh.setEnabled(false);
                     if (fragmentWindow == null) {
-                        fragmentWindow = new FragmentWindow(sharedObject);
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentWindow.setArguments(bundleFagmentA);
                     bundle.putSerializable("weather", weatherVO);
-                    bundle.putSerializable("window", windowVO);
+                    bundle.putSerializable("window", sensorDateVO);
+                    //bundle.putSerializable("list", listFragmentWindow);
                     fragmentWindow.setArguments(bundle);
                     break;
                 case 2:
@@ -480,23 +509,36 @@ public class MainActivity extends AppCompatActivity {
      * * Speech recognition
      */
     private RecognitionListener recognitionListener = new RecognitionListener() {
+        boolean voiceListener = false;
+
+
         @Override
         public void onReadyForSpeech(Bundle bundle) {
+            Log.v("listen", "onReadyForSpeech");
+            RecorderThread recorderThread = new RecorderThread();
+            DetectorThread detectorThread = new DetectorThread(recorderThread);
+            ClapMain clapMain = new ClapMain(detectorThread);
         }
         @Override
         public void onBeginningOfSpeech() {
+            Log.v("listen", "onBeginningOfSpeech");
         }
         @Override
         public void onRmsChanged(float v) {
+            Log.v("listen", "onRmsChanged");
         }
         @Override
         public void onBufferReceived(byte[] bytes) {
+            Log.v("listen", "onBufferReceived");
         }
         @Override
         public void onEndOfSpeech() {
+            Log.v("listen", "onEndOfSpeech");
+            voiceListener = true;
         }
         @Override
         public void onError(int i) {
+            Log.v("listen", "onError");
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
             Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
             //////////////////////////
@@ -504,39 +546,43 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onResults(Bundle bundle) {
-            String key = "";
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = bundle.getStringArrayList(key);
+            if(voiceListener) {
+                Log.v("listen", "onResults");
+                String key = "";
+                key = SpeechRecognizer.RESULTS_RECOGNITION;
+                ArrayList<String> mResult = bundle.getStringArrayList(key);
 
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
-            Log.v(TAG,"음성인식=="+rs[0]);
-            Log.v(TAG,"음성인식size=="+mResult.size());
-            if(rs[0].contains("창문")){
-                if(rs[0].contains("열어")){
-                    sharedObject.put("/ANDROID>/WINDOWS ON");
-                }else if(rs[0].contains("닫아")){
-                    sharedObject.put("/ANDROID>/WINDOWS OFF");
-                }
-                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                    if (currentFragment.isVisible()) {
-                        if (currentFragment instanceof FragmentHome) {
-                            Log.v(TAG, "FragmentHome");
-                            startService(serviceIntent);
-                        } else if(currentFragment instanceof FragmentWindow) {
-                            fragmentTransaction = fragmentManager.beginTransaction();
-                            if (fragmentWindow == null) {
-                                fragmentWindow = new FragmentWindow(sharedObject);
+                String[] rs = new String[mResult.size()];
+                mResult.toArray(rs);
+                Log.v(TAG, "음성인식==" + rs[0]);
+                Log.v(TAG, "음성인식size==" + mResult.size());
+                if (rs[0].contains("창문")) {
+                    if (rs[0].contains("열어")) {
+                        sharedObject.put("/ANDROID>/WINDOWS ON");
+                    } else if (rs[0].contains("닫아")) {
+                        sharedObject.put("/ANDROID>/WINDOWS OFF");
+                    }
+                    for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                        if (currentFragment.isVisible()) {
+                            if (currentFragment instanceof FragmentHome) {
+                                Log.v(TAG, "FragmentHome");
+                                startService(serviceIntent);
+                            } else if (currentFragment instanceof FragmentWindow) {
+                                fragmentTransaction = fragmentManager.beginTransaction();
+                                if (fragmentWindow == null) {
+                                    fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
+                                }
+                                fragmentTransaction.replace(
+                                        R.id.frame, fragmentWindow).commitAllowingStateLoss();
+                                bundle.putSerializable("weather", weatherVO);
+                                bundle.putSerializable("window", sensorDateVO);
+                                fragmentWindow.setArguments(bundle);
+                                Log.v(TAG, "FragmentA_OnRefreshListener");
                             }
-                            fragmentTransaction.replace(
-                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                            bundle.putSerializable("weather", weatherVO);
-                            bundle.putSerializable("window", windowVO);
-                            fragmentWindow.setArguments(bundle);
-                            Log.v(TAG, "FragmentA_OnRefreshListener");
                         }
                     }
                 }
+                voiceListener = false;
             }
         }
         @Override
@@ -565,13 +611,13 @@ public class MainActivity extends AppCompatActivity {
                     }else if (currentFragment instanceof FragmentWindow){
                         fragmentTransaction = fragmentManager.beginTransaction();
                         if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject);
+                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentA.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("window", windowVO);
+                        bundle.putSerializable("window", sensorDateVO);
                         fragmentWindow.setArguments(bundle);
                         Log.v(TAG,"FragmentA_OnRefreshListener");
                     }

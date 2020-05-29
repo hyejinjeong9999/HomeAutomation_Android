@@ -19,6 +19,10 @@ public class SystemInfoVO implements Serializable {
         this.title = title;
         this.viewType = viewType;
     }
+    public SystemInfoVO(String title,int viewType) {
+        this.title = title;
+        this.viewType = viewType;
+    }
 
     public int getImageView() {
         return imageView;

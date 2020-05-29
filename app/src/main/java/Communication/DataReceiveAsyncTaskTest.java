@@ -3,7 +3,6 @@ package Communication;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.semiproject.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +13,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import model.WindowVO;
+import model.SensorDateVO;
 
 public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
     String TAG="DataReceiveAsyncTaskTest";
@@ -22,7 +21,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
     ImageButton ibReceiveData;
     String jsonData;
     String onOff = "";
-    WindowVO windowVO;
+    SensorDateVO sensorDateVO;
     ObjectMapper objectMapper = new ObjectMapper();
 
     public DataReceiveAsyncTaskTest(String jsonData, ImageButton ibReceiveData){
@@ -38,8 +37,8 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
             try {
                 Log.v(TAG,"doInBackground()_readLine()=="+jsonData);
                 if(jsonData != null){
-                    windowVO =objectMapper.readValue(jsonData, WindowVO.class);
-                    Log.v(TAG,"testVo.getOnOff=="+ windowVO.getOnOff());
+                    sensorDateVO =objectMapper.readValue(jsonData, SensorDateVO.class);
+                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDateVO.getOnOff());
                     JSONObject jsonObject = new JSONObject(jsonData);
                     onOff = jsonObject.getString("onOff");
                 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,8 +20,8 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
+import model.SensorDateVO;
 import model.SystemInfoVO;
-import model.WindowVO;
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -33,16 +32,16 @@ public class FragmentHome extends Fragment {
 
     ArrayList<SystemInfoVO> list;
     WeatherVO weathers;
-    WindowVO windowVO;
+    SensorDateVO sensorDateVO;
 
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, WindowVO windowVO) {
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, SensorDateVO sensorDateVO) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
-        this.windowVO = windowVO;
+        this.sensorDateVO = sensorDateVO;
     }
 
     @Nullable
@@ -60,8 +59,8 @@ public class FragmentHome extends Fragment {
         Log.v(TAG,"weathers=="+(WeatherVO) getArguments().get("weather"));
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
-        windowVO = (WindowVO) getArguments().get("window");
-        Log.v(TAG,"weather.getOnOff()=="+windowVO.getOnOff());
+        sensorDateVO = (SensorDateVO) getArguments().get("window");
+        //Log.v(TAG,"weather.getOnOff()=="+ sensorDateVO.getOnOff());
 
         /**
          * RecyclerVIew 생성 Code
@@ -70,7 +69,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
         verticalAdapter = new VerticalAdapter(
-                context, list, weathers, sharedObject,bufferedReader, windowVO);
+                context, list, weathers, sharedObject,bufferedReader, sensorDateVO);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);
 
