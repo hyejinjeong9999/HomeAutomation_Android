@@ -37,3 +37,19 @@
 * /TEMPRATURE:
 * /WINDOW:
 * /DUSTDENSITY:
+
+
+
+## Data Share
+
+### Sensor Data Send Cycle
+
+* Latte Panda => Server
+  * 10s
+
+### Server => Android
+
+* Every time sensor data receive
+
+
+

@@ -45,7 +45,8 @@ public  class SensorDataVO implements Serializable{
     String windowStatus="0"; // 창문 onoff
     String dustDensity="0"; // 실내 미세먼지
     String airpurifierStatus="0"; // 공기청정기 onoff
-    String airconditionerStatus="0"; // 에어컨 onoff
+    String airconditionerStatus="0"; // 에어컨
+    String lightStatus = "0";
 
     public String getTemp() {
         return temp;
@@ -93,5 +94,13 @@ public  class SensorDataVO implements Serializable{
 
     public void setAirconditionerStatus(String airconditionerStatus) {
         this.airconditionerStatus = airconditionerStatus;
+    }
+
+    public String getLightStatus() {
+        return lightStatus;
+    }
+
+    public void setLightStatus(String lightStatus) {
+        this.lightStatus = lightStatus;
     }
 }

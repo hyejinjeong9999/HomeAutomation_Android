@@ -81,7 +81,7 @@ public class FragmentWindow extends Fragment {
 
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
-        sensorDataVO = (SensorDataVO) getArguments().get("window");
+        sensorDataVO = (SensorDataVO) getArguments().get("sensorData");
         Log.v(TAG,"window.getWindowStatus=="+ sensorDataVO.getWindowStatus());
 
         // framyLayout

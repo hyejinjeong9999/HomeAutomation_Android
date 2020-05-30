@@ -59,7 +59,7 @@ public class FragmentHome extends Fragment {
         Log.v(TAG,"weathers=="+(WeatherVO) getArguments().get("weather"));
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
-        sensorDataVO = (SensorDataVO) getArguments().get("window");
+        sensorDataVO = (SensorDataVO) getArguments().get("sensorData");
         Log.v(TAG,"weather.getOnOff()=="+ sensorDataVO.getWindowStatus());
 
         /**

@@ -160,11 +160,14 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verybad);
             }
+            Log.v(TAG,"weathers.getPm10Value() "+weathers.getPm10Value() );
+            Log.v(TAG,"weathers.getPm10Value() "+weathers.getPm25Value() );
             ((SystemInfoWeather)holder).tvDustOutSituation.setText(weathers.getPm10Value() +  " μg/m³");
 
-
+            Log.v(TAG,"TEST=="+sensorDataVO.getTemp());
             ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
-            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
+//            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
+            ((SystemInfoWeather)holder).tvModeSituation.setText("SLEEP");
             double dustDensity = Double.parseDouble(sensorDataVO.getDustDensity());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
