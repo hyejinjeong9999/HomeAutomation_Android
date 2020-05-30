@@ -1,6 +1,8 @@
 package RecyclerViewAdapter;
 
 import android.content.Context;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import com.example.semiproject.R;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import Communication.SharedObject;
 import model.SensorDateVO;
@@ -33,7 +36,12 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private BufferedReader bufferedReader;
     private SharedObject sharedObject;
     private ArrayList<SystemInfoVO> list;
+
+    private boolean airPurifierSituation = false;
+    private boolean windowSituation = false;
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+
+    TextToSpeech tts;       //음석 출력관련 변수 선언
 
     int prePosition = -1;
 
@@ -51,6 +59,17 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status!=android.speech.tts.TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
+
+
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (viewType == ViewType.ItemVerticalAir) {
@@ -81,12 +100,20 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
                         //공기청정기 Check
-                        Log.v(TAG, "공기청정기 ON");
-                    }else{
+                        Log.v(TAG, "공기청정기 가동");
+                        String totalSpeak = "공기청정기를 가동합니다";
+                        speech(totalSpeak);
+                        airPurifierSituation = true;
+                        sharedObject.put("/ANDROID>/AIRPURIFIER ON");
+
+                    }else {
                         //공기청정기 unCheck
                         Log.v(TAG, "공기청정기 OFF");
+                        String totalSpeak = "공기청정기 작동을 중지합니다";
+                        speech(totalSpeak);
+                        airPurifierSituation = false;
+                        sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
                     }
-
                 }
             });
             ((AirControl)holder).swWindowControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -94,9 +121,17 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
                         Log.v(TAG, "창문 ON");
+                        String totalSpeak = "창문을 열겠습니다";
+                        speech(totalSpeak);
+                        windowSituation = true;
+                        sharedObject.put("/ANDROID>/WINDOW ON");
                     }else{
                         //공기청정기 unCheck
                         Log.v(TAG, "창문 OFF");
+                        String totalSpeak = "창문을 닫겠습니다";
+                        speech(totalSpeak);
+                        windowSituation = false;
+                        sharedObject.put("/ANDROID>/WINDOW OFF");
                     }
                 }
             });
@@ -146,6 +181,17 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemCount() {
         return list.size();
     }
+
+    private void speech(String msg){
+        tts.setPitch(1.5f); //1.5톤 올려서
+        tts.setSpeechRate(1.0f); //1배속으로 읽기
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            tts.speak(msg, TextToSpeech.QUEUE_FLUSH, null, null);
+            // API 20
+        else
+            tts.speak(msg, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
 
     public class AirInfo extends RecyclerView.ViewHolder {
         TextView tvPM25In;
