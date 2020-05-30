@@ -54,7 +54,7 @@ public class FragmentWindow extends Fragment {
         view = inflater.inflate(R.layout.fragment_air, container, false);
 
         Bundle bundle = getArguments();
-        list=(ArrayList<SystemInfoVO>)getArguments().get("list");
+        list=(ArrayList<SystemInfoVO>)getArguments().get("listFragmentWindow");
         weatherVO = (WeatherVO) getArguments().get("weather");
         sensorDateVO = (SensorDateVO) getArguments().get("window");
 

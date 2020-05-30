@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
 //                        fragmentWindow.setArguments(bundleFagmentA);
                     bundle.putSerializable("weather", weatherVO);
                     bundle.putSerializable("window", sensorDateVO);
-                    //bundle.putSerializable("list", listFragmentWindow);
+                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
                     fragmentWindow.setArguments(bundle);
                     break;
                 case 2:

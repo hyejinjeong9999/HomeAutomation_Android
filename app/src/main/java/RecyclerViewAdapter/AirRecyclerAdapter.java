@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,8 +57,6 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             view = inflater.inflate(R.layout.recycler_item_airinfo, parent, false);
             return new AirRecyclerAdapter.AirInfo(view);
         }else{
-            //recycler_item_systeminfo 다 같은 xml파일인데 수정 사항에 대비해서 xml같은 걸로 하나더 만들었습니다. vvvvv
-            //view = inflater.inflate(R.layout.recycler_item_systeminfo, parent, false);
             view = inflater.inflate(R.layout.recycler_item_systeminfo_air_control, parent, false);
             return new AirRecyclerAdapter.AirControl(view);
         }
@@ -71,12 +70,40 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((AirInfo)holder).tvGas.setText("GAS SENSOR");
             ((AirInfo)holder).tvPM25Out.setText(sensorDateVO.getDustDensity()  + " μg/m³");
             ((AirInfo)holder).tvPM10Out.setText(sensorDateVO.getDustDensity()  + " μg/m³");
+            // 공기상태 정보 표시 로직 끝
         }else  if(holder instanceof AirControl){
-            ((AirControl)holder).ivAirControl.setImageResource(R.drawable.sunny);
-            ((AirControl)holder).ivWindowControl.setImageResource(R.drawable.sunny);
+            ((AirControl)holder).ivAirControl.setImageResource(R.drawable.ic_air_purifier);
+            ((AirControl)holder).ivWindowControl.setImageResource(R.drawable.window2);
             ((AirControl)holder).tvAirControl.setText("공기청정기");
             ((AirControl)holder).tvWindowControl.setText("창문");
+            ((AirControl)holder).swAirControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        //공기청정기 Check
+                        Log.v(TAG, "공기청정기 ON");
+                    }else{
+                        //공기청정기 unCheck
+                        Log.v(TAG, "공기청정기 OFF");
+                    }
+
+                }
+            });
+            ((AirControl)holder).swWindowControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        Log.v(TAG, "창문 ON");
+                    }else{
+                        //공기청정기 unCheck
+                        Log.v(TAG, "창문 OFF");
+                    }
+                }
+            });
+            // 공기청정기, 창문 컨트롤 로직설정 끝
         }
+
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
