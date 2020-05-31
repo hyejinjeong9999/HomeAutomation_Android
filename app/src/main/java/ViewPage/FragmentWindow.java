@@ -93,7 +93,6 @@ public class FragmentWindow extends Fragment {
         btnManual = view.findViewById(R.id.btnManual);
         btnManual.setOnClickListener(mClick);
 
-        // 창문 ToggleBtn 수동 열기/닫기
         /**
          * onTouch() 함수를 이용해 사용자로부터 Touch 가 인식 되었을 때만 IoT 기기에 Data 전달해준다
          */
@@ -101,23 +100,26 @@ public class FragmentWindow extends Fragment {
         tglBtnWindow.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.v(TAG,"tglBtnWindow_onTouch()==============="+tglBtnWindow.isInTouchMode());
+                Log.v(TAG,"tglBtnWindow_onTouch()="+tglBtnWindow.isInTouchMode());
                 touchEventSituation = true;
                 return false;
             }
         });
+        /**
+         * 창문 OPEN/CLOSE ClickEvent
+         */
         tglBtnWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(TAG,"windowVO.getWindowStatus()"+ sensorDataVO.getWindowStatus());
-                Log.v(TAG,"tglBtnWindow.isChecked()"+tglBtnWindow.isChecked());
-                if(tglBtnWindow.isChecked() && touchEventSituation){
+                Log.v(TAG,"windowVO.getWindowStatus()="+ sensorDataVO.getWindowStatus());
+                Log.v(TAG,"tglBtnWindow.isChecked()="+tglBtnWindow.isChecked());
+                if(tglBtnWindow.isChecked() && touchEventSituation == true){
                     Log.v(TAG, "window == OFF");
                     touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                     tglBtnWindow.setBackgroundResource(R.drawable.window1);
 
-                }else if (!tglBtnWindow.isChecked() && touchEventSituation){
+                }else if (!(tglBtnWindow.isChecked()) && touchEventSituation == true){
                     Log.v(TAG, "window == ON");
                     touchEventSituation = false;
                     sharedObject.put("/ANDROID>/WINDOWS ON");

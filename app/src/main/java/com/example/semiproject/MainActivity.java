@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.voice_black)));
         tabLayout.addTab(tabLayout.newTab().
-                setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
+                setCustomView(createTabView(R.drawable.ic_windy)));
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
         tabLayout.addOnTabSelectedListener(mTabSelect);
@@ -328,9 +328,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                //Latte
-//                    socket = new Socket("70.12.229.165", 1357);
-                //PC
                 socket = new Socket("70.12.60.98", 1357);
                 bufferedReader = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
@@ -420,6 +417,9 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putSerializable("weather", weatherVO);
                     bundle.putSerializable("sensorData", sensorDataVO);
                     fragmentWindow.setArguments(bundle);
+                    tab.setIcon(R.drawable.toys_white_18dp);
+
+//                    tab.setCustomView(createTabView(R.drawable.toys_white_18dp));
                     break;
                 case 2:
                     Log.v(TAG,"onTabSelected()_speechRecognizer");
