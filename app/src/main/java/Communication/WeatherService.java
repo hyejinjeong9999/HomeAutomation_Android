@@ -55,7 +55,9 @@ public class WeatherService extends Service {
         @Override
         public void run() {
            // String url = "http://70.12.60.98:8080/HomeAutomationWebServer/getWeather";
-           String url = "http://70.12.229.165:8080/HomeAutomationWebServer/Weather";
+//           String url = "http://70.12.229.165:8080/HomeAutomationWebServer/Weather";
+//            String url = "http://70.12.60.98:8088/HomeAutomationWebServer/Weather";
+            String url = "http://70.12.60.98:8088/homeAutomation/getWeather";
             try{
                 //1. URL 객체 생성
                 URL obj = new URL(url);

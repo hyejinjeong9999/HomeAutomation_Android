@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:text="실내온도"
+            android:text="실외온도"
             android:gravity="center_horizontal|bottom"
             android:textColor="@color/recyclerViewItemFont"/>
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:text="습도"
+            android:text="미세먼지OUT"
             android:gravity="center_horizontal|bottom"
             android:textColor="@color/recyclerViewItemFont"/>
     </LinearLayout>
@@ -40,7 +40,7 @@
         android:layout_weight="4"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/tvTempIn"
+            android:id="@+id/tvTempOut"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -56,16 +56,30 @@
             android:layout_margin="10dp"
             android:layout_weight="10"
             android:adjustViewBounds="true" />
-        <TextView
-            android:id="@+id/tvHumidity"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_horizontal"
-            android:text="0"
-            android:textSize="30sp"
-            android:textColor="@color/recyclerViewItemFontValue"/>
+            android:orientation="vertical"
+            android:layout_margin="10dp" >
+
+            <ImageView
+                android:id="@+id/ivDustOut"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                android:adjustViewBounds="true" />
+            <TextView
+                android:id="@+id/tvDustOutSituation"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="@color/recyclerViewItemFontValue"
+                android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,14 +90,21 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:text="실외온도"
+            android:text="실내온도"
             android:textColor="@color/recyclerViewItemFont"
             android:gravity="center_horizontal|bottom"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:text="미세먼지"
+            android:text="MODE"
+            android:textColor="@color/recyclerViewItemFont"
+            android:gravity="center_horizontal|bottom"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:text="미세먼지IN"
             android:textColor="@color/recyclerViewItemFont"
             android:gravity="center_horizontal|bottom"/>
 <!--        <TextView-->
@@ -101,7 +122,17 @@
         android:orientation="horizontal"
         android:layout_marginBottom="10dp">
         <TextView
-            android:id="@+id/tvTempOut"
+            android:id="@+id/tvTempIn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textSize="28sp"
+            android:textColor="@color/recyclerViewItemFontValue"/>
+        <TextView
+            android:id="@+id/tvModeSituation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -133,8 +164,6 @@
                 android:text="0"
                 android:textColor="@color/recyclerViewItemFontValue"
                 android:textSize="10sp" />
-
-
         </LinearLayout>
 
     </LinearLayout>
