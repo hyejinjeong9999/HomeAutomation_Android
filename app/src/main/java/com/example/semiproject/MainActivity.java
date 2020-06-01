@@ -315,7 +315,9 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG,"onDestroy()");
         try {
             printWriter.close();
+            Log.i("mainTest", "printWriter.close();");
             bufferedReader.close();
+            Log.i("mainTest", "bufferedReader.close();");
         } catch (IOException e) {
             Log.v(TAG,"onDestroy()_bufferedReader.close()_IOException=="+e.toString());
         }
