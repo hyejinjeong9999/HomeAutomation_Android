@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,7 +20,7 @@ import java.io.BufferedReader;
 
 import Communication.SharedObject;
 
-public class FragmentTest extends Fragment {
+public class FragmentAirConditioner extends Fragment {
     String TAG="FragmentTest";
     View view;
     Context context;
@@ -31,14 +30,14 @@ public class FragmentTest extends Fragment {
     SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentTest(SharedObject sharedObject, BufferedReader bufferedReader){
+    public FragmentAirConditioner(SharedObject sharedObject, BufferedReader bufferedReader){
         this.sharedObject=sharedObject;
         this.bufferedReader=bufferedReader;
     }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_test,container,false);
+        view = inflater.inflate(R.layout.fragment_airconditioner,container,false);
         context=container.getContext();
         tvReceiveData=view.findViewById(R.id.tvReceiveData);
 

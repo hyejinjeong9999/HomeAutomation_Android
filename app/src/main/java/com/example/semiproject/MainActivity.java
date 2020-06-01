@@ -40,7 +40,7 @@ import RecyclerViewAdapter.ViewType;
 import ViewPage.FragmentHome;
 import ViewPage.FragmentLight;
 import ViewPage.FragmentRefrigerator;
-import ViewPage.FragmentTest;
+import ViewPage.FragmentAirConditioner;
 import ViewPage.FragmentWindow;
 import model.SystemInfoVO;
 import model.WeatherVO;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentHome fragmentHome;
     FragmentWindow fragmentWindow;
     FragmentRefrigerator fragmentRefrigerator;
-    FragmentTest fragmentTest;
+    FragmentAirConditioner fragmentAirConditioner;
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
@@ -426,12 +426,12 @@ public class MainActivity extends AppCompatActivity {
                     speechRecognizer.startListening(intent);
                     break;
                 case 3:
-                    if (fragmentTest == null) {
-                        fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+                    if (fragmentAirConditioner == null) {
+                        fragmentAirConditioner = new FragmentAirConditioner(sharedObject, bufferedReader);
                     }
                     fragmentTransaction.replace(
-                            R.id.frame, fragmentTest).commitAllowingStateLoss();
-                    fragmentTest.setArguments(bundle);
+                            R.id.frame, fragmentAirConditioner).commitAllowingStateLoss();
+                    fragmentAirConditioner.setArguments(bundle);
                     fragmentTag = 3;
                     break;
                 case 4:
@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.v(TAG,"FragmentA_OnRefreshListener");
                     } else if (currentFragment instanceof FragmentRefrigerator){
                         Log.v(TAG,"FragmentRefrigerator");
-                    } else if (currentFragment instanceof FragmentTest){
+                    } else if (currentFragment instanceof FragmentAirConditioner){
                         Log.v(TAG,"FragmentTest");
                     } else if (currentFragment instanceof FragmentLight){
                         Log.v(TAG,"FragmentLight");
