@@ -20,7 +20,7 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import RecyclerViewAdapter.VerticalAdapter;
-import model.SensorDateVO;
+import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
 
@@ -32,16 +32,16 @@ public class FragmentHome extends Fragment {
 
     ArrayList<SystemInfoVO> list;
     WeatherVO weathers;
-    SensorDateVO sensorDateVO;
+    SensorDataVO sensorDataVO;
 
     GestureDetector gestureDetector;
     Communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, SensorDateVO sensorDateVO) {
+    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
-        this.sensorDateVO = sensorDateVO;
+        this.sensorDataVO = sensorDataVO;
     }
 
     @Nullable
@@ -59,8 +59,8 @@ public class FragmentHome extends Fragment {
         Log.v(TAG,"weathers=="+(WeatherVO) getArguments().get("weather"));
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
-        sensorDateVO = (SensorDateVO) getArguments().get("window");
-        //Log.v(TAG,"weather.getOnOff()=="+ sensorDateVO.getOnOff());
+        sensorDataVO = (SensorDataVO) getArguments().get("window");
+        //Log.v(TAG,"weather.getOnOff()=="+ sensorDataVO.getOnOff());
 
         /**
          * RecyclerVIew 생성 Code
@@ -69,7 +69,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
         verticalAdapter = new VerticalAdapter(
-                context, list, weathers, sharedObject,bufferedReader, sensorDateVO);
+                context, list, weathers, sharedObject,bufferedReader, sensorDataVO);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(verticalAdapter);
 

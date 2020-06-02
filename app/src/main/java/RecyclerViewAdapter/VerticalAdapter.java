@@ -22,8 +22,8 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import Communication.SharedObject;
+import model.SensorDataVO;
 import model.SystemInfoVO;
-import model.SensorDateVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -34,7 +34,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
     WeatherVO weathers;
-    SensorDateVO sensorDateVO;
+    SensorDataVO sensorDataVO;
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
@@ -43,13 +43,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
-            SharedObject sharedObject, BufferedReader bufferedReader, SensorDateVO sensorDateVO) {
+            SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
         this.context = context;
         this.itemList = itemList;
         this.weathers = weathers;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
-        this.sensorDateVO = sensorDateVO;
+        this.sensorDataVO = sensorDataVO;
     }
     /**
      * getItemViewType() method에서 Return 받는 VIewType 형태의 아이템 뷰를 위한 뷰홀더 객체 생성
@@ -110,7 +110,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
              */
 
             /*  vo객체가 변경됨에 따라 기능이 없어짐?
-            if (sensorDateVO.getOnOff().equals("0")){
+            if (sensorDataVO.getOnOff().equals("0")){
                 ((SystemInfoSwitch)holder).swSituation.setChecked(true);
             }else {
                 ((SystemInfoSwitch)holder).swSituation.setChecked(false);
@@ -137,7 +137,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTempIn.setText(sensorDateVO.getTemp() + " ℃");
+            ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
              */
@@ -156,7 +156,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
 
             ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
-            double dustDensity = Double.parseDouble(sensorDateVO.getDustDensity());
+            double dustDensity = Double.parseDouble(sensorDataVO.getDust25());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
 //                ((SystemInfoWeather)holder).tvDust
@@ -168,7 +168,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
             }
-            ((SystemInfoWeather)holder).tvSituation.setText(sensorDateVO.getDustDensity() + " μg/m³");
+            ((SystemInfoWeather)holder).tvSituation.setText(sensorDataVO.getDust25() + " μg/m³");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//

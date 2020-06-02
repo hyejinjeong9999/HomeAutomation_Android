@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import Communication.SharedObject;
-import model.SensorDateVO;
+import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
 
@@ -32,13 +32,14 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Context context;
     View view;
     private WeatherVO weatherVO;
-    private SensorDateVO sensorDateVO;
+    private SensorDataVO sensorDataVO;
     private BufferedReader bufferedReader;
     private SharedObject sharedObject;
     private ArrayList<SystemInfoVO> list;
 
     private boolean airPurifierSituation = false;
     private boolean windowSituation = false;
+    private boolean airManualMode = false;
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
 
     TextToSpeech tts;       //음석 출력관련 변수 선언
@@ -46,11 +47,11 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     int prePosition = -1;
 
     public AirRecyclerAdapter(Context context, SharedObject sharedObject, BufferedReader bufferedReader,
-                              SensorDateVO sensorDateVO, WeatherVO weatherVO, ArrayList<SystemInfoVO> list)  {
+                              SensorDataVO sensorDataVO, WeatherVO weatherVO, ArrayList<SystemInfoVO> list)  {
         this.context = context;
         this.bufferedReader = bufferedReader;
         this.sharedObject = sharedObject;
-        this.sensorDateVO = sensorDateVO;
+        this.sensorDataVO = sensorDataVO;
         this.weatherVO = weatherVO;
         this.list = list;
     }
@@ -84,11 +85,11 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof AirInfo){
-            ((AirInfo)holder).tvPM25In.setText(sensorDateVO.getDustDensity()  + " μg/m³");
+            ((AirInfo)holder).tvPM25In.setText(sensorDataVO.getDust25()  + " μg/m³");
             ((AirInfo)holder).tvPM10In.setText("pm10" + " μg/m³");
             ((AirInfo)holder).tvGas.setText("GAS SENSOR");
-            ((AirInfo)holder).tvPM25Out.setText(sensorDateVO.getDustDensity()  + " μg/m³");
-            ((AirInfo)holder).tvPM10Out.setText(sensorDateVO.getDustDensity()  + " μg/m³");
+            ((AirInfo)holder).tvPM25Out.setText(weatherVO.getPm25Value()  + " μg/m³");
+            ((AirInfo)holder).tvPM10Out.setText(weatherVO.getPm10Value()  + " μg/m³");
             // 공기상태 정보 표시 로직 끝
         }else  if(holder instanceof AirControl){
             ((AirControl)holder).ivAirControl.setImageResource(R.drawable.ic_air_purifier);
@@ -104,6 +105,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         String totalSpeak = "공기청정기를 가동합니다";
                         speech(totalSpeak);
                         airPurifierSituation = true;
+                        airManualMode = true;
                         sharedObject.put("/ANDROID>/AIRPURIFIER ON");
 
                     }else {
@@ -112,6 +114,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         String totalSpeak = "공기청정기 작동을 중지합니다";
                         speech(totalSpeak);
                         airPurifierSituation = false;
+                        airManualMode = true;
                         sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
                     }
                 }
@@ -124,6 +127,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         String totalSpeak = "창문을 열겠습니다";
                         speech(totalSpeak);
                         windowSituation = true;
+                        airManualMode = true;
                         sharedObject.put("/ANDROID>/WINDOW ON");
                     }else{
                         //공기청정기 unCheck
@@ -131,6 +135,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         String totalSpeak = "창문을 닫겠습니다";
                         speech(totalSpeak);
                         windowSituation = false;
+                        airManualMode = true;
                         sharedObject.put("/ANDROID>/WINDOW OFF");
                     }
                 }

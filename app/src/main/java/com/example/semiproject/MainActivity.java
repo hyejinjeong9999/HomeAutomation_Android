@@ -49,7 +49,7 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
-import model.SensorDateVO;
+import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
 
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
     Intent serviceIntent;
     Bundle bundle;
-    SensorDateVO sensorDateVO = new SensorDateVO();
+    SensorDataVO sensorDataVO = new SensorDataVO();
     WeatherVO weatherVO;
     WeatherVO[] weathers;
     //Fragment
@@ -151,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
             weatherVO = new WeatherVO();
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
-            bundle.putSerializable("window", sensorDateVO);
+            bundle.putSerializable("window", sensorDataVO);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 //                            fragmentTransaction.replace(
 //                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                            bundle.putSerializable("weather", weatherVO);
-//                            bundle.putSerializable("window", sensorDateVO);
+//                            bundle.putSerializable("window", sensorDataVO);
 //                            fragmentWindow.setArguments(bundle);
 //                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
 //                        }
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout.setupWithViewPager(viewPager);
 
 //        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, sensorDateVO);
+//                new Communication.DataReceveAsyncTask111(objectInputStream, sensorDataVO);
 //        asyncTaskTest.execute();
 
 
@@ -305,10 +305,10 @@ public class MainActivity extends AppCompatActivity {
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
         bundle = new Bundle();
-        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
-        bundle.putSerializable("window", sensorDateVO);
+        bundle.putSerializable("window", sensorDataVO);
         fragmentHome.setArguments(bundle);
         fragmentTransaction.replace(
                 R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -373,26 +373,26 @@ public class MainActivity extends AppCompatActivity {
                 Thread thread1 = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sensorDateVO = new SensorDateVO();
-                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
+                        sensorDataVO = new SensorDataVO();
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         while (true) {
                             try {
                                 jsonData = bufferedReader.readLine();
 //                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
                                 if(jsonData != null){
-                                    sensorDateVO =objectMapper.readValue(jsonData, SensorDateVO.class);
-                                    Log.v(TAG,"testVo.getTemp=="+ sensorDateVO.getTemp());
-                                    //Log.v(TAG,"testVo.getLight=="+ sensorDateVO.getLight());
-                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDateVO.getDustDensity());
-                                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDateVO.getOnOff());
+                                    sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
+                                    Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
+                                    //Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getLight());
+                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDataVO.getDust25());
+                                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
 
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     String temp = jsonObject.getString("temp");
                                     Log.v(TAG,"jsonObject_getTemp=="+temp);
 
-                                    bundle.putSerializable("window", sensorDateVO);
+                                    bundle.putSerializable("window", sensorDataVO);
                                     fragmentWindow.setArguments(bundle);
-//                                        SensorDateVO vo1 = (SensorDateVO)jsonObject.get(jsonData);
+//                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                 }
                             }catch (IOException | JSONException e) {
@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
             switch (tab.getPosition()) {
                 case 0:
                     if (fragmentHome == null) {
-                        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDateVO);
+                        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -439,13 +439,13 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     swipeRefresh.setEnabled(false);
                     if (fragmentWindow == null) {
-                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentWindow.setArguments(bundleFagmentA);
                     bundle.putSerializable("weather", weatherVO);
-                    bundle.putSerializable("window", sensorDateVO);
+                    bundle.putSerializable("window", sensorDataVO);
                     bundle.putSerializable("listFragmentWindow", listFragmentWindow);
                     fragmentWindow.setArguments(bundle);
                     break;
@@ -570,12 +570,12 @@ public class MainActivity extends AppCompatActivity {
                             } else if (currentFragment instanceof FragmentWindow) {
                                 fragmentTransaction = fragmentManager.beginTransaction();
                                 if (fragmentWindow == null) {
-                                    fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
+                                    fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                                 }
                                 fragmentTransaction.replace(
                                         R.id.frame, fragmentWindow).commitAllowingStateLoss();
                                 bundle.putSerializable("weather", weatherVO);
-                                bundle.putSerializable("window", sensorDateVO);
+                                bundle.putSerializable("window", sensorDataVO);
                                 fragmentWindow.setArguments(bundle);
                                 Log.v(TAG, "FragmentA_OnRefreshListener");
                             }
@@ -611,13 +611,13 @@ public class MainActivity extends AppCompatActivity {
                     }else if (currentFragment instanceof FragmentWindow){
                         fragmentTransaction = fragmentManager.beginTransaction();
                         if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDateVO, weatherVO);
+                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentA.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("window", sensorDateVO);
+                        bundle.putSerializable("window", sensorDataVO);
                         fragmentWindow.setArguments(bundle);
                         Log.v(TAG,"FragmentA_OnRefreshListener");
                     }

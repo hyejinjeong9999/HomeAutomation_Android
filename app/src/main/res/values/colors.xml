@@ -7,7 +7,7 @@
     <color name="fragmentBack">#FFFFFF</color>
     <color name="fragmentHomeFont">#BDB7B7</color>
     <color name="fragmentHomeFont1">#3092FF</color>
-    <color name="tabIndicatorCol">#12110D</color>
+    <color name="tabIndicatorCol">#3312110D</color>
     <color name="tabBackGroundCol">#70918F83</color>
     <color name="recyclerItemCol">#191813</color>
     <color name="recyclerViewItemBack">#000D1115</color>

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import Communication.SharedObject;
 import RecyclerViewAdapter.AirRecyclerAdapter;
-import model.SensorDateVO;
+import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
 
@@ -34,14 +34,14 @@ public class FragmentWindow extends Fragment {
     AirRecyclerAdapter airRecyclerAdapter;
     private BufferedReader bufferedReader;
 
-    private SensorDateVO sensorDateVO;
+    private SensorDataVO sensorDataVO;
     private WeatherVO weatherVO;
     private ArrayList<SystemInfoVO> list;
 
-    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader, SensorDateVO sensorDateVO, WeatherVO weatherVO) {
+    public FragmentWindow(SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO, WeatherVO weatherVO) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
-        this.sensorDateVO = sensorDateVO;
+        this.sensorDataVO = sensorDataVO;
         this.weatherVO = weatherVO;
     }
 
@@ -56,13 +56,13 @@ public class FragmentWindow extends Fragment {
         Bundle bundle = getArguments();
         list=(ArrayList<SystemInfoVO>)getArguments().get("listFragmentWindow");
         weatherVO = (WeatherVO) getArguments().get("weather");
-        sensorDateVO = (SensorDateVO) getArguments().get("window");
+        sensorDataVO = (SensorDataVO) getArguments().get("window");
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewAirVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false);
         airRecyclerAdapter = new AirRecyclerAdapter(
-                context, sharedObject, bufferedReader, sensorDateVO, weatherVO, list);
+                context, sharedObject, bufferedReader, sensorDataVO, weatherVO, list);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(airRecyclerAdapter);
 

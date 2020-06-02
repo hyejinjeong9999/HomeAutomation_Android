@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import model.SensorDateVO;
+import model.SensorDataVO;
 
 public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
     String TAG="DataReceiveAsyncTaskTest";
@@ -21,7 +21,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
     ImageButton ibReceiveData;
     String jsonData;
     String onOff = "";
-    SensorDateVO sensorDateVO;
+    SensorDataVO sensorDataVO;
     ObjectMapper objectMapper = new ObjectMapper();
 
     public DataReceiveAsyncTaskTest(String jsonData, ImageButton ibReceiveData){
@@ -37,8 +37,8 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
             try {
                 Log.v(TAG,"doInBackground()_readLine()=="+jsonData);
                 if(jsonData != null){
-                    sensorDateVO =objectMapper.readValue(jsonData, SensorDateVO.class);
-                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDateVO.getOnOff());
+                    sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
+                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
                     JSONObject jsonObject = new JSONObject(jsonData);
                     onOff = jsonObject.getString("onOff");
                 }

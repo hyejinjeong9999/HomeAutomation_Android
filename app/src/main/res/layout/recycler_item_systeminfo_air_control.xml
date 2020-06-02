@@ -29,7 +29,7 @@
             android:layout_weight="10"
             android:gravity="center_vertical"
             android:textSize="16sp"
-            android:textColor="@color/recyclerViewItemFont"/>
+            android:textColor="@color/recyclerViewItemFontValue"/>
         <Switch
             android:id="@+id/swAirControl"
             android:layout_width="0dp"
@@ -60,7 +60,7 @@
             android:layout_weight="10"
             android:gravity="center_vertical"
             android:textSize="16sp"
-            android:textColor="@color/recyclerViewItemFont"/>
+            android:textColor="@color/recyclerViewItemFontValue"/>
         <Switch
             android:id="@+id/swWindowControl"
             android:layout_width="0dp"
