@@ -85,7 +85,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof AirInfo){
-            ((AirInfo)holder).tvPM25In.setText(sensorDataVO.getDust25()  + " μg/m³");
+            ((AirInfo)holder).tvPM25In.setText(sensorDataVO.getDust25() + " μg/m³");
             ((AirInfo)holder).tvPM10In.setText("pm10" + " μg/m³");
             ((AirInfo)holder).tvGas.setText("GAS SENSOR");
             ((AirInfo)holder).tvPM25Out.setText(weatherVO.getPm25Value()  + " μg/m³");
@@ -99,7 +99,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((AirControl)holder).swAirControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked){
+                    if (isChecked) {
                         //공기청정기 Check
                         Log.v(TAG, "공기청정기 가동");
                         String totalSpeak = "공기청정기를 가동합니다";
@@ -108,7 +108,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         airManualMode = true;
                         sharedObject.put("/ANDROID>/AIRPURIFIER ON");
 
-                    }else {
+                    } else {
                         //공기청정기 unCheck
                         Log.v(TAG, "공기청정기 OFF");
                         String totalSpeak = "공기청정기 작동을 중지합니다";
@@ -118,6 +118,7 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
                     }
                 }
+
             });
             ((AirControl)holder).swWindowControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

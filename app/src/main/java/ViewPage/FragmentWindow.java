@@ -56,7 +56,7 @@ public class FragmentWindow extends Fragment {
         Bundle bundle = getArguments();
         list=(ArrayList<SystemInfoVO>)getArguments().get("listFragmentWindow");
         weatherVO = (WeatherVO) getArguments().get("weather");
-        sensorDataVO = (SensorDataVO) getArguments().get("window");
+        sensorDataVO = (SensorDataVO) getArguments().get("sensorData");
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewAirVertical);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(

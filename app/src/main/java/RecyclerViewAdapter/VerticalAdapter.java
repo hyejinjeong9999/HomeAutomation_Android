@@ -154,7 +154,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-            ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
+           // ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
 
             ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
             double dustDensity = Double.parseDouble(sensorDataVO.getDust25());
