@@ -50,8 +50,6 @@ public class FragmentRefrigerator extends Fragment {
         this.bufferedReader=bufferedReader;
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,56 +96,6 @@ public class FragmentRefrigerator extends Fragment {
 //        });
         return  view;
     }
-
-    private RecognitionListener recognitionListener = new RecognitionListener() {
-        @Override
-        public void onReadyForSpeech(Bundle bundle) {
-        }
-
-        @Override
-        public void onBeginningOfSpeech() {
-        }
-
-        @Override
-        public void onRmsChanged(float v) {
-        }
-
-        @Override
-        public void onBufferReceived(byte[] bytes) {
-        }
-
-        @Override
-        public void onEndOfSpeech() {
-        }
-
-        @Override
-        public void onError(int i) {
-            tvSound.setText("너무 늦게 말하면 오류뜹니다");
-
-        }
-
-        @Override
-        public void onResults(Bundle bundle) {
-            String key = "";
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = bundle.getStringArrayList(key);
-
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
-
-            tvSound.setText(rs[0]);
-        }
-
-        @Override
-        public void onPartialResults(Bundle bundle) {
-        }
-
-        @Override
-        public void onEvent(int i, Bundle bundle) {
-        }
-    };
-
-
     /**
      * QR code - Zxing Library
      */

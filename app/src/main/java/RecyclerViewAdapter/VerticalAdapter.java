@@ -111,11 +111,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             /*  vo객체가 변경됨에 따라 기능이 없어짐?
             if (sensorDataVO.getOnOff().equals("0")){
+            if (sensorDataVO.getWindowStatus().equals("0")){
                 ((SystemInfoSwitch)holder).swSituation.setChecked(true);
             }else {
                 ((SystemInfoSwitch)holder).swSituation.setChecked(false);
             }
-            */
+
 
             ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(
                     new CompoundButton.OnCheckedChangeListener() {
@@ -254,9 +255,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class SystemInfoWeather extends RecyclerView.ViewHolder{
         public TextView tvTempIn;
         public ImageView ivWeather;
-        public TextView tvHumidity;
+        public ImageView ivDustOut;
+        public TextView tvDustOutSituation;
 
         public TextView tvTempOut;
+        public TextView tvModeSituation;
         public ImageView ivDust;
         public TextView tvSituation;
         public SystemInfoWeather(@NonNull View itemView) {
@@ -267,9 +270,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            tvSituation = itemView.findViewById(R.id.tvSituation);
             tvTempIn =  itemView.findViewById(R.id.tvTempIn);
             ivWeather =  itemView.findViewById(R.id.ivWeather);
-            tvHumidity =  itemView.findViewById(R.id.tvHumidity);
+            ivDustOut =  itemView.findViewById(R.id.ivDustOut);
+            tvDustOutSituation =  itemView.findViewById(R.id.tvDustOutSituation);
 
             tvTempOut =  itemView.findViewById(R.id.tvTempOut);
+            tvModeSituation= itemView.findViewById(R.id.tvModeSituation);
             ivDust =  itemView.findViewById(R.id.ivDust);
             tvSituation =  itemView.findViewById(R.id.tvSituation);
         }

@@ -52,6 +52,7 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
+import model.SensorDataVO;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
-            bundle.putSerializable("window", sensorDataVO);
+            bundle.putSerializable("sensorData", sensorDataVO);
             fragmentHome.setArguments(bundle);
             fragmentTransaction.replace(
                     R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -169,11 +170,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.toys_black_18dp)));
         tabLayout.addTab(tabLayout.newTab().
-                setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().
-                setCustomView(createTabView(R.drawable.incandescent_black_18dp)));
-        tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.voice_black)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.ic_windy)));
+        tabLayout.addTab(tabLayout.newTab().
+                setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
         tabLayout.addOnTabSelectedListener(mTabSelect);
 
         /**
@@ -190,9 +191,14 @@ public class MainActivity extends AppCompatActivity {
 //                );
 //            }
 //        }
-        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+
+        try {
+            intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        }catch (Exception e){
+            Log.v(TAG,"RecognizerIntent Exception=="+e);
+        }
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(recognitionListener);
 
@@ -225,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 //                            fragmentTransaction.replace(
 //                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                            bundle.putSerializable("weather", weatherVO);
-//                            bundle.putSerializable("window", sensorDataVO);
+//                            bundle.putSerializable("window", windowVO);
 //                            fragmentWindow.setArguments(bundle);
 //                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
 //                        }
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout.setupWithViewPager(viewPager);
 
 //        Communication.DataReceveAsyncTask111 asyncTaskTest =
-//                new Communication.DataReceveAsyncTask111(objectInputStream, sensorDataVO);
+//                new Communication.DataReceveAsyncTask111(objectInputStream, windowVO);
 //        asyncTaskTest.execute();
 
 
@@ -263,12 +269,12 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
+//        list.add(new SystemInfoVO(
+//                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(
-                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
+                R.drawable.smart, "SMART MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.ic_light_on, "조명", "켜짐", ViewType.ItemVertical));
-        list.add(new SystemInfoVO(
-                R.drawable.ic_refrigerator, "냉장고", "????", ViewType.ItemVertical));
+                R.drawable.sleep, "SLEEP MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
                 R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
 
@@ -301,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
 
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG,"onNewIntent()_weathers[0].getTemp()=="+weathers[0].getTemp());
+        Log.v(TAG,"onNewIntent()_weathers[0].getPm25Value()=="+weathers[0].getPm25Value());
         weatherVO = weathers[0];
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -308,7 +315,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
-        bundle.putSerializable("window", sensorDataVO);
+        bundle.putSerializable("sensorData", sensorDataVO);
+        Log.v(TAG,"WeatherTEST"+sensorDataVO.getTemp());
         fragmentHome.setArguments(bundle);
         fragmentTransaction.replace(
                 R.id.frame, fragmentHome).commitAllowingStateLoss();
@@ -355,9 +363,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                //Latte
-//                    socket = new Socket("70.12.229.165", 1357);
-                //PC
                 socket = new Socket("70.12.60.98", 1357);
                 bufferedReader = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
@@ -385,12 +390,16 @@ public class MainActivity extends AppCompatActivity {
                                     //Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getLight());
                                     Log.v(TAG,"testVo.getDustDensity=="+ sensorDataVO.getDust25());
                                     //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
+                                    sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
+                                    Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
+                                    // Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getAirconditionerStatus());
+                                    // Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getWindowStatus());
 
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     String temp = jsonObject.getString("temp");
                                     Log.v(TAG,"jsonObject_getTemp=="+temp);
 
-                                    bundle.putSerializable("window", sensorDataVO);
+                                    bundle.putSerializable("sensorData", sensorDataVO);
                                     fragmentWindow.setArguments(bundle);
 //                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
@@ -445,19 +454,16 @@ public class MainActivity extends AppCompatActivity {
                             R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentWindow.setArguments(bundleFagmentA);
                     bundle.putSerializable("weather", weatherVO);
-                    bundle.putSerializable("window", sensorDataVO);
                     bundle.putSerializable("listFragmentWindow", listFragmentWindow);
+                    bundle.putSerializable("sensorData", sensorDataVO);
                     fragmentWindow.setArguments(bundle);
+                    tab.setIcon(R.drawable.toys_white_18dp);
+
+//                    tab.setCustomView(createTabView(R.drawable.toys_white_18dp));
                     break;
                 case 2:
-                    if (fragmentRefrigerator == null) {
-                        fragmentRefrigerator = new FragmentRefrigerator(
-                                sharedObject,bufferedReader);
-                    }
-                    fragmentTransaction.replace(
-                            R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
-                    fragmentRefrigerator.setArguments(bundle);
-                    fragmentTag = 2;
+                    Log.v(TAG,"onTabSelected()_speechRecognizer");
+                    speechRecognizer.startListening(intent);
                     break;
                 case 3:
                     if (fragmentTest == null) {
@@ -469,8 +475,14 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTag = 3;
                     break;
                 case 4:
-                    Log.v(TAG,"onTabSelected()_speechRecognizer");
-                    speechRecognizer.startListening(intent);
+                    if (fragmentRefrigerator == null) {
+                        fragmentRefrigerator = new FragmentRefrigerator(
+                                sharedObject,bufferedReader);
+                    }
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
+                    fragmentRefrigerator.setArguments(bundle);
+                    fragmentTag = 2;
 //                    if (fragmentLight == null) {
 //                        fragmentLight = new FragmentLight(sharedObject,bufferedReader);
 //                    }
@@ -494,13 +506,13 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     break;
                 case 2:
+                    Log.v(TAG,"onTabSelected()_speechRecognizer");
+                    speechRecognizer.startListening(intent);
                     break;
                 case 3:
                     break;
                 case 4:
-                    Log.v(TAG,"onTabSelected()_speechRecognizer");
-                    speechRecognizer.startListening(intent);
-                    break;
+
             }
         }
     };
@@ -509,15 +521,9 @@ public class MainActivity extends AppCompatActivity {
      * * Speech recognition
      */
     private RecognitionListener recognitionListener = new RecognitionListener() {
-        boolean voiceListener = false;
-
-
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            Log.v("listen", "onReadyForSpeech");
-            RecorderThread recorderThread = new RecorderThread();
-            DetectorThread detectorThread = new DetectorThread(recorderThread);
-            ClapMain clapMain = new ClapMain(detectorThread);
+            Log.v(TAG,"onReadyForSpeech()");
         }
         @Override
         public void onBeginningOfSpeech() {
@@ -533,8 +539,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onEndOfSpeech() {
-            Log.v("listen", "onEndOfSpeech");
-            voiceListener = true;
+            Log.v(TAG,"onEndOfSpeech()");
         }
         @Override
         public void onError(int i) {
@@ -546,43 +551,39 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onResults(Bundle bundle) {
-            if(voiceListener) {
-                Log.v("listen", "onResults");
-                String key = "";
-                key = SpeechRecognizer.RESULTS_RECOGNITION;
-                ArrayList<String> mResult = bundle.getStringArrayList(key);
+            String key = "";
+            key = SpeechRecognizer.RESULTS_RECOGNITION;
+            ArrayList<String> mResult = bundle.getStringArrayList(key);
 
-                String[] rs = new String[mResult.size()];
-                mResult.toArray(rs);
-                Log.v(TAG, "음성인식==" + rs[0]);
-                Log.v(TAG, "음성인식size==" + mResult.size());
-                if (rs[0].contains("창문")) {
-                    if (rs[0].contains("열어")) {
-                        sharedObject.put("/ANDROID>/WINDOWS ON");
-                    } else if (rs[0].contains("닫아")) {
-                        sharedObject.put("/ANDROID>/WINDOWS OFF");
-                    }
-                    for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                        if (currentFragment.isVisible()) {
-                            if (currentFragment instanceof FragmentHome) {
-                                Log.v(TAG, "FragmentHome");
-                                startService(serviceIntent);
-                            } else if (currentFragment instanceof FragmentWindow) {
-                                fragmentTransaction = fragmentManager.beginTransaction();
-                                if (fragmentWindow == null) {
-                                    fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
-                                }
-                                fragmentTransaction.replace(
-                                        R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                                bundle.putSerializable("weather", weatherVO);
-                                bundle.putSerializable("window", sensorDataVO);
-                                fragmentWindow.setArguments(bundle);
-                                Log.v(TAG, "FragmentA_OnRefreshListener");
+            String[] rs = new String[mResult.size()];
+            mResult.toArray(rs);
+            Log.v(TAG,"음성인식=="+rs[0]);
+            Log.v(TAG,"음성인식size=="+mResult.size());
+            if(rs[0].contains("창문")){
+                if(rs[0].contains("열어")){
+                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                }else if(rs[0].contains("닫아")){
+                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                }
+                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                    if (currentFragment.isVisible()) {
+                        if (currentFragment instanceof FragmentHome) {
+                            Log.v(TAG, "FragmentHome");
+                            startService(serviceIntent);
+                        } else if(currentFragment instanceof FragmentWindow) {
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            if (fragmentWindow == null) {
+                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                             }
+                            fragmentTransaction.replace(
+                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+                            bundle.putSerializable("weather", weatherVO);
+                            bundle.putSerializable("sensorData", sensorDataVO);
+                            fragmentWindow.setArguments(bundle);
+                            Log.v(TAG, "FragmentA_OnRefreshListener");
                         }
                     }
                 }
-                voiceListener = false;
             }
         }
         @Override
@@ -608,6 +609,7 @@ public class MainActivity extends AppCompatActivity {
                     if(currentFragment instanceof FragmentHome){
                         Log.v(TAG,"FragmentHome");
                         startService(serviceIntent);
+                        break;
                     }else if (currentFragment instanceof FragmentWindow){
                         fragmentTransaction = fragmentManager.beginTransaction();
                         if (fragmentWindow == null) {
@@ -615,19 +617,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();
-//                        fragmentA.setArguments(bundleFagmentA);
                         bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("window", sensorDataVO);
+                        bundle.putSerializable("sensorData", sensorDataVO);
                         fragmentWindow.setArguments(bundle);
                         Log.v(TAG,"FragmentA_OnRefreshListener");
-                    }
-                    else if (currentFragment instanceof FragmentRefrigerator){
+                    } else if (currentFragment instanceof FragmentRefrigerator){
                         Log.v(TAG,"FragmentRefrigerator");
-                    }
-                    else if (currentFragment instanceof FragmentTest){
+                    } else if (currentFragment instanceof FragmentTest){
                         Log.v(TAG,"FragmentTest");
-                    }
-                    else if (currentFragment instanceof FragmentLight){
+                    } else if (currentFragment instanceof FragmentLight){
                         Log.v(TAG,"FragmentLight");
                     }
                 }
