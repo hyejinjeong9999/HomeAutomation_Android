@@ -1,4 +1,4 @@
-package RecyclerViewAdapter;
+package recyclerViewAdapter;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -21,7 +21,7 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-import Communication.SharedObject;
+import communication.SharedObject;
 import model.SystemInfoVO;
 import model.SensorDataVO;
 import model.WeatherVO;

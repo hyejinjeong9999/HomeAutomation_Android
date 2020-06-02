@@ -28,7 +28,7 @@
 
 
         <service
-            android:name="Communication.WeatherService"
+            android:name="communication.WeatherService"
             android:enabled="true"
             android:exported="true" />
 

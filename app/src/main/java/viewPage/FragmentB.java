@@ -1,4 +1,4 @@
-package ViewPage;
+package viewPage;
 
 import android.content.Context;
 import android.os.Bundle;

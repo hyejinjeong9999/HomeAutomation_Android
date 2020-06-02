@@ -1,4 +1,4 @@
-package RecyclerViewAdapter;
+package recyclerViewAdapter;
 
 /**
  *  RecyclerVIew Item을 구별하기 위해 ViewType을 상수화 처리해서 사용

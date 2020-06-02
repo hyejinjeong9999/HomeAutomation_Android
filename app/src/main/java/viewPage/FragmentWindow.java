@@ -1,4 +1,4 @@
-package ViewPage;
+package viewPage;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import Communication.SharedObject;
+import communication.SharedObject;
 import model.WeatherVO;
 import model.SensorDataVO;
 

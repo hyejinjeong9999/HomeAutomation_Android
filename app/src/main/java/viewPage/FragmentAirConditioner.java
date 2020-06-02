@@ -1,4 +1,4 @@
-package ViewPage;
+package viewPage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import com.example.semiproject.R;
 
 import java.io.BufferedReader;
 
-import Communication.SharedObject;
+import communication.SharedObject;
 
 public class FragmentAirConditioner extends Fragment {
     String TAG="FragmentTest";
@@ -39,49 +39,51 @@ public class FragmentAirConditioner extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_airconditioner,container,false);
         context=container.getContext();
-        tvReceiveData=view.findViewById(R.id.tvReceiveData);
+//        tvReceiveData=view.findViewById(R.id.tvReceiveData);
+//
+//        btnTest=view.findViewById(R.id.btnTest);
 
-        btnTest=view.findViewById(R.id.btnTest);
-        btnTest.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG,"onClick");
-                if(tvReceiveData.getText().equals("ON")){
-                    sharedObject.put("/ANDROID>/WINDOWS OFF");
-                    tvReceiveData.setText("OFF");
-                }else {
-                    sharedObject.put("/ANDROID>/WINDOWS ON");
-                    tvReceiveData.setText("ON");
-                }
-            }
-        });
-        /**
-         * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
-         */
-//        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
-//                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
-//        asyncTaskTest.execute();
-        /**
-         * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
-         */
-        sbLED=view.findViewById(R.id.sbLED);
-        sbLED.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.v(TAG,"onProgressChanged =="+progress);
-                String msg= "/1TEMPRATURE"+String.valueOf(progress);
-                sharedObject.put(msg);
-//                sharedObject.put(String.valueOf(progress));
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+//        btnTest.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                Log.v(TAG,"onClick");
+//                if(tvReceiveData.getText().equals("ON")){
+//                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+//                    tvReceiveData.setText("OFF");
+//                }else {
+//                    sharedObject.put("/ANDROID>/WINDOWS ON");
+//                    tvReceiveData.setText("ON");
+//                }
+//            }
+//        });
+//        /**
+//         * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
+//         */
+////        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
+////                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
+////        asyncTaskTest.execute();
+//        /**
+//         * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
+//         */
+////        sbLED=view.findViewById(R.id.sbLED);
+//        sbLED.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.v(TAG,"onProgressChanged =="+progress);
+//                String msg= "/1TEMPRATURE"+String.valueOf(progress);
+//                sharedObject.put(msg);
+////                sharedObject.put(String.valueOf(progress));
+//            }
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
+//
         return  view;
     }
 
