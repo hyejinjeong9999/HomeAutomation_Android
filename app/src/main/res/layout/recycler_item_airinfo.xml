@@ -9,12 +9,12 @@
     android:background="@drawable/round_border"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-    </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:orientation="horizontal">-->
+<!--    </LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,6 +27,7 @@
             android:layout_weight="10"
             android:gravity="center_horizontal|center"
             android:text="실내"
+            android:background="@drawable/round_border_textview"
             android:textAlignment="center" />
     </LinearLayout>
 
@@ -106,11 +107,11 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerInParent="true"
-            android:background="@color/recyclerViewItemLine"/>
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:background="@color/recyclerViewItemLine"/>-->
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,6 +125,7 @@
             android:layout_weight="10"
             android:gravity="center_horizontal|center"
             android:text="실외"
+            android:background="@drawable/round_border_textview"
             android:textAlignment="center" />
     </LinearLayout>
 

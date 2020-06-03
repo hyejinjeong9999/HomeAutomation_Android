@@ -108,14 +108,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+        패턴 소리 인식
+         */
         AudioDispatcher dispatcher =
                 AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
         double threshold = 5;
         double sensitivity = 35;
-
         PercussionOnsetDetector mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
                 new OnsetHandler() {
-
                     @Override
                     public void handleOnset(double time, double salience) {
                         Log.v(TAG, "time : " + time + ", salience : " + salience);
@@ -378,12 +379,12 @@ public class MainActivity extends AppCompatActivity {
                 Thread thread1 = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sensorDataVO = new SensorDataVO();
+                        //sensorDataVO = new SensorDataVO();
                         fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         while (true) {
                             try {
                                 jsonData = bufferedReader.readLine();
-//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
                                 if(jsonData != null){
                                     sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
                                     Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
@@ -403,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
                                     fragmentWindow.setArguments(bundle);
 //                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+                                    Log.v(TAG, sensorDataVO.toString());
                                 }
                             }catch (IOException | JSONException e) {
                                 e.printStackTrace();
