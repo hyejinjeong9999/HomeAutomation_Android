@@ -44,12 +44,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tabBackGroundCol"
+        app:tabIndicatorColor="@color/tabIndicatorCol"
         app:tabRippleColor="@color/colorPrimaryDark"
         app:tabUnboundedRipple="true"
         app:tabGravity="fill"
         app:tabMode="fixed"
         app:tabIndicatorGravity="stretch"
-        app:tabIndicatorColor="@color/tabIndicatorCol"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

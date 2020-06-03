@@ -21,7 +21,9 @@ import java.util.ArrayList;
 
 import recyclerViewAdapter.VerticalAdapter;
 import model.SystemInfoVO;
+
 import model.SensorDataVO;
+
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -60,7 +62,7 @@ public class FragmentHome extends Fragment {
         weathers = (WeatherVO) getArguments().get("weather");
         Log.v(TAG,"weather.getTemp=="+weathers.getTemp());
         sensorDataVO = (SensorDataVO) getArguments().get("sensorData");
-        Log.v(TAG,"weather.getOnOff()=="+ sensorDataVO.getWindowStatus());
+        //Log.v(TAG,"weather.getOnOff()=="+ sensorDataVO.getOnOff());
 
         /**
          * RecyclerVIew 생성 Code

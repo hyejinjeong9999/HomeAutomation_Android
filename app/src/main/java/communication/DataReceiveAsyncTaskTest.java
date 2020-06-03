@@ -28,6 +28,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
         this.jsonData=jsonData;
         this.ibReceiveData=ibReceiveData;
     }
+
     /**\
      *Thread 처리 Code
      */
@@ -38,7 +39,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
                 Log.v(TAG,"doInBackground()_readLine()=="+jsonData);
                 if(jsonData != null){
                     sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
-                    Log.v(TAG,"testVo.getWindowStatus=="+ sensorDataVO.getWindowStatus());
+                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
                     JSONObject jsonObject = new JSONObject(jsonData);
                     onOff = jsonObject.getString("onOff");
                 }

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="110pt"
+    android:layout_marginStart="25dp"
+    android:layout_marginTop="30dp"
+    android:layout_marginEnd="25dp"
+    android:background="@drawable/round_border"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:orientation="horizontal">-->
+<!--    </LinearLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|center"
+            android:text="실내"
+            android:background="@drawable/round_border_textview"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|bottom"
+            android:text="PM 2.5"
+            android:textColor="@color/recyclerViewItemFont" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|bottom"
+            android:text="PM 10"
+            android:textColor="@color/recyclerViewItemFont" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|bottom"
+            android:text="가스상태"
+            android:textColor="@color/recyclerViewItemFont" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvPM25In"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textColor="@color/recyclerViewItemFontValue"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvPM10In"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textColor="@color/recyclerViewItemFontValue"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvGas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textColor="@color/recyclerViewItemFontValue"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:background="@color/recyclerViewItemLine"/>-->
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|center"
+            android:text="실외"
+            android:background="@drawable/round_border_textview"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_horizontal|bottom"
+            android:text="PM 2.5"
+            android:textColor="@color/recyclerViewItemFont" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_horizontal|bottom"
+            android:text="PM 10"
+            android:textColor="@color/recyclerViewItemFont" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvPM25Out"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textColor="@color/recyclerViewItemFontValue"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvPM10Out"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="10"
+            android:gravity="center_horizontal"
+            android:text="0"
+            android:textColor="@color/recyclerViewItemFontValue"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

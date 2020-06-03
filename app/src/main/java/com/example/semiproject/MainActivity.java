@@ -34,14 +34,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+
 import communication.SharedObject;
 import communication.WeatherService;
+import Event.ClapMain;
+import Event.DetectorThread;
+import Event.RecorderThread;
 import recyclerViewAdapter.ViewType;
 import viewPage.FragmentHome;
 import viewPage.FragmentLight;
 import viewPage.FragmentRefrigerator;
 import viewPage.FragmentAirConditioner;
 import viewPage.FragmentWindow;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
 import model.SensorDataVO;
@@ -73,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
+    ArrayList<SystemInfoVO> listFragmentWindow;
     //Socket Communication
     Socket socket;
     PrintWriter printWriter;
@@ -98,6 +108,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+        패턴 소리 인식
+         */
+        AudioDispatcher dispatcher =
+                AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+        double threshold = 5;
+        double sensitivity = 35;
+        PercussionOnsetDetector mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
+                new OnsetHandler() {
+                    @Override
+                    public void handleOnset(double time, double salience) {
+                        Log.v(TAG, "time : " + time + ", salience : " + salience);
+                        Log.v(TAG, "Clap detected!");
+                    }
+                }, sensitivity, threshold);
+
+        dispatcher.addAudioProcessor(mPercussionDetector);
+        new Thread(dispatcher,"Audio Dispatcher").start();
+
+
 
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
@@ -248,7 +279,12 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.sleep, "SLEEP MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
                 R.drawable.outing, "OUTING MODE", "", ViewType.ItemVertical));
+
+        listFragmentWindow = new ArrayList<>();
+        listFragmentWindow.add(new SystemInfoVO("대기질상태", ViewType.ItemVerticalAir));
+        listFragmentWindow.add(new SystemInfoVO(R.drawable.window1,"대기질컨트롤", ViewType.ItemVerticalAirControl));
     }
+
 
     /**
      * 인자를 받아 Custom TabLayout 생성하는 Method
@@ -321,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
     /**
      * Socket Communication witA Server
      */
@@ -343,18 +380,22 @@ public class MainActivity extends AppCompatActivity {
                 Thread thread1 = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sensorDataVO = new SensorDataVO();
-                        fragmentWindow = new FragmentWindow(sharedObject);
+                        //sensorDataVO = new SensorDataVO();
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         while (true) {
                             try {
                                 jsonData = bufferedReader.readLine();
-//                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
+                                    Log.v(TAG,"jsonDataReceive=="+jsonData);
                                 if(jsonData != null){
                                     sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
                                     Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
-                                    Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getAirconditionerStatus());
-                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDataVO.getDustDensity());
-                                    Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getWindowStatus());
+                                    //Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getLight());
+                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDataVO.getDust25());
+                                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
+                                    sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
+                                    Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
+                                    // Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getAirconditionerStatus());
+                                    // Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getWindowStatus());
 
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     String temp = jsonObject.getString("temp");
@@ -362,8 +403,9 @@ public class MainActivity extends AppCompatActivity {
 
                                     bundle.putSerializable("sensorData", sensorDataVO);
                                     fragmentWindow.setArguments(bundle);
-//                                        WindowVO vo1 = (WindowVO)jsonObject.get(jsonData);
+//                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+                                    Log.v(TAG, sensorDataVO.toString());
                                 }
                             }catch (IOException | JSONException e) {
                                 e.printStackTrace();
@@ -409,12 +451,13 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     swipeRefresh.setEnabled(false);
                     if (fragmentWindow == null) {
-                        fragmentWindow = new FragmentWindow(sharedObject);
+                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentWindow).commitAllowingStateLoss();
 //                        fragmentWindow.setArguments(bundleFagmentA);
                     bundle.putSerializable("weather", weatherVO);
+                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
                     bundle.putSerializable("sensorData", sensorDataVO);
                     fragmentWindow.setArguments(bundle);
                     tab.setIcon(R.drawable.toys_white_18dp);
@@ -489,12 +532,15 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onBeginningOfSpeech() {
+            Log.v("listen", "onBeginningOfSpeech");
         }
         @Override
         public void onRmsChanged(float v) {
+            Log.v("listen", "onRmsChanged");
         }
         @Override
         public void onBufferReceived(byte[] bytes) {
+            Log.v("listen", "onBufferReceived");
         }
         @Override
         public void onEndOfSpeech() {
@@ -502,6 +548,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onError(int i) {
+            Log.v("listen", "onError");
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
             Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
             //////////////////////////
@@ -515,7 +562,6 @@ public class MainActivity extends AppCompatActivity {
 
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
-
             Log.v(TAG,"음성인식=="+rs[0]);
             Log.v(TAG,"음성인식size=="+mResult.size());
             if(rs[0].contains("창문")){
@@ -532,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if(currentFragment instanceof FragmentWindow) {
                             fragmentTransaction = fragmentManager.beginTransaction();
                             if (fragmentWindow == null) {
-                                fragmentWindow = new FragmentWindow(sharedObject);
+                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                             }
                             fragmentTransaction.replace(
                                     R.id.frame, fragmentWindow).commitAllowingStateLoss();
@@ -572,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
                     }else if (currentFragment instanceof FragmentWindow){
                         fragmentTransaction = fragmentManager.beginTransaction();
                         if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject);
+                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         }
                         fragmentTransaction.replace(
                                 R.id.frame, fragmentWindow).commitAllowingStateLoss();

@@ -23,15 +23,15 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.firebase:firebase-config:16.1.0'
+    implementation 'com.google.firebase:firebase-config:19.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //RecyclerVIew
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.support:cardview-v7:29.1.0'
     implementation 'com.android.support:recyclerview-v7:29.1.0'
@@ -43,16 +43,24 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.7'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.7'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     // QR code ZxingLibrary
-    implementation 'com.google.zxing:core:3.2.0'
+    implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     //SwipeRefreshLayout
     implementation 'com.android.support:support-v4:29.1.0'
-    //google Firebase
-//    implementation 'com.google.firebase:firebase-analytics:17.2.3'
-//
-//    implementation 'com.google.firebase:firebase-core:17.2.3'
-//    implementation 'com.google.firebase:firebase-database:19.2.1'
-//    implementation 'com.google.firebase:firebase-auth:16.1.0'
+   // require to add local jar files
+    implementation files('lib/musicg-1.4.2.0.jar')
+    implementation files('lib/TarsosDSP-latest.jar')
+    // add the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.android.material:material:1.1.0'
+    // add the Firebase SDK for facebook
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    // add the Firebase SDK for kakao
+    implementation "com.kakao.sdk:v2-user-rx:2.0.0-beta02"
 }
+apply plugin: 'com.google.gms.google-services'
