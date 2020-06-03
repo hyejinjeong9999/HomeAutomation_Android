@@ -56,13 +56,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="냉방"/>
+                android:text="냉방"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:background="@drawable/air_temp_line"/>
             <Button
                 android:id="@+id/btnDry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="제습"/>
+                android:text="제습"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:background="@drawable/air_temp_line"/>
         </LinearLayout>
 
         <LinearLayout
@@ -81,22 +87,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="20dp">
                 <TextView
+                    android:id="@+id/tvSelectTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="10"
                     android:layout_gravity="center_vertical"
                     android:gravity="end"
                     android:text="18"
-                    android:textSize="40sp"/>
+                    android:textSize="60sp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:text="℃"
-                    android:textSize="30sp"/>
+                    android:textSize="40sp"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -104,14 +111,16 @@
                     android:layout_weight="10"
                     android:orientation="vertical">
                     <Button
+                        android:id="@+id/btnTempUp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/upbutton"/>
                     <Button
+                        android:id="@+id/btnTempDown"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/downbutton"
-                        android:layout_marginTop="5dp"/>
+                        android:layout_marginTop="10dp"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -121,7 +130,7 @@
                 android:text="바람세기"
                 android:textSize="20sp"
                 android:textColor="@color/fontDark"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="40dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,19 +141,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="10"
-                    android:text="약풍"/>
+                    android:text="약풍"
+                    android:textSize="20sp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/air_temp_line"/>
                 <Button
                     android:id="@+id/btnSpeed2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="10"
-                    android:text="중풍"/>
+                    android:text="중풍"
+                    android:textSize="20sp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/air_temp_line"/>
                 <Button
                     android:id="@+id/btnSpeed3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="10"
-                    android:text="강풍"/>
+                    android:text="강풍"
+                    android:textSize="20sp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/air_temp_line"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -152,5 +170,9 @@
         android:id="@+id/btnPower"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:text="전원"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="8dp"
+        android:background="@drawable/air_temp_line"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

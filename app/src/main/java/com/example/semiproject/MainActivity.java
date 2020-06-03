@@ -431,6 +431,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentAirConditioner).commitAllowingStateLoss();
+                    bundle.putSerializable("weather", weatherVO);
+                    bundle.putSerializable("sensorData", sensorDataVO);
                     fragmentAirConditioner.setArguments(bundle);
                     fragmentTag = 3;
                     break;

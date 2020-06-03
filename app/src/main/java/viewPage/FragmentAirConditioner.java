@@ -19,16 +19,30 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 
 import communication.SharedObject;
+import model.SensorDataVO;
+import model.WeatherVO;
 
 public class FragmentAirConditioner extends Fragment {
-    String TAG="FragmentTest";
+    String TAG="FragmentAirConditioner";
     View view;
     Context context;
-    SeekBar sbLED;
-    TextView tvReceiveData;
-    Button btnTest;
+
     SharedObject sharedObject;
     BufferedReader bufferedReader;
+
+    WeatherVO weatherVO;
+    SensorDataVO sensorDataVO;
+
+    TextView tvTempIn;
+    TextView tvSelectTemp;
+    Button btnCold;
+    Button btnDry;
+    Button btnTempUp;
+    Button btnTempDown;
+    Button btnSpeed1;
+    Button btnSpeed2;
+    Button btnSpeed3;
+    Button btnPower;
 
     public FragmentAirConditioner(SharedObject sharedObject, BufferedReader bufferedReader){
         this.sharedObject=sharedObject;
@@ -39,100 +53,83 @@ public class FragmentAirConditioner extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_airconditioner,container,false);
         context=container.getContext();
-//        tvReceiveData=view.findViewById(R.id.tvReceiveData);
-//
-//        btnTest=view.findViewById(R.id.btnTest);
 
-//        btnTest.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                Log.v(TAG,"onClick");
-//                if(tvReceiveData.getText().equals("ON")){
-//                    sharedObject.put("/ANDROID>/WINDOWS OFF");
-//                    tvReceiveData.setText("OFF");
-//                }else {
-//                    sharedObject.put("/ANDROID>/WINDOWS ON");
-//                    tvReceiveData.setText("ON");
-//                }
-//            }
-//        });
-//        /**
-//         * asyncTaskTest Object 인자에 bufferedReader 와 TextVIew를 넘겨준다
-//         */
-////        Communication.DataReceiveAsyncTaskTest asyncTaskTest =
-////                new Communication.DataReceiveAsyncTaskTest(bufferedReader, tvReceiveData);
-////        asyncTaskTest.execute();
-//        /**
-//         * SeekBar를 이용해 0-255 까지의 Int값을 받아 sharedObject에 Data를 넘겨준다
-//         */
-////        sbLED=view.findViewById(R.id.sbLED);
-//        sbLED.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.v(TAG,"onProgressChanged =="+progress);
-//                String msg= "/1TEMPRATURE"+String.valueOf(progress);
-//                sharedObject.put(msg);
-////                sharedObject.put(String.valueOf(progress));
-//            }
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-//
+        weatherVO = (WeatherVO) getArguments().get("weather");
+        Log.v(TAG,"weather.getTemp=="+weatherVO.getTemp());
+        sensorDataVO = (SensorDataVO) getArguments().get("sensorData");
+        Log.v(TAG,"window.getWindowStatus=="+ sensorDataVO.getWindowStatus());
+
+        tvTempIn = view.findViewById(R.id.tvTempIn);
+        tvSelectTemp=view.findViewById(R.id.tvSelectTemp);
+        btnCold=view.findViewById(R.id.btnCold);
+        btnDry=view.findViewById(R.id.btnDry);
+        btnTempUp=view.findViewById(R.id.btnTempUp);
+        btnTempDown=view.findViewById(R.id.btnTempDown);
+        btnSpeed1=view.findViewById(R.id.btnSpeed1);
+        btnSpeed2=view.findViewById(R.id.btnSpeed2);
+        btnSpeed3=view.findViewById(R.id.btnSpeed3);
+        btnPower=view.findViewById(R.id.btnPower);
+
+        btnCold.setOnClickListener(mClick);
+        btnDry.setOnClickListener(mClick);
+        btnTempUp.setOnClickListener(mClick);
+        btnTempDown.setOnClickListener(mClick);
+        btnSpeed1.setOnClickListener(mClick);
+        btnSpeed2.setOnClickListener(mClick);
+        btnSpeed3.setOnClickListener(mClick);
+        btnPower.setOnClickListener(mClick);
+
         return  view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.v(TAG,"onActivityCreated");
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+//        tvTempIn.setText(sensorDataVO.getTemp());
+        tvTempIn.setText(weatherVO.getTemp()+"℃");
+        tvSelectTemp.setText("20");
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.v(TAG,"onStart");
-    }
+    View.OnClickListener mClick = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.btnCold:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER COLD");
+                    break;
+                case R.id.btnDry:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER DRY");
+                    break;
+                case R.id.btnTempUp:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER UP");
+                    tempChange(1);
+                    break;
+                case R.id.btnTempDown:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER DOWN");
+                    tempChange(-1);
+                    break;
+                case R.id.btnSpeed1:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED1");
+                    break;
+                case R.id.btnSpeed2:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED2");
+                    break;
+                case R.id.btnSpeed3:
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED3");
+                    break;
+                case R.id.btnPower:
+                    if (sensorDataVO.getAirconditionerStatus().equals("OFF")){
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
+                    }else if(sensorDataVO.getAirconditionerStatus().equals("ON")){
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
+                    }
+            }
+        }
+    };
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG,"onResume");
+    public void tempChange(int temp){
+        int calculation = (Integer.parseInt((String) tvSelectTemp.getText()))+temp;
+        tvSelectTemp.setText(String.valueOf(calculation));
+//        return  String.valueOf(calculation);
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG,"onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.v(TAG,"onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.v(TAG,"onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.v(TAG,"onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.v(TAG,"onDetach");
-    }
-
 }
