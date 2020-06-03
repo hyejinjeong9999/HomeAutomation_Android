@@ -380,33 +380,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //sensorDataVO = new SensorDataVO();
-                        fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
+                        //fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         while (true) {
                             try {
                                 jsonData = bufferedReader.readLine();
                                     Log.v(TAG,"jsonDataReceive=="+jsonData);
                                 if(jsonData != null){
                                     sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
-                                    Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
-                                    //Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getLight());
-                                    Log.v(TAG,"testVo.getDustDensity=="+ sensorDataVO.getDust25());
-                                    //Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getOnOff());
-                                    sensorDataVO =objectMapper.readValue(jsonData, SensorDataVO.class);
-                                    Log.v(TAG,"testVo.getTemp=="+ sensorDataVO.getTemp());
-                                    // Log.v(TAG,"testVo.getLight=="+ sensorDataVO.getAirconditionerStatus());
-                                    // Log.v(TAG,"testVo.getOnOff=="+ sensorDataVO.getWindowStatus());
-
-                                    JSONObject jsonObject = new JSONObject(jsonData);
-                                    String temp = jsonObject.getString("temp");
-                                    Log.v(TAG,"jsonObject_getTemp=="+temp);
 
                                     bundle.putSerializable("sensorData", sensorDataVO);
-                                    fragmentWindow.setArguments(bundle);
+                                    //fragmentWindow.setArguments(bundle);
 //                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
 //                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
                                     Log.v(TAG, sensorDataVO.toString());
                                 }
-                            }catch (IOException | JSONException e) {
+                            }catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
