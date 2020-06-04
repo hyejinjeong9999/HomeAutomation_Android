@@ -52,7 +52,6 @@ public class FragmentWindow extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_window,container,false);
         context=container.getContext();
         view = inflater.inflate(R.layout.fragment_air, container, false);
 

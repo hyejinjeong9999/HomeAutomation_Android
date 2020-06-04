@@ -8,6 +8,14 @@
     android:orientation="vertical"
     android:background="@drawable/fragment_background">
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1500px"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        android:background="@drawable/round_border">
+    <LinearLayout
         android:id="@+id/linearLayout01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="10"
             android:gravity="end"
-            android:text="실내온도:"
+            android:text="실내온도 : "
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/fragmentHomeFont"/>
@@ -28,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:text="℃"
+            android:text=" ℃"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/fragmentHomeFont"/>
@@ -184,4 +192,5 @@
         android:layout_marginEnd="18dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/air_temp_line"/>
+</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

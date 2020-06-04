@@ -1,6 +1,9 @@
-package viewPage;
+package ViewPage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +36,8 @@ public class FragmentAirConditioner extends Fragment {
     WeatherVO weatherVO;
     SensorDataVO sensorDataVO;
 
+    boolean airConditionerOnOff  = false;
+
     TextView tvTempIn;
     TextView tvSelectTemp;
     Button btnCold;
@@ -51,7 +56,7 @@ public class FragmentAirConditioner extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_airconditioner,container,false);
+        view = inflater.inflate(R.layout.fragment_airconditioner_vvvvvvvvvv,container,false);
         context=container.getContext();
 
         weatherVO = (WeatherVO) getArguments().get("weather");
@@ -95,33 +100,83 @@ public class FragmentAirConditioner extends Fragment {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.btnCold:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER COLD");
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER COLD");
+                        btnCold.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnCold.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnDry.setBackgroundResource(R.drawable.air_temp_line);
+                        btnDry.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                    }
                     break;
                 case R.id.btnDry:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER DRY");
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER DRY");
+                        btnDry.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnDry.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnCold.setBackgroundResource(R.drawable.air_temp_line);
+                        btnCold.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                    }
                     break;
                 case R.id.btnTempUp:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER UP");
-                    tempChange(1);
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER UP");
+                        if (Integer.parseInt(tvSelectTemp.getText().toString()) < 30) {
+                            tempChange(1);
+                        }
+                    }
                     break;
                 case R.id.btnTempDown:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER DOWN");
-                    tempChange(-1);
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER DOWN");
+                        if (Integer.parseInt(tvSelectTemp.getText().toString()) > 18) {
+                            tempChange(-1);
+                        }
+                    }
                     break;
                 case R.id.btnSpeed1:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED1");
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED1");
+                        btnSpeed1.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnSpeed1.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnSpeed2.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed2.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed3.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed3.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                    }
                     break;
                 case R.id.btnSpeed2:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED2");
+                    if(airConditionerOnOff){
+                            sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED2");
+                            btnSpeed1.setBackgroundResource(R.drawable.air_temp_line);
+                            btnSpeed1.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                            btnSpeed2.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                            btnSpeed2.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                            btnSpeed3.setBackgroundResource(R.drawable.air_temp_line);
+                            btnSpeed3.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        }
                     break;
                 case R.id.btnSpeed3:
-                    sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED3");
+                    if(airConditionerOnOff) {
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER SPEED3");
+                        btnSpeed1.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed1.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed2.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed2.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed3.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnSpeed3.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                    }
                     break;
                 case R.id.btnPower:
-                    if (sensorDataVO.getAirconditionerStatus().equals("OFF")){
+                    if (sensorDataVO.getAirconditionerStatus().equals("0")){
                         sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
-                    }else if(sensorDataVO.getAirconditionerStatus().equals("ON")){
+                        btnPower.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnPower.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        airConditionerOnOff = true;
+                    }else if(sensorDataVO.getAirconditionerStatus().equals("1")){
                         sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
+                        btnPower.setBackgroundResource(R.drawable.air_temp_line);
+                        btnPower.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        airConditionerOnOff = false;
                     }
             }
         }
