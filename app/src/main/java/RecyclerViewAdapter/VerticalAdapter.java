@@ -101,7 +101,15 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            holder.itemView.getLayoutParams().height = deviceHeight;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
 //
 //            holder.itemView.requestLayout(); // 변경 사항 적용
-        }else if (holder instanceof SystemInfoSwitch){
+        }else if (holder instanceof SystemInfoWeather) {
+            ((SystemInfoWeather) holder).tvTempOut.setText(weathers.getTemp() + " ℃");
+            ((SystemInfoWeather) holder).tvDustOutSituation.setText(weathers.getPm10Value()  + " μg/m³");
+
+            ((SystemInfoWeather) holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
+            ((SystemInfoWeather) holder).tvModeSituation.setText("모드없다");
+            ((SystemInfoWeather) holder).tvSituation.setText(sensorDataVO.getDust25()  + " μg/m³");
+        }
+        else if (holder instanceof SystemInfoSwitch){
             ((SystemInfoSwitch)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
             ((SystemInfoSwitch)holder).tvSystemName.setText(itemList.get(position).getTitle());
 

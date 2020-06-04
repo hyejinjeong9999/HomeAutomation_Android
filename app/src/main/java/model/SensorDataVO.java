@@ -84,4 +84,19 @@ public  class SensorDataVO implements Serializable{
     public void setLightStatus(String lightStatus) {
         this.lightStatus = lightStatus;
     }
+
+    @Override
+    public String toString() {
+        return "SensorDataVO{" +
+                "mode='" + mode + '\'' +
+                ", temp='" + temp + '\'' +
+                ", dust25='" + dust25 + '\'' +
+                ", dust10='" + dust10 + '\'' +
+                ", gasStatus='" + gasStatus + '\'' +
+                ", windowStatus='" + windowStatus + '\'' +
+                ", airpurifierStatus='" + airpurifierStatus + '\'' +
+                ", airconditionerStatus='" + airconditionerStatus + '\'' +
+                ", lightStatus='" + lightStatus + '\'' +
+                '}';
+    }
 }

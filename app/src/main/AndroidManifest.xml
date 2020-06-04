@@ -23,20 +23,13 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".SignupActivity"/>
         <activity android:name=".LoginActivity" />
+        <activity android:name=".DBTestActivity" />
 
         <service
             android:name="Communication.WeatherService"
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name=".DeviceBootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".AlarmReceiver" />
 
         <activity
