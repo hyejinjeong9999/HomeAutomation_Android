@@ -22,8 +22,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".SignupActivity"/>
-        <activity android:name=".LoginActivity" ></activity>
-        <activity android:name=".DBTestActivity" />
+        <activity android:name=".LoginActivity" />
 
         <service
             android:name="Communication.WeatherService"
