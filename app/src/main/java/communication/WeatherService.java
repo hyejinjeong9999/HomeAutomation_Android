@@ -1,4 +1,4 @@
-package Communication;
+package communication;
 
 import android.app.Service;
 import android.content.Intent;

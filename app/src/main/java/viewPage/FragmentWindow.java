@@ -1,4 +1,4 @@
-package ViewPage;
+package viewPage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,8 +19,11 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-import Communication.SharedObject;
+import communication.SharedObject;
+import model.WeatherVO;
+
 import RecyclerViewAdapter.AirRecyclerAdapter;
+
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;

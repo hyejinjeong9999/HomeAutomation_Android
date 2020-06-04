@@ -1,4 +1,4 @@
-package ViewPage;
+package viewPage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,9 +19,11 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-import RecyclerViewAdapter.VerticalAdapter;
-import model.SensorDataVO;
+import recyclerViewAdapter.VerticalAdapter;
 import model.SystemInfoVO;
+
+import model.SensorDataVO;
+
 import model.WeatherVO;
 
 public class FragmentHome extends Fragment {
@@ -35,10 +37,10 @@ public class FragmentHome extends Fragment {
     SensorDataVO sensorDataVO;
 
     GestureDetector gestureDetector;
-    Communication.SharedObject sharedObject;
+    communication.SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentHome(Communication.SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
+    public FragmentHome(communication.SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
         this.sensorDataVO = sensorDataVO;

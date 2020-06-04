@@ -23,10 +23,11 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import Communication.SharedObject;
+import communication.SharedObject;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
+import recyclerViewAdapter.ViewType;
 
 public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     String TAG = "AirRecyclerAdapter";
@@ -73,7 +74,6 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             }
         });
-
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (viewType == ViewType.ItemVerticalAir) {

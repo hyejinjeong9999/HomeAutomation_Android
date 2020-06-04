@@ -34,17 +34,18 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Communication.SharedObject;
-import Communication.WeatherService;
+
+import communication.SharedObject;
+import communication.WeatherService;
 import Event.ClapMain;
 import Event.DetectorThread;
 import Event.RecorderThread;
-import RecyclerViewAdapter.ViewType;
-import ViewPage.FragmentHome;
-import ViewPage.FragmentLight;
-import ViewPage.FragmentRefrigerator;
-import ViewPage.FragmentTest;
-import ViewPage.FragmentWindow;
+import recyclerViewAdapter.ViewType;
+import viewPage.FragmentHome;
+import viewPage.FragmentLight;
+import viewPage.FragmentRefrigerator;
+import ViewPage.FragmentAirConditioner;
+import viewPage.FragmentWindow;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentHome fragmentHome;
     FragmentWindow fragmentWindow;
     FragmentRefrigerator fragmentRefrigerator;
-    FragmentTest fragmentTest;
+    FragmentAirConditioner fragmentAirConditioner;
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SystemInfoVO(
                 R.drawable.sleep, "SLEEP MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.ic_security_on, "보안", "켜짐", ViewType.ItemVertical));
+                R.drawable.outing, "OUTING MODE", "", ViewType.ItemVertical));
 
         listFragmentWindow = new ArrayList<>();
         listFragmentWindow.add(new SystemInfoVO("대기질상태", ViewType.ItemVerticalAir));
@@ -456,12 +457,14 @@ public class MainActivity extends AppCompatActivity {
                     speechRecognizer.startListening(intent);
                     break;
                 case 3:
-                    if (fragmentTest == null) {
-                        fragmentTest = new FragmentTest(sharedObject, bufferedReader);
+                    if (fragmentAirConditioner == null) {
+                        fragmentAirConditioner = new FragmentAirConditioner(sharedObject, bufferedReader);
                     }
                     fragmentTransaction.replace(
-                            R.id.frame, fragmentTest).commitAllowingStateLoss();
-                    fragmentTest.setArguments(bundle);
+                            R.id.frame, fragmentAirConditioner).commitAllowingStateLoss();
+                    bundle.putSerializable("weather", weatherVO);
+                    bundle.putSerializable("sensorData", sensorDataVO);
+                    fragmentAirConditioner.setArguments(bundle);
                     fragmentTag = 3;
                     break;
                 case 4:
@@ -613,7 +616,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.v(TAG,"FragmentA_OnRefreshListener");
                     } else if (currentFragment instanceof FragmentRefrigerator){
                         Log.v(TAG,"FragmentRefrigerator");
-                    } else if (currentFragment instanceof FragmentTest){
+                    } else if (currentFragment instanceof FragmentAirConditioner){
                         Log.v(TAG,"FragmentTest");
                     } else if (currentFragment instanceof FragmentLight){
                         Log.v(TAG,"FragmentLight");

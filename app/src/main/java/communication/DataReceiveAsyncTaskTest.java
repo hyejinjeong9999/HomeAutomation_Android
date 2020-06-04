@@ -1,4 +1,4 @@
-package Communication;
+package communication;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,6 +28,7 @@ public class DataReceiveAsyncTaskTest extends AsyncTask<Void, String, String> {
         this.jsonData=jsonData;
         this.ibReceiveData=ibReceiveData;
     }
+
     /**\
      *Thread 처리 Code
      */

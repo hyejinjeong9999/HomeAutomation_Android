@@ -1,8 +1,7 @@
-package ViewPage;
+package viewPage;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import com.example.semiproject.R;
 
 import java.io.BufferedReader;
 
-import Communication.SharedObject;
+import communication.SharedObject;
 
 public class FragmentLight extends Fragment {
     String TAG="FragmentLight";

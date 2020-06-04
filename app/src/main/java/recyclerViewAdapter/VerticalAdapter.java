@@ -1,6 +1,7 @@
-package RecyclerViewAdapter;
+package recyclerViewAdapter;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,9 +22,10 @@ import com.example.semiproject.R;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-import Communication.SharedObject;
-import model.SensorDataVO;
+import communication.SharedObject;
 import model.SystemInfoVO;
+
+import model.SensorDataVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -101,43 +103,30 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            holder.itemView.getLayoutParams().height = deviceHeight;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
 //
 //            holder.itemView.requestLayout(); // 변경 사항 적용
-        }else if (holder instanceof SystemInfoWeather) {
-            ((SystemInfoWeather) holder).tvTempOut.setText(weathers.getTemp() + " ℃");
-            ((SystemInfoWeather) holder).tvDustOutSituation.setText(weathers.getPm10Value()  + " μg/m³");
-
-            ((SystemInfoWeather) holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
-            ((SystemInfoWeather) holder).tvModeSituation.setText("모드없다");
-            ((SystemInfoWeather) holder).tvSituation.setText(sensorDataVO.getDust25()  + " μg/m³");
-        }
-        else if (holder instanceof SystemInfoSwitch){
+        }else if (holder instanceof SystemInfoSwitch){
             ((SystemInfoSwitch)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
             ((SystemInfoSwitch)holder).tvSystemName.setText(itemList.get(position).getTitle());
 
             /**
              * SwitchComponent ListenerEvent (Switch Check 상태에 따라 Logic 처리 가능)
              */
-
-            /*  vo객체가 변경됨에 따라 기능이 없어짐?
-            if (sensorDataVO.getOnOff().equals("0")){
             if (sensorDataVO.getWindowStatus().equals("0")){
                 ((SystemInfoSwitch)holder).swSituation.setChecked(true);
             }else {
                 ((SystemInfoSwitch)holder).swSituation.setChecked(false);
             }
-
-
             ((SystemInfoSwitch)holder).swSituation.setOnCheckedChangeListener(
                     new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.v(TAG, "onCheckedChanged/" + isChecked);
-                    if(isChecked == true){
-                        sharedObject.put("/ANDROID>/WINDOWS ON");
-                    }else {
-                        sharedObject.put("/ANDROID>/WINDOWS OFF");
-                    }
-                }
-            });
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            Log.v(TAG, "onCheckedChanged/" + isChecked);
+                            if(isChecked == true){
+                                sharedObject.put("/ANDROID>/WINDOWS ON");
+                            }else {
+                                sharedObject.put("/ANDROID>/WINDOWS OFF");
+                            }
+                        }
+                    });
             // Switch Component onTouch Event (Double Touch 시 호출됨.....)
             ((SystemInfoSwitch)holder).swSituation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -146,7 +135,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }else if (holder instanceof SystemInfoWeather){
-            ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
+            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
             /**
              * weathers.getWeather() 값에 따라 SystemInfoWeather Item View에 그림 출력
              */
@@ -162,14 +151,28 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
-           // ((SystemInfoWeather)holder).tvHumidity.setText(weathers.getHumidity() + " %");
+            Log.v(TAG,"================================"+weathers.getPm10Value());
+            double dustDensityOut = Double.parseDouble(weathers.getPm10Value());
+            if (dustDensityOut<=15){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verygood);
+            }else if (dustDensityOut<=35 && dustDensityOut<15){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_good);
+            }else if (dustDensityOut<=75 && dustDensityOut<35){
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_bad);
+            }else {
+                ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verybad);
+            }
+            Log.v(TAG,"weathers.getPm10Value() "+weathers.getPm10Value() );
+            Log.v(TAG,"weathers.getPm10Value() "+weathers.getPm25Value() );
+            ((SystemInfoWeather)holder).tvDustOutSituation.setText(weathers.getPm10Value() +  " μg/m³");
 
-            ((SystemInfoWeather)holder).tvTempOut.setText(weathers.getTemp() +  " ℃");
-            double dustDensity = Double.parseDouble(sensorDataVO.getDust25());
+            Log.v(TAG,"TEST=="+sensorDataVO.getTemp());
+            ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
+//            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
+            ((SystemInfoWeather)holder).tvModeSituation.setText("SLEEP");
+            double dustDensity = Double.parseDouble(sensorDataVO.getDust10());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
-//                ((SystemInfoWeather)holder).tvDust
-
             }else if (dustDensity<=35 && dustDensity<15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_good);
             }else if (dustDensity<=75 && dustDensity<35){
@@ -177,7 +180,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }else {
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verybad);
             }
-            ((SystemInfoWeather)holder).tvSituation.setText(sensorDataVO.getDust25() + " μg/m³");
+            ((SystemInfoWeather)holder).tvSituation.setText(sensorDataVO.getDust10() + " μg/m³");
         }
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
@@ -187,27 +190,14 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onClick(View v) {
                 Log.v(TAG,"onBindViewHolder()_onClick()_position=="+position);
                 switch (position){
-                    case 0:
-                        Log.v(TAG,"onBindViewHolder()_onClick()_position=0="+position);
-                        break;
                     case 1:
-                        Log.v(TAG,"onBindViewHolder()_onClick()_position=1="+position);
+                        sharedObject.put("/ANDROID>/MODE SMART");
+                        break;
+                    case 2:
+                        sharedObject.put("/ANDROID>/MODE SLEEP");
                         break;
                     case 3:
-                        if (sparseBooleanArray.get(position)) {
-                            // 펼쳐진 Item을 클릭 시
-                            sparseBooleanArray.delete(position);
-                        } else {
-                            // 직전의 클릭됐던 Item의 클릭상태를 지움
-                            sparseBooleanArray.delete(prePosition);
-                            // 클릭한 Item의 position을 저장
-                            sparseBooleanArray.put(position, true);
-                        }
-                        // 해당 포지션의 변화를 알림
-                        if (prePosition != -1) notifyItemChanged(prePosition);
-                        notifyItemChanged(position);
-                        // 클릭된 position 저장
-                        prePosition = position;
+                        sharedObject.put("/ANDROID>/MODE OUTING");
                         break;
                 }
             }
