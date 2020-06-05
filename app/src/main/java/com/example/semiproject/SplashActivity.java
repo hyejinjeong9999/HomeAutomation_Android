@@ -1,5 +1,6 @@
 package com.example.semiproject;
 
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -64,14 +65,14 @@ public class SplashActivity extends AppCompatActivity {
                 //권한 있을 경우
                 Log.v(TAG,"Check=="+permissionResult+" /보안설정 통과");
                 //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         }else {
             //1.1.2 Version M 미만
             Log.v(TAG,"Version Check=="+Build.VERSION.SDK_INT+" /보안설정 통과");
             //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
     }
@@ -85,7 +86,7 @@ public class SplashActivity extends AppCompatActivity {
                 //사용자가 권한 허용을 눌렀을 경우
                 Log.v(TAG,"onRequestPermissionsResult()_보안 통과_grantResults[0]=="+grantResults[0]);
                 //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         }
