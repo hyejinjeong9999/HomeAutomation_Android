@@ -165,6 +165,7 @@ public class FragmentAirConditioner extends Fragment {
                     }
                     break;
                 case R.id.btnPower:
+                    Log.v(TAG,"sensorDataVO.getAirconditionerStatus()=="+sensorDataVO.getAirconditionerStatus());
                     if (sensorDataVO.getAirconditionerStatus().equals("0")){
                         sharedObject.put("/ANDROID>/AIRCONDITIONER  ON");
                         btnPower.setBackgroundResource(R.drawable.air_temp_line_clicked);
