@@ -1,10 +1,12 @@
 package com.example.semiproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public EditText emailId, password;
     String email, pwd, google_profile, google_email = "";
+    CheckBox chbx_remember;
 
     Button signInBtn;
     TextView signUpTv;
@@ -61,6 +64,9 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     // kakao login
     String uid = "some-uid";
+    // remember ID
+    boolean isRemembered = false;
+    private SharedPreferences appData;
 
 
 
@@ -74,12 +80,21 @@ public class LoginActivity extends AppCompatActivity {
 
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
-        emailId = findViewById(R.id.emailET);
-        password = findViewById(R.id.passET);
-        signInBtn = findViewById(R.id.btn2);
-        signUpTv = findViewById(R.id.textView);
+        emailId = (EditText) findViewById(R.id.et_email);
+        password = (EditText) findViewById(R.id.et_password);
+        chbx_remember = (CheckBox) findViewById(R.id.chbx_remember);
+        signInBtn = (Button) findViewById(R.id.btn2);
+        signUpTv = (TextView) findViewById(R.id.textView);
 
 
+        // remember ID; 설정값 불러오기
+        appData = getSharedPreferences("appData", MODE_PRIVATE);
+        load();
+
+        if(isRemembered){
+            emailId.setText(email);
+            chbx_remember.setChecked(isRemembered);
+        }
 /*
 
         // 세션 콜백 구현
@@ -143,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
         // facebook login
-
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setPermissions("email");
             // Callback registration
@@ -165,7 +179,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // facebook loginManager callback
-
         LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -210,11 +223,13 @@ public class LoginActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
                             }else {
-                                Log.i("LoginTest", "isSuccessful 01");
+                                Log.i("ltest", "isSuccessful 01");
                                 Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
-                                Log.i("LoginTest", "isSuccessful 02");
+                                Log.i("ltest", "isSuccessful 02");
                                 startActivity(intHome);
-                                Log.i("LoginTest", "isSuccessful 03");
+                                Log.i("ltest", "isSuccessful 03");
+                                save();
+                                Log.i("ltest", "save()");
                             }
                         }
                     });
@@ -230,6 +245,8 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intSignUp);
             }
         });
+
+
     }
 
     @Override
@@ -340,9 +357,10 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
-                            Log.i("LoginTest", "Authentication Success");
+                            Log.i("ltest", "Authentication Success");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            save(); // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -388,11 +406,12 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
-                            Log.i("LoginTest", "email > " + acct.getEmail());
-                            Log.i("LoginTest", "uri > " + acct.getPhotoUrl());
-                            Log.i("LoginTest", "login_success_firebaseAuthWithGoogle");
+                            Log.i("ltest", "email > " + acct.getEmail());
+                            Log.i("ltest", "uri > " + acct.getPhotoUrl());
+                            Log.i("ltest", "login_success_firebaseAuthWithGoogle");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
+                            save();     // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -402,8 +421,28 @@ public class LoginActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }   // google Login End
+
+// remember ID; save(), load();
+    // 설정 값 저장하기
+    private void save(){
+        // 객체만 저장 불가능, Editor, edit() 사용;
+        SharedPreferences.Editor editor = appData.edit();
+
+        Log.i("ltest", "save().email: " + editor.putString("ID", emailId.getText().toString().trim()));
+        editor.putString("ID", emailId.getText().toString().trim());
+        Log.i("ltest", "save().checked: " + editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked()));
+        editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked());
+
+        // apply.commit 을 해야 변경된 내용 저장
+        editor.apply();
     }
-// google Login End
 
-
+    // 설정 값 불러오기
+    private void load(){
+        isRemembered = appData.getBoolean("SAVE_LOGIN_DATA", false);
+        Log.i("ltest", "load()");
+        email = appData.getString("ID", "");
+        Log.i("ltest", "load().email: " + email);
+    }
 }

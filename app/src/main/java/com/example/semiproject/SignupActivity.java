@@ -43,8 +43,8 @@ public class SignupActivity extends AppCompatActivity{
         setContentView(R.layout.activity_signup);
 
         mAuth = FirebaseAuth.getInstance();
-        emailId = findViewById(R.id.emailET);
-        password = findViewById(R.id.passET);
+        emailId = findViewById(R.id.et_email);
+        password = findViewById(R.id.et_password);
         signUpBtn = (Button)findViewById(R.id.btn_signup);
         loginTv = findViewById(R.id.textView);
 
