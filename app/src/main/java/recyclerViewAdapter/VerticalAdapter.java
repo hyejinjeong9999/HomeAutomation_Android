@@ -121,9 +121,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             Log.v(TAG, "onCheckedChanged/" + isChecked);
                             if(isChecked == true){
-                                sharedObject.put("/ANDROID>/WINDOWS ON");
+                                sharedObject.put("/ANDROID>/WINDOW ON");
                             }else {
-                                sharedObject.put("/ANDROID>/WINDOWS OFF");
+                                sharedObject.put("/ANDROID>/WINDOW OFF");
                             }
                         }
                     });
@@ -155,9 +155,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             double dustDensityOut = Double.parseDouble(weathers.getPm10Value());
             if (dustDensityOut<=15){
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verygood);
-            }else if (dustDensityOut<=35 && dustDensityOut<15){
+            }else if (dustDensityOut<=35 && dustDensityOut>15){
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_good);
-            }else if (dustDensityOut<=75 && dustDensityOut<35){
+            }else if (dustDensityOut<=75 && dustDensityOut>35){
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_bad);
             }else {
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verybad);

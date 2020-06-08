@@ -60,8 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp">
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp">
             <Button
                 android:id="@+id/btnCold"
                 android:layout_width="wrap_content"
@@ -93,7 +93,8 @@
                 android:text="희망온도"
                 android:textSize="20sp"
                 android:textColor="@color/fontDark"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="25dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,12 +142,15 @@
                 android:text="바람세기"
                 android:textSize="20sp"
                 android:textColor="@color/fontDark"
-                android:layout_marginTop="40dp"/>
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="25dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp">
                 <Button
                     android:id="@+id/btnSpeed1"
                     android:layout_width="wrap_content"
@@ -184,7 +188,9 @@
         android:text="전원"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="8dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/air_temp_line"/>
 </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
