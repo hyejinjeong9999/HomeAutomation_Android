@@ -165,7 +165,8 @@ public class FragmentAirConditioner extends Fragment {
                     }
                     break;
                 case R.id.btnPower:
-                    if (sensorDataVO.getAirconditionerStatus().equals("0")){
+                    if (!airConditionerOnOff){
+                        Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER  ON");
                         btnPower.setBackgroundResource(R.drawable.air_temp_line_clicked);
                         btnPower.setTextColor(context.getResources().getColor(R.color.fontDark, null));
@@ -182,10 +183,21 @@ public class FragmentAirConditioner extends Fragment {
                         btnSpeed3.setBackgroundResource(R.drawable.air_temp_line);
                         btnSpeed3.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
                         airConditionerOnOff = true;
-                    }else if(sensorDataVO.getAirconditionerStatus().equals("1")){
+                    }else if(airConditionerOnOff){
+                        Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER  OFF");
                         btnPower.setBackgroundResource(R.drawable.air_temp_line);
                         btnPower.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnCold.setBackgroundResource(R.drawable.air_temp_line);
+                        btnCold.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnDry.setBackgroundResource(R.drawable.air_temp_line);
+                        btnDry.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed1.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed1.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed2.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed2.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed3.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed3.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
                         airConditionerOnOff = false;
                     }
             }
