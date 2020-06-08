@@ -91,8 +91,8 @@ public class FragmentAirConditioner extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 //        tvTempIn.setText(sensorDataVO.getTemp());
-        tvTempIn.setText(weatherVO.getTemp()+"℃");
-        tvSelectTemp.setText("20");
+        tvTempIn.setText(sensorDataVO.getTemp()+"℃");
+        tvSelectTemp.setText("26");
     }
 
     View.OnClickListener mClick = new View.OnClickListener(){
@@ -110,7 +110,7 @@ public class FragmentAirConditioner extends Fragment {
                     break;
                 case R.id.btnDry:
                     if(airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER DRY");
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER dry");
                         btnDry.setBackgroundResource(R.drawable.air_temp_line_clicked);
                         btnDry.setTextColor(context.getResources().getColor(R.color.fontDark, null));
                         btnCold.setBackgroundResource(R.drawable.air_temp_line);
@@ -119,16 +119,16 @@ public class FragmentAirConditioner extends Fragment {
                     break;
                 case R.id.btnTempUp:
                     if(airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER UP");
                         if (Integer.parseInt(tvSelectTemp.getText().toString()) < 30) {
+                            sharedObject.put("/ANDROID>/AIRCONDITIONER UP");
                             tempChange(1);
                         }
                     }
                     break;
                 case R.id.btnTempDown:
                     if(airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER DOWN");
                         if (Integer.parseInt(tvSelectTemp.getText().toString()) > 18) {
+                            sharedObject.put("/ANDROID>/AIRCONDITIONER DOWN");
                             tempChange(-1);
                         }
                     }
@@ -171,6 +171,18 @@ public class FragmentAirConditioner extends Fragment {
                         sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
                         btnPower.setBackgroundResource(R.drawable.air_temp_line_clicked);
                         btnPower.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnCold.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnCold.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnDry.setBackgroundResource(R.drawable.air_temp_line);
+                        btnDry.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        tvSelectTemp.setText("26");
+
+                        btnSpeed1.setBackgroundResource(R.drawable.air_temp_line_clicked);
+                        btnSpeed1.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+                        btnSpeed2.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed2.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+                        btnSpeed3.setBackgroundResource(R.drawable.air_temp_line);
+                        btnSpeed3.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
                         airConditionerOnOff = true;
                     }else if(sensorDataVO.getAirconditionerStatus().equals("1")){
                         sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");

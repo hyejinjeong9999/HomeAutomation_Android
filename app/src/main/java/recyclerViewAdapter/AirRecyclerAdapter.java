@@ -166,6 +166,17 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     });
                 }
             });
+            if(sensorDataVO.getAirconditionerStatus() == "1"){
+                ((AirControl) holder).swAirControl.setChecked(true);
+            }else{
+                ((AirControl) holder).swAirControl.setChecked(false);
+            }
+            if(sensorDataVO.getWindowStatus() == "1"){
+                ((AirControl) holder).swWindowControl.setChecked(true);
+            }else{
+                ((AirControl) holder).swWindowControl.setChecked(false);
+            }
+
             // 공기청정기, 창문 컨트롤 로직설정 끝
         }
 

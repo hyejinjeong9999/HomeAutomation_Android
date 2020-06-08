@@ -11,6 +11,9 @@ public  class SensorDataVO implements Serializable{
     String windowStatus = "0"; // 창문 onoff
     String airpurifierStatus = "0"; // 공기청정기 onoff
     String airconditionerStatus = "0"; // 에어컨 onoff
+    String airconditionerMode = "COLD"; //운전모드
+    String airconditionerTemp = "0"; //희망온도
+    String airconditionerSpeed = "SPEED1"; //풍속 강풍 / 중풍 / 약풍
     String lightStatus = "0"; //전등
 
     public String getMode() {
@@ -77,6 +80,30 @@ public  class SensorDataVO implements Serializable{
         this.airconditionerStatus = airconditionerStatus;
     }
 
+    public String getAirconditionerMode() {
+        return airconditionerMode;
+    }
+
+    public void setAirconditionerMode(String airconditionerMode) {
+        this.airconditionerMode = airconditionerMode;
+    }
+
+    public String getAirconditionerTemp() {
+        return airconditionerTemp;
+    }
+
+    public void setAirconditionerTemp(String airconditionerTemp) {
+        this.airconditionerTemp = airconditionerTemp;
+    }
+
+    public String getAirconditionerSpeed() {
+        return airconditionerSpeed;
+    }
+
+    public void setAirconditionerSpeed(String airconditionerSpeed) {
+        this.airconditionerSpeed = airconditionerSpeed;
+    }
+
     public String getLightStatus() {
         return lightStatus;
     }
@@ -96,6 +123,9 @@ public  class SensorDataVO implements Serializable{
                 ", windowStatus='" + windowStatus + '\'' +
                 ", airpurifierStatus='" + airpurifierStatus + '\'' +
                 ", airconditionerStatus='" + airconditionerStatus + '\'' +
+                ", airconditionerMode='" + airconditionerMode + '\'' +
+                ", airconditionerTemp='" + airconditionerTemp + '\'' +
+                ", airconditionerSpeed='" + airconditionerSpeed + '\'' +
                 ", lightStatus='" + lightStatus + '\'' +
                 '}';
     }
