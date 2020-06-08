@@ -35,6 +35,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 
+import viewPage.FragmentAirConditioner;
 import communication.SharedObject;
 import communication.WeatherService;
 import Event.ClapMain;
@@ -44,7 +45,6 @@ import recyclerViewAdapter.ViewType;
 import viewPage.FragmentHome;
 import viewPage.FragmentLight;
 import viewPage.FragmentRefrigerator;
-import ViewPage.FragmentAirConditioner;
 import viewPage.FragmentWindow;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().
                 setCustomView(createTabView(R.drawable.ic_windy)));
         tabLayout.addTab(tabLayout.newTab().
-                setCustomView(createTabView(R.drawable.kitchen_black_18dp)));
+                setCustomView(createTabView(R.drawable.settings_black)));
         tabLayout.addOnTabSelectedListener(mTabSelect);
 
         /**

@@ -8,6 +8,9 @@ import android.util.Log;
 import com.example.semiproject.MainActivity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Map;
 
 import model.WeatherVO;
 
@@ -81,6 +85,13 @@ public class WeatherService extends Service {
                 ObjectMapper mapper = new ObjectMapper();
                 WeatherVO[] resultArr = mapper.readValue(stringBuffer.toString(), WeatherVO[].class);
                 Log.v(TAG,"resultArr=="+resultArr[0].getTemp());
+                Log.v(TAG,"line===="+stringBuffer.toString());
+//                String jsonTast = stringBuffer.toString();
+//                JSONArray jsonArray = new JSONArray(jsonTast);
+//
+//                JSONObject jsonData = new JSONObject((Map) jsonArray);
+//                Log.v(TAG,"name==="+jsonData.get("name"));
+
 //                weathervo = mapper.readValue(stringBuffer.toString(), WeatherVO.class);
 //                Log.v(TAG,"weathervo=="+weathervo.getTemp());
 
