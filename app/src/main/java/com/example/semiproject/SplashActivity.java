@@ -66,8 +66,8 @@ public class SplashActivity extends AppCompatActivity {
                 Log.v(TAG,"Check=="+permissionResult+" /보안설정 통과");
                 //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
-//                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                 finish();
             }
@@ -76,8 +76,8 @@ public class SplashActivity extends AppCompatActivity {
             Log.v(TAG,"Version Check=="+Build.VERSION.SDK_INT+" /보안설정 통과");
             //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
-//            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+//            startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
             finish();
         }
@@ -93,8 +93,8 @@ public class SplashActivity extends AppCompatActivity {
                 Log.v(TAG,"onRequestPermissionsResult()_보안 통과_grantResults[0]=="+grantResults[0]);
                 //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
-//                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                 finish();
             }

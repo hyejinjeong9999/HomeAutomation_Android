@@ -105,4 +105,19 @@ public class WeatherVO implements Serializable {
         this.humidity = humidity;
     }
 
+    public void checkElement(){
+        if(weather == null) weather = "0";
+        if(temp == null)temp = "0"; // main - temp
+        if(feelsLike == null)feelsLike = "0"; // main - feels_like
+        if(tempMin == null)tempMin = "0"; // main - temp_min
+        if(tempMax == null) tempMax = "0"; // main - temp_max
+        if(humidity == null)humidity = "0"; // main - humidity
+        if(name == null)name = "0"; // name, 지역명
+        if(pm10Value == null)pm10Value = "0";
+        if(pm10Value24 == null)pm10Value24 = "0";
+        if(pm25Value == null)pm25Value = "0";
+        if(pm25Value24 == null)pm25Value24 = "0";
+
+    }
+
 }
