@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import communication.SharedObject;
 import model.WeatherVO;
 
-import RecyclerViewAdapter.AirRecyclerAdapter;
+import recyclerViewAdapter.AirRecyclerAdapter;
 
 import model.SensorDataVO;
 import model.SystemInfoVO;
-import model.WeatherVO;
 
 public class FragmentWindow extends Fragment {
 

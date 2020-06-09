@@ -1,4 +1,4 @@
-package RecyclerViewAdapter;
+package recyclerViewAdapter;
 
 import android.content.Context;
 import android.os.Build;
@@ -6,7 +6,6 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -27,7 +26,6 @@ import communication.SharedObject;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
-import recyclerViewAdapter.ViewType;
 
 public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     String TAG = "AirRecyclerAdapter";
