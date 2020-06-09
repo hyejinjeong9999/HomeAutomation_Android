@@ -24,16 +24,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.tabs.TabLayout;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-
 
 import viewPage.FragmentAirConditioner;
 import communication.SharedObject;
@@ -44,8 +40,10 @@ import Event.RecorderThread;
 import recyclerViewAdapter.ViewType;
 import viewPage.FragmentHome;
 import viewPage.FragmentLight;
-import viewPage.FragmentRefrigerator;
+
+import viewPage.FragmentSetting;
 import viewPage.FragmentWindow;
+
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
@@ -53,7 +51,6 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
-import model.SensorDataVO;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction fragmentTransaction;
     FragmentHome fragmentHome;
     FragmentWindow fragmentWindow;
-    FragmentRefrigerator fragmentRefrigerator;
+
     FragmentAirConditioner fragmentAirConditioner;
+    FragmentSetting fragmentSetting;
     FragmentLight fragmentLight;
     int fragmentTag = 0;
     ArrayList<SystemInfoVO> list;
@@ -237,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
 //                            fragmentWindow.setArguments(bundle);
 //                            Log.v(TAG,"FragmentWindow_OnRefreshListener");
 //                        }
-//                        else if (currentFragment instanceof FragmentRefrigerator){
-//                            Log.v(TAG,"FragmentRefrigerator");
+//                        else if (currentFragment instanceof FragmentSetting){
+//                            Log.v(TAG,"FragmentSetting");
 //                        }
 //                        else if (currentFragment instanceof FragmentTest){
 //                            Log.v(TAG,"FragmentTest");
@@ -468,13 +466,13 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTag = 3;
                     break;
                 case 4:
-                    if (fragmentRefrigerator == null) {
-                        fragmentRefrigerator = new FragmentRefrigerator(
+                    if (fragmentSetting == null) {
+                        fragmentSetting = new FragmentSetting(
                                 sharedObject,bufferedReader);
                     }
                     fragmentTransaction.replace(
-                            R.id.frame, fragmentRefrigerator).commitAllowingStateLoss();
-                    fragmentRefrigerator.setArguments(bundle);
+                            R.id.frame, fragmentSetting).commitAllowingStateLoss();
+                    fragmentSetting.setArguments(bundle);
                     fragmentTag = 2;
 //                    if (fragmentLight == null) {
 //                        fragmentLight = new FragmentLight(sharedObject,bufferedReader);
@@ -613,11 +611,12 @@ public class MainActivity extends AppCompatActivity {
                         bundle.putSerializable("sensorData", sensorDataVO);
                         fragmentWindow.setArguments(bundle);
                         Log.v(TAG,"FragmentA_OnRefreshListener");
-                    } else if (currentFragment instanceof FragmentRefrigerator){
-                        Log.v(TAG,"FragmentRefrigerator");
-                    } else if (currentFragment instanceof FragmentAirConditioner){
-                        Log.v(TAG,"FragmentTest");
-                    } else if (currentFragment instanceof FragmentLight){
+
+                    }  else if (currentFragment instanceof FragmentAirConditioner){
+                        Log.v(TAG,"FragmentAirConditioner");
+                    } else if (currentFragment instanceof FragmentSetting){
+                        Log.v(TAG,"FragmentSetting");
+                    }  else if (currentFragment instanceof FragmentLight){
                         Log.v(TAG,"FragmentLight");
                     }
                 }

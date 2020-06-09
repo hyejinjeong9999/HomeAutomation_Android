@@ -37,73 +37,75 @@ public class FragmentRefrigerator extends Fragment {
     SharedObject sharedObject;
     BufferedReader bufferedReader;
 
-    public FragmentRefrigerator(SharedObject sharedObject, BufferedReader bufferedReader){
-        this.sharedObject=sharedObject;
-        this.bufferedReader=bufferedReader;
+    public FragmentRefrigerator(SharedObject sharedObject, BufferedReader bufferedReader) {
+        this.sharedObject = sharedObject;
+        this.bufferedReader = bufferedReader;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_refrigerator,container,false);
-        context=container.getContext();
-        tvSound=view.findViewById(R.id.tvSound);
-        btnOnVoice=view.findViewById(R.id.btnOnVoice);
-
-        btnOnVoice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //QR code Scanner Start
-                IntentIntegrator.forSupportFragment(FragmentRefrigerator.this).initiateScan();
-                Log.v(TAG,"onClick()==QR");
-            }
-        });
-
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.RECORD_AUDIO)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.RECORD_AUDIO)) {
-//
-//            } else {
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO
-//                );
-//            }
-//        }
-//        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-//
-//        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-//        speechRecognizer.setRecognitionListener(recognitionListener);
-//
+//        view = inflater.inflate(R.layout.fragment_refrigerator,container,false);
+//        context=container.getContext();
+//        tvSound=view.findViewById(R.id.tvSound);
+//        btnOnVoice=view.findViewById(R.id.btnOnVoice);
 //
 //        btnOnVoice.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View view) {
-//                speechRecognizer.startListening(intent);
+//            public void onClick(View v) {
+//                //QR code Scanner Start
+//                IntentIntegrator.forSupportFragment(FragmentRefrigerator.this).initiateScan();
+//                Log.v(TAG,"onClick()==QR");
 //            }
 //        });
-        return  view;
+//
+////        if (ContextCompat.checkSelfPermission(this,
+////                Manifest.permission.RECORD_AUDIO)
+////                != PackageManager.PERMISSION_GRANTED) {
+////
+////            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+////                    Manifest.permission.RECORD_AUDIO)) {
+////
+////            } else {
+////                ActivityCompat.requestPermissions(this,
+////                        new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO
+////                );
+////            }
+////        }
+////        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+////        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+////        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+////
+////        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+////        speechRecognizer.setRecognitionListener(recognitionListener);
+////
+////
+////        btnOnVoice.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View view) {
+////                speechRecognizer.startListening(intent);
+////            }
+////        });
+        return view;
     }
+
     /**
      * QR code - Zxing Library
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Log.v(TAG,"onActivityResult"+resultCode);
-        if(resultCode == Activity.RESULT_OK) {
+        Log.v(TAG, "onActivityResult" + resultCode);
+        if (resultCode == Activity.RESULT_OK) {
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            Log.v(TAG, "result.getContents() == "+scanResult.getContents());
-            Toast.makeText(context,scanResult.getContents(),Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent();
-//            ComponentName cname = new ComponentName("com.example.booksearchrecyclerviewkakaoapi", "\""+re+"\"");
-//            intent.setComponent(cname);
-//            startActivity(intent);
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            Log.v(TAG, "result.getContents() == " + scanResult.getContents());
+            Toast.makeText(context, scanResult.getContents(), Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent();Name cname = new ComponentName("com.example.booksearchrecyclerviewkakaoapi", "\""+re+"\"");
+////            intent.setComponent(cname);
+////            startActivity(intent);
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+//            Component
         }
     }
 }
