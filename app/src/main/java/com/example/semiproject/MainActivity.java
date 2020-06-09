@@ -538,9 +538,8 @@ public class MainActivity extends AppCompatActivity {
         public void onError(int i) {
             Log.v("listen", "onError");
             Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
-            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
-            //////////////////////////
-            speechRecognizer.startListening(intent);
+//            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
+//            speechRecognizer.startListening(intent);
         }
         @Override
         public void onResults(Bundle bundle) {
