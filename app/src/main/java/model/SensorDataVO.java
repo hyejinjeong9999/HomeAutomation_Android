@@ -112,5 +112,21 @@ public  class SensorDataVO implements Serializable{
         this.lightStatus = lightStatus;
     }
 
-
+    @Override
+    public String toString() {
+        return "SensorDataVO{" +
+                "mode='" + mode + '\'' +
+                ", temp='" + temp + '\'' +
+                ", dust25='" + dust25 + '\'' +
+                ", dust10='" + dust10 + '\'' +
+                ", gasStatus='" + gasStatus + '\'' +
+                ", windowStatus='" + windowStatus + '\'' +
+                ", airpurifierStatus='" + airpurifierStatus + '\'' +
+                ", airconditionerStatus='" + airconditionerStatus + '\'' +
+                ", airconditionerMode='" + airconditionerMode + '\'' +
+                ", airconditionerTemp='" + airconditionerTemp + '\'' +
+                ", airconditionerSpeed='" + airconditionerSpeed + '\'' +
+                ", lightStatus='" + lightStatus + '\'' +
+                '}';
+    }
 }

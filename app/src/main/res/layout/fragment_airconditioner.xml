@@ -107,6 +107,7 @@
                     android:layout_weight="10"
                     android:layout_gravity="center_vertical"
                     android:gravity="end"
+                    android:textColor="@color/fontDark"
                     android:text="18"
                     android:textSize="60sp"/>
                 <TextView
