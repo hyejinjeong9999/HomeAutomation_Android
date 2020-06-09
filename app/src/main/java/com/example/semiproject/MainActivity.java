@@ -110,21 +110,21 @@ public class MainActivity extends AppCompatActivity {
         /*
         패턴 소리 인식
          */
-        AudioDispatcher dispatcher =
-                AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
-        double threshold = 5;
-        double sensitivity = 35;
-        PercussionOnsetDetector mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
-                new OnsetHandler() {
-                    @Override
-                    public void handleOnset(double time, double salience) {
-                        Log.v(TAG, "time : " + time + ", salience : " + salience);
-                        Log.v(TAG, "Clap detected!");
-                    }
-                }, sensitivity, threshold);
-
-        dispatcher.addAudioProcessor(mPercussionDetector);
-        new Thread(dispatcher,"Audio Dispatcher").start();
+//        AudioDispatcher dispatcher =
+//                AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+//        double threshold = 5;
+//        double sensitivity = 35;
+//        PercussionOnsetDetector mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
+//                new OnsetHandler() {
+//                    @Override
+//                    public void handleOnset(double time, double salience) {
+//                        Log.v(TAG, "time : " + time + ", salience : " + salience);
+//                        Log.v(TAG, "Clap detected!");
+//                    }
+//                }, sensitivity, threshold
+//        );
+//        dispatcher.addAudioProcessor(mPercussionDetector);
+//        new Thread(dispatcher,"Audio Dispatcher").start();
 
 
 
@@ -512,30 +512,31 @@ public class MainActivity extends AppCompatActivity {
      * * Speech recognition
      */
     private RecognitionListener recognitionListener = new RecognitionListener() {
+        String recogTAG = "RecognitionListener";
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            Log.v(TAG,"onReadyForSpeech()");
+            Log.v(recogTAG,"onReadyForSpeech()");
         }
         @Override
         public void onBeginningOfSpeech() {
-            Log.v("listen", "onBeginningOfSpeech");
+            Log.v(recogTAG, "onBeginningOfSpeech");
         }
         @Override
         public void onRmsChanged(float v) {
-            Log.v("listen", "onRmsChanged");
+            Log.v(recogTAG, "onRmsChanged");
         }
         @Override
         public void onBufferReceived(byte[] bytes) {
-            Log.v("listen", "onBufferReceived");
+            Log.v(recogTAG, "onBufferReceived");
         }
         @Override
         public void onEndOfSpeech() {
-            Log.v(TAG,"onEndOfSpeech()");
+            Log.v(recogTAG,"onEndOfSpeech()");
         }
         @Override
         public void onError(int i) {
             Log.v("listen", "onError");
-            Log.v(TAG,"너무 늦게 말하면 오류뜹니다");
+            Log.v(recogTAG,"너무 늦게 말하면 오류뜹니다");
 //            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
 //            speechRecognizer.startListening(intent);
         }
@@ -547,6 +548,7 @@ public class MainActivity extends AppCompatActivity {
 
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
+            Log.v(recogTAG,"onResults");
             Log.v(TAG,"음성인식=="+rs[0]);
             Log.v(TAG,"음성인식size=="+mResult.size());
             if(rs[0].contains("창문")){
@@ -555,25 +557,25 @@ public class MainActivity extends AppCompatActivity {
                 }else if(rs[0].contains("닫아")){
                     sharedObject.put("/ANDROID>/WINDOWS OFF");
                 }
-                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                    if (currentFragment.isVisible()) {
-                        if (currentFragment instanceof FragmentHome) {
-                            Log.v(TAG, "FragmentHome");
-                            startService(serviceIntent);
-                        } else if(currentFragment instanceof FragmentWindow) {
-                            fragmentTransaction = fragmentManager.beginTransaction();
-                            if (fragmentWindow == null) {
-                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
-                            }
-                            fragmentTransaction.replace(
-                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                            bundle.putSerializable("weather", weatherVO);
-                            bundle.putSerializable("sensorData", sensorDataVO);
-                            fragmentWindow.setArguments(bundle);
-                            Log.v(TAG, "FragmentA_OnRefreshListener");
-                        }
-                    }
-                }
+//                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//                    if (currentFragment.isVisible()) {
+//                        if (currentFragment instanceof FragmentHome) {
+//                            Log.v(TAG, "FragmentHome");
+//                            startService(serviceIntent);
+//                        } else if(currentFragment instanceof FragmentWindow) {
+//                            fragmentTransaction = fragmentManager.beginTransaction();
+//                            if (fragmentWindow == null) {
+//                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
+//                            }
+//                            fragmentTransaction.replace(
+//                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+//                            bundle.putSerializable("weather", weatherVO);
+//                            bundle.putSerializable("sensorData", sensorDataVO);
+//                            fragmentWindow.setArguments(bundle);
+//                            Log.v(TAG, "FragmentA_OnRefreshListener");
+//                        }
+//                    }
+//                }
             }
         }
         @Override
