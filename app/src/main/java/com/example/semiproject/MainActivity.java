@@ -624,6 +624,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             swipeRefresh.setRefreshing(false); //false 로 설정해야 새로고침 아이콘이 종료된다
+            sharedObject.put("/ANDROID>/REFRESH ON");
         }
     };
 }
