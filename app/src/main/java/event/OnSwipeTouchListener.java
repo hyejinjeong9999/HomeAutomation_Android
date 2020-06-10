@@ -1,4 +1,4 @@
-package Event;
+package event;
 
 import android.content.Context;
 import android.view.GestureDetector;
