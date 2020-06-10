@@ -152,6 +152,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
             Log.v(TAG,"================================"+weathers.getPm10Value());
+            Log.v(TAG, "@@@@@@@@@@@@" + weathers.getPm10Value());
             double dustDensityOut = Double.parseDouble(weathers.getPm10Value());
             if (dustDensityOut<=15){
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verygood);

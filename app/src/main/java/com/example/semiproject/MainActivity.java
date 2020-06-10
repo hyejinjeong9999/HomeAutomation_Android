@@ -1,9 +1,8 @@
 package com.example.semiproject;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -14,10 +13,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,12 +34,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import event.BackPressCloseHandler;
 import viewPage.FragmentAirConditioner;
 import communication.SharedObject;
 import communication.WeatherService;
-import Event.ClapMain;
-import Event.DetectorThread;
-import Event.RecorderThread;
 import recyclerViewAdapter.ViewType;
 import viewPage.FragmentHome;
 import viewPage.FragmentLight;
@@ -113,13 +108,18 @@ public class MainActivity extends AppCompatActivity {
     double lastClapTime = 0;
     AudioDispatcher dispatcher;
     PercussionOnsetDetector mPercussionDetector;
-    boolean voiceRecognitionSetting = false;
+
+    BackPressCloseHandler backPressCloseHandler;
+
+    private SharedPreferences appData;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
@@ -199,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         //패턴인식 레코그니션 실행
         pattenRecognition(intent);
 
+        //onBackPressed Event 객체 생성
+        backPressCloseHandler = new BackPressCloseHandler(this);
 
         //        frame=findViewById(R.id.frame);
 //        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
@@ -266,8 +268,6 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
-//        list.add(new SystemInfoVO(
-//                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(
                 R.drawable.smart, "SMART MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
@@ -327,16 +327,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (fragmentTag != 0) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            bundle.putSerializable("list", list);
-            fragmentHome.setArguments(bundle);
-            fragmentTag = 0;
-        } else {
-            super.onBackPressed();
-        }
+        Log.v(TAG,"onBackPressed() == IN");
+        backPressCloseHandler.onBackPressed();
     }
 
     /**
@@ -344,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        sharedObject.put(name + " OUT");
+        sharedObject.put(name+user.getEmail()+" OUT");
         Log.v(TAG, "onDestroy()");
         try {
             printWriter.close();
@@ -370,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "Socket Situation==" + socket.isConnected());
                 name = name.trim();
                 user = FirebaseAuth.getInstance().getCurrentUser();
-                sharedObject.put(name + " IN/ANDROID"+user.getEmail());
+                sharedObject.put(name+user.getEmail()+" IN");
                 Log.v(TAG,"user name =="+user.getEmail());
 
 //                sharedObject.put(user.getEmail());
