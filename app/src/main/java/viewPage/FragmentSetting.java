@@ -6,6 +6,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,9 @@ public class FragmentSetting extends Fragment {
     TextView settingEmail;
     Button settingLogut;
     Switch settingVoiceRecognitionBtn;
+    boolean voiceRecognition;
+    private SharedPreferences appData;
 
-    private SharedPreferences preferences;
     public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
@@ -64,6 +66,12 @@ public class FragmentSetting extends Fragment {
         view = inflater.inflate(R.layout.fragment_setting_v, container, false);
         context = container.getContext();
 
+        appData = context.getSharedPreferences("appData", context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = appData.edit();
+
+        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
+
+
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
 
         settingProfile = view.findViewById(R.id.settingProfile);
@@ -73,9 +81,7 @@ public class FragmentSetting extends Fragment {
         settingLogut = view.findViewById(R.id.settingLogout);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        settingName.setText(preferences.getString("appData","저장된 데이터가 없어요"));
         String str = "test";
 
         settingProfile.setImageResource(R.drawable.ic_kakaotalk);
@@ -89,15 +95,22 @@ public class FragmentSetting extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if(isChecked){
-
+                            editor.putBoolean("VOICE_RECOGNITION", isChecked);
+                            editor.apply();
                         }else{
-
+                            editor.putBoolean("VOICE_RECOGNITION", isChecked);
+                            editor.apply();
                         }
                     }
                 });
             }
         });
-
+        if(voiceRecognition){
+            settingVoiceRecognitionBtn.setChecked(true);
+        }else{
+            settingVoiceRecognitionBtn.setChecked(false);
+        }
         return view;
     }
+
 }

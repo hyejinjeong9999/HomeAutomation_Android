@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        appData = getSharedPreferences("appData", MODE_PRIVATE);
 
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
