@@ -1,4 +1,4 @@
-package eventPackage;
+package event;
 
 import android.app.Activity;
 import android.widget.Toast;

@@ -1,9 +1,7 @@
 package com.example.semiproject;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -14,10 +12,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,13 +33,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import eventPackage.BackPressCloseHandler;
+import event.BackPressCloseHandler;
 import viewPage.FragmentAirConditioner;
 import communication.SharedObject;
 import communication.WeatherService;
-import Event.ClapMain;
-import Event.DetectorThread;
-import Event.RecorderThread;
 import recyclerViewAdapter.ViewType;
 import viewPage.FragmentHome;
 import viewPage.FragmentLight;
@@ -269,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
-//        list.add(new SystemInfoVO(
-//                R.drawable.window1, "창문", ViewType.ItemVerticalSwitch));
         list.add(new SystemInfoVO(
                 R.drawable.smart, "SMART MODE", "", ViewType.ItemVertical));
         list.add(new SystemInfoVO(
@@ -332,46 +323,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         Log.v(TAG,"onBackPressed() == IN");
         backPressCloseHandler.onBackPressed();
-//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-//            if (currentFragment.isVisible()) {
-//                Log.v(TAG,"onBackPressed() _1");
-//                if (currentFragment instanceof FragmentHome) {
-//                    Log.v(TAG,"onBackPressed() _FragmentHome");
-//                    finish();
-//                }else if(currentFragment instanceof FragmentAirConditioner){
-//                    Log.v(TAG,"onBackPressed() _FragmentAirConditioner");
-//                    fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(
-//                            R.id.frame, fragmentWindow).commitAllowingStateLoss();
-////                        fragmentWindow.setArguments(bundleFagmentA);
-//                    bundle.putSerializable("weather", weatherVO);
-//                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
-//                    bundle.putSerializable("sensorData", sensorDataVO);
-//                    fragmentWindow.setArguments(bundle);
-//                }else if(currentFragment instanceof FragmentWindow){
-//                    Log.v(TAG,"onBackPressed() _FragmentWindow");
-//                    fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(
-//                            R.id.frame, fragmentWindow).commitAllowingStateLoss();
-////                        fragmentWindow.setArguments(bundleFagmentA);
-//                    bundle.putSerializable("weather", weatherVO);
-//                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
-//                    bundle.putSerializable("sensorData", sensorDataVO);
-//                    fragmentWindow.setArguments(bundle);
-//                } else {
-//                    Log.v(TAG,"onBackPressed() _else");
-//                    super.onBackPressed();
-//                }
-//            }
-////        if (fragmentTag != 0) {
-////            fragmentTransaction = fragmentManager.beginTransaction();
-////            fragmentTransaction.replace(
-////                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-////            bundle.putSerializable("list", list);
-////            fragmentHome.setArguments(bundle);
-////            fragmentTag = 0;
-//            }
-        }
+    }
 
     /**
      * Server Socket Client Remove
