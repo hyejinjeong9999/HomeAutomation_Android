@@ -16,9 +16,12 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
+import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.BufferedReader;
@@ -57,7 +60,7 @@ public class FragmentSetting extends Fragment {
         settingEmail = (TextView) view.findViewById(R.id.settingEmail);
 
         // google profiles
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
 
         settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
         Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -67,13 +70,23 @@ public class FragmentSetting extends Fragment {
         settingLogut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 FirebaseAuth.getInstance().signOut();
-                Intent intToMain = new Intent(context, LoginActivity.class);
-                startActivity(intToMain);
+
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                googleSignInClient.signOut();
+
+                ((MainActivity)getActivity()).finish();
+
+                Intent i = new Intent(context, LoginActivity.class);
+                startActivity(i);
+
             }
         });
 
         return view;
     }
+
 }
 

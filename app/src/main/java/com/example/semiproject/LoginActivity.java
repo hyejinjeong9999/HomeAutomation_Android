@@ -225,6 +225,7 @@ public class LoginActivity extends AppCompatActivity {
                             }else {
                                 Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intHome);
+                                finish();
                                 save();
                             }
                         }
@@ -239,6 +240,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intSignUp = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intSignUp);
+                finish();
             }
         });
 
@@ -407,6 +409,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
                             Log.i("ltest", "intent google login 가니?");
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -418,7 +421,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }   // google Login End
 
-// remember ID; save(), load();
+
+    // remember ID; save(), load();
     // 설정 값 저장하기
     private void save(){
         // 객체만 저장 불가능, Editor, edit() 사용;
@@ -438,4 +442,5 @@ public class LoginActivity extends AppCompatActivity {
         email = appData.getString("ID", "");
         Log.i("ltest", "load().email: " + email);
     }
+
 }
