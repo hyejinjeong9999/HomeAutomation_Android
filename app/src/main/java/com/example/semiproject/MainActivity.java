@@ -342,6 +342,8 @@ public class MainActivity extends AppCompatActivity {
             bufferedReader.close();
         } catch (IOException e) {
             Log.v(TAG, "onDestroy()_bufferedReader.close()_IOException==" + e.toString());
+        } catch (Exception e1){
+            Log.v(TAG, "보나마나 null");
         }
         super.onDestroy();
     }
