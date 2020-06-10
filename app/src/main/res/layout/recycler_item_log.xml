@@ -18,6 +18,13 @@
         android:layout_weight="10"
         android:text="log_message" />
 
+    <ImageView
+        android:id="@+id/iv_clock_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_weight="1"
+        android:src="@drawable/ic_clock"/>
+
     <TextView
         android:id="@+id/iv_log_timestamp"
         android:layout_width="wrap_content"

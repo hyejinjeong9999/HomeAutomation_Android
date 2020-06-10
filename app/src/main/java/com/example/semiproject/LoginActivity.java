@@ -229,14 +229,11 @@ public class LoginActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
                             }else {
-                                Log.i("ltest", "isSuccessful 01");
                                 Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
-                                Log.i("ltest", "isSuccessful 02");
                                 startActivity(intHome);
                                 finish();
                                 Log.i("ltest", "isSuccessful 03");
                                 save();
-                                Log.i("ltest", "save()");
                             }
                         }
                     });
@@ -368,7 +365,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("ltest", "Authentication Success");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            save(); // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -438,9 +434,7 @@ public class LoginActivity extends AppCompatActivity {
         // 객체만 저장 불가능, Editor, edit() 사용;
         SharedPreferences.Editor editor = appData.edit();
 
-        Log.i("ltest", "save().email: " + editor.putString("ID", emailId.getText().toString().trim()));
         editor.putString("ID", emailId.getText().toString().trim());
-        Log.i("ltest", "save().checked: " + editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked()));
         editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked());
 
         // apply.commit 을 해야 변경된 내용 저장
