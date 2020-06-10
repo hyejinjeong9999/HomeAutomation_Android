@@ -84,7 +84,6 @@ public class FragmentSetting extends Fragment {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
 
         settingProfile = view.findViewById(R.id.settingProfile);
-
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
@@ -93,9 +92,13 @@ public class FragmentSetting extends Fragment {
 
         String str = "test";
 
-        settingProfile.setImageResource(R.drawable.ic_kakaotalk);
+
+        //profiles
+        Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
         settingProfile.setBackground(new ShapeDrawable(new OvalShape()));
         settingProfile.setClipToOutline(true);
+        settingName.setText(acct.getDisplayName());
+        settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -119,18 +122,9 @@ public class FragmentSetting extends Fragment {
         }else{
             settingVoiceRecognitionBtn.setChecked(false);
         }
-        settingProfile = (ImageView) view.findViewById(R.id.settingProfile);
-        settingLogut = (Button) view.findViewById(R.id.settingLogout);
-        settingEmail = (TextView) view.findViewById(R.id.settingEmail);
 
-        // google profiles
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
-
-        settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
-        Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
 
         // btn_logout
-        settingLogut = view.findViewById(R.id.settingLogout);
         settingLogut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
