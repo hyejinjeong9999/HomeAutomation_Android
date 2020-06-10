@@ -43,6 +43,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
+    String TAG = "LoginActivity";
+
     public EditText emailId, password;
     String email, pwd, google_profile, google_email = "";
     CheckBox chbx_remember;
@@ -74,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         //facebook activate logging
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
@@ -165,16 +168,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
+                Log.v(TAG,"onSuccess===");
             }
 
             @Override
             public void onCancel() {
                 // App code
+                Log.v(TAG,"onCancel===");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
+                Log.v(TAG,"onError==-");
             }
         });
 
@@ -227,6 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
                                 Log.i("ltest", "isSuccessful 02");
                                 startActivity(intHome);
+                                finish();
                                 Log.i("ltest", "isSuccessful 03");
                                 save();
                                 Log.i("ltest", "save()");
@@ -243,6 +250,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intSignUp = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intSignUp);
+                finish();
             }
         });
 
@@ -255,7 +263,6 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         mAuth.addAuthStateListener(mAuthStateListener);
-
 
         // Google Login start
         iv_ic_google.setOnClickListener(new View.OnClickListener() {
@@ -298,6 +305,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         Log.i("LoginTest", "signIn;Intent signInIntent");
         startActivityForResult(signInIntent, req_code);
+        finish();
         Log.i("LoginTest", "signIn;req_code");
     }
 
@@ -411,6 +419,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("ltest", "login_success_firebaseAuthWithGoogle");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
+                            finish();
                             save();     // remember
                         } else {
                             // If sign in fails, display a message to the user.

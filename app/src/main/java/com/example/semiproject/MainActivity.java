@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import eventPackage.BackPressCloseHandler;
 import viewPage.FragmentAirConditioner;
 import communication.SharedObject;
 import communication.WeatherService;
@@ -113,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     double lastClapTime = 0;
     AudioDispatcher dispatcher;
     PercussionOnsetDetector mPercussionDetector;
+    BackPressCloseHandler backPressCloseHandler;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
         //패턴인식 레코그니션 실행
         pattenRecognition(intent);
 
+        //onBackPressed Event 객체 생성
+        backPressCloseHandler = new BackPressCloseHandler(this);
 
         //        frame=findViewById(R.id.frame);
 //        frame.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
@@ -325,24 +330,55 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (fragmentTag != 0) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(
-                    R.id.frame, fragmentHome).commitAllowingStateLoss();
-            bundle.putSerializable("list", list);
-            fragmentHome.setArguments(bundle);
-            fragmentTag = 0;
-        } else {
-            super.onBackPressed();
+        Log.v(TAG,"onBackPressed() == IN");
+        backPressCloseHandler.onBackPressed();
+//        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+//            if (currentFragment.isVisible()) {
+//                Log.v(TAG,"onBackPressed() _1");
+//                if (currentFragment instanceof FragmentHome) {
+//                    Log.v(TAG,"onBackPressed() _FragmentHome");
+//                    finish();
+//                }else if(currentFragment instanceof FragmentAirConditioner){
+//                    Log.v(TAG,"onBackPressed() _FragmentAirConditioner");
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(
+//                            R.id.frame, fragmentWindow).commitAllowingStateLoss();
+////                        fragmentWindow.setArguments(bundleFagmentA);
+//                    bundle.putSerializable("weather", weatherVO);
+//                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
+//                    bundle.putSerializable("sensorData", sensorDataVO);
+//                    fragmentWindow.setArguments(bundle);
+//                }else if(currentFragment instanceof FragmentWindow){
+//                    Log.v(TAG,"onBackPressed() _FragmentWindow");
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(
+//                            R.id.frame, fragmentWindow).commitAllowingStateLoss();
+////                        fragmentWindow.setArguments(bundleFagmentA);
+//                    bundle.putSerializable("weather", weatherVO);
+//                    bundle.putSerializable("listFragmentWindow", listFragmentWindow);
+//                    bundle.putSerializable("sensorData", sensorDataVO);
+//                    fragmentWindow.setArguments(bundle);
+//                } else {
+//                    Log.v(TAG,"onBackPressed() _else");
+//                    super.onBackPressed();
+//                }
+//            }
+////        if (fragmentTag != 0) {
+////            fragmentTransaction = fragmentManager.beginTransaction();
+////            fragmentTransaction.replace(
+////                    R.id.frame, fragmentHome).commitAllowingStateLoss();
+////            bundle.putSerializable("list", list);
+////            fragmentHome.setArguments(bundle);
+////            fragmentTag = 0;
+//            }
         }
-    }
 
     /**
      * Server Socket Client Remove
      */
     @Override
     protected void onDestroy() {
-        sharedObject.put(name + " OUT");
+        sharedObject.put(name+user.getEmail()+" OUT");
         Log.v(TAG, "onDestroy()");
         try {
             printWriter.close();
@@ -368,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "Socket Situation==" + socket.isConnected());
                 name = name.trim();
                 user = FirebaseAuth.getInstance().getCurrentUser();
-                sharedObject.put(name + " IN/ANDROID"+user.getEmail());
+                sharedObject.put(name+user.getEmail()+" IN");
                 Log.v(TAG,"user name =="+user.getEmail());
 
 //                sharedObject.put(user.getEmail());
