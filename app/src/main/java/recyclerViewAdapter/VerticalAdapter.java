@@ -1,7 +1,6 @@
 package recyclerViewAdapter;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,9 +22,8 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import communication.SharedObject;
-import model.SystemInfoVO;
-
 import model.SensorDataVO;
+import model.SystemInfoVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

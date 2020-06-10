@@ -1,4 +1,4 @@
-package RecyclerViewAdapter;
+package recyclerViewAdapter;
 
 import android.content.Context;
 import android.view.View;
@@ -23,6 +23,7 @@ public class SettingLogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class LogList extends RecyclerView.ViewHolder{
         ImageView iv_log_icon;
         TextView iv_log_message;
+
         TextView iv_log_timestamp;
 
         public LogList(@NonNull View itemView) {
@@ -40,7 +41,7 @@ public class SettingLogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
 
     }
 
