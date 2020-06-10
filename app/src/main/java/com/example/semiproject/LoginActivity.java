@@ -411,7 +411,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("ltest", "login_success_firebaseAuthWithGoogle");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
-                            save();     // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();

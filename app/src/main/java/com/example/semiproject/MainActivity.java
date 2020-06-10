@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
     double lastClapTime = 0;
     AudioDispatcher dispatcher;
     PercussionOnsetDetector mPercussionDetector;
+    boolean voiceRecognitionSetting = false;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -528,8 +530,8 @@ public class MainActivity extends AppCompatActivity {
     public void pattenRecognition(final Intent pattenIntent) {
         dispatcher =
                 AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
-        double threshold = 5;
-        double sensitivity = 35;
+        double threshold = 6;
+        double sensitivity = 25;
         final Handler handler = new Handler();
         final Runnable runn = new Runnable() {
             @Override
