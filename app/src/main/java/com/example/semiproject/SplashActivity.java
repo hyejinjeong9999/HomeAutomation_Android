@@ -64,7 +64,6 @@ public class SplashActivity extends AppCompatActivity {
             }else {
                 //권한 있을 경우
                 Log.v(TAG,"Check=="+permissionResult+" /보안설정 통과");
-                //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 //                startActivity(new Intent(getApplicationContext(), MainActivity.class));

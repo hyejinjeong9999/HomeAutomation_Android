@@ -43,8 +43,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
-    String TAG = "LoginActivity";
-
     public EditText emailId, password;
     String email, pwd, google_profile, google_email = "";
     CheckBox chbx_remember;
@@ -76,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         //facebook activate logging
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
@@ -163,24 +160,21 @@ public class LoginActivity extends AppCompatActivity {
         // facebook login
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setPermissions("email");
-            // Callback registration
+        // Callback registration
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-                Log.v(TAG,"onSuccess===");
             }
 
             @Override
             public void onCancel() {
                 // App code
-                Log.v(TAG,"onCancel===");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
-                Log.v(TAG,"onError==-");
             }
         });
 
@@ -229,14 +223,10 @@ public class LoginActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
                             }else {
-                                Log.i("ltest", "isSuccessful 01");
                                 Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
-                                Log.i("ltest", "isSuccessful 02");
                                 startActivity(intHome);
                                 finish();
-                                Log.i("ltest", "isSuccessful 03");
                                 save();
-                                Log.i("ltest", "save()");
                             }
                         }
                     });
@@ -263,6 +253,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         mAuth.addAuthStateListener(mAuthStateListener);
+
 
         // Google Login start
         iv_ic_google.setOnClickListener(new View.OnClickListener() {
@@ -305,7 +296,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         Log.i("LoginTest", "signIn;Intent signInIntent");
         startActivityForResult(signInIntent, req_code);
-        finish();
         Log.i("LoginTest", "signIn;req_code");
     }
 
@@ -368,7 +358,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("ltest", "Authentication Success");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            save(); // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -419,8 +408,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("ltest", "login_success_firebaseAuthWithGoogle");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
+                            Log.i("ltest", "intent google login 가니?");
                             finish();
-                            save();     // remember
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -432,15 +421,18 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }   // google Login End
 
-// remember ID; save(), load();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    // remember ID; save(), load();
     // 설정 값 저장하기
     private void save(){
         // 객체만 저장 불가능, Editor, edit() 사용;
         SharedPreferences.Editor editor = appData.edit();
 
-        Log.i("ltest", "save().email: " + editor.putString("ID", emailId.getText().toString().trim()));
         editor.putString("ID", emailId.getText().toString().trim());
-        Log.i("ltest", "save().checked: " + editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked()));
         editor.putBoolean("SAVE_LOGIN_DATA", chbx_remember.isChecked());
 
         // apply.commit 을 해야 변경된 내용 저장
@@ -454,4 +446,5 @@ public class LoginActivity extends AppCompatActivity {
         email = appData.getString("ID", "");
         Log.i("ltest", "load().email: " + email);
     }
+
 }

@@ -1,7 +1,6 @@
 package recyclerViewAdapter;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -10,8 +9,10 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -24,15 +25,15 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import communication.SharedObject;
-import model.SystemInfoVO;
-
 import model.SensorDataVO;
+import model.SystemInfoVO;
 import model.WeatherVO;
 
 public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     String TAG = "VerticalAdapter";
     Context context;
     View view;
+    LayoutInflater inflater;
     BufferedReader bufferedReader;
     SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
@@ -41,8 +42,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+
     // Item Position clicked before
     int prePosition = -1;
+    ViewGroup myParent;
 
     int oldPosition;
     int selectedPosition;
@@ -66,8 +69,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        myParent = parent;
         context = parent.getContext();
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Log.v(TAG,"onCreateViewHolder()_viewType=="+viewType);
         if(viewType == ViewType.ItemVertical){
             view = inflater.inflate(R.layout.recycler_item_systeminfo,parent,false);
@@ -174,8 +178,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Log.v(TAG,"TEST=="+sensorDataVO.getTemp());
             ((SystemInfoWeather)holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
-//            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
-            ((SystemInfoWeather)holder).tvModeSituation.setText("SLEEP");
+            ((SystemInfoWeather)holder).tvModeSituation.setText(sensorDataVO.getMode());
             double dustDensity = Double.parseDouble(sensorDataVO.getDust10());
             if (dustDensity<=15){
                 ((SystemInfoWeather)holder).ivDust.setImageResource(R.drawable.ic_dusty_verygood);
@@ -227,6 +230,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         notifyItemChanged(oldPosition);
                         notifyItemChanged(selectedPosition);
                         break;
+                    default:
                 }
             }
         });
@@ -256,12 +260,14 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ImageView ivTitle;
         public TextView tvSystemName;
         public TextView tvSituation;
+        public LinearLayout layoutSystemInfo;
 
         public SystemInfo(@NonNull View itemView) {
             super(itemView);
             ivTitle = itemView.findViewById(R.id.ivTitle);
             tvSystemName=itemView.findViewById(R.id.tvSystemName);
             tvSituation=itemView.findViewById(R.id.tvSituation);
+            layoutSystemInfo=itemView.findViewById(R.id.layoutSystemInfo);
             Log.v(TAG,"SystemInfo.class");
         }
     }
@@ -349,5 +355,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
+    }
+    public void setCliked(RecyclerView.ViewHolder holder, LayoutInflater inflater) {
+    }
+
+    public void unCliked(RecyclerView.ViewHolder holder) {
+        ((SystemInfo)holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border);
     }
 }

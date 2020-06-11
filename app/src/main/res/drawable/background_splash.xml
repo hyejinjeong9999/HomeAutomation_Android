@@ -2,9 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/fragment_background"/>
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/homeautomation"/>
+    <item
+        android:drawable="@drawable/ic_home_automation"
+        android:gravity="center" >
     </item>
 </layer-list>
