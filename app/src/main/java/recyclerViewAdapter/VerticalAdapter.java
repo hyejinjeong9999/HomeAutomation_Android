@@ -3,6 +3,7 @@ package recyclerViewAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -42,6 +43,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
     // Item Position clicked before
     int prePosition = -1;
+
+    int oldPosition;
+    int selectedPosition;
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
@@ -83,7 +87,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         Log.v(TAG,"onBindViewHolder()"+holder.itemView);
         if (holder instanceof SystemInfo){
             Log.v(TAG,""+itemList.get(position).getTitle());
@@ -184,6 +188,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             ((SystemInfoWeather)holder).tvSituation.setText(sensorDataVO.getDust10() + " μg/m³");
         }
+
+        ///RecyclerView Item Background Change///
+        if (selectedPosition == position && selectedPosition != 0)
+            holder.itemView.setBackgroundResource(R.drawable.round_border_select);
+        else
+            holder.itemView.setBackgroundResource(R.drawable.round_border);
+
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
          */
@@ -192,14 +203,29 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onClick(View v) {
                 Log.v(TAG,"onBindViewHolder()_onClick()_position=="+position);
                 switch (position){
+                    case  0:
+                        break;
                     case 1:
                         sharedObject.put("/ANDROID>/MODE SMART");
+                        oldPosition = selectedPosition;
+                        selectedPosition = position;
+
+                        notifyItemChanged(oldPosition);
+                        notifyItemChanged(selectedPosition);
                         break;
                     case 2:
-                        sharedObject.put("/ANDROID>/MODE SLEEP");
+                        oldPosition = selectedPosition;
+                        selectedPosition = position;
+
+                        notifyItemChanged(oldPosition);
+                        notifyItemChanged(selectedPosition);
                         break;
                     case 3:
-                        sharedObject.put("/ANDROID>/MODE OUTING");
+                        oldPosition = selectedPosition;
+                        selectedPosition = position;
+
+                        notifyItemChanged(oldPosition);
+                        notifyItemChanged(selectedPosition);
                         break;
                 }
             }
