@@ -28,9 +28,12 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
+import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -80,9 +83,7 @@ public class FragmentSetting extends Fragment {
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
 
-
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
-
         settingProfile = view.findViewById(R.id.settingProfile);
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
@@ -94,11 +95,11 @@ public class FragmentSetting extends Fragment {
 
 
         //profiles
-        Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
+        //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
         settingProfile.setBackground(new ShapeDrawable(new OvalShape()));
         settingProfile.setClipToOutline(true);
-        settingName.setText(acct.getDisplayName());
-        settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+        //settingName.setText(acct.getDisplayName());
+        //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -128,9 +129,15 @@ public class FragmentSetting extends Fragment {
         settingLogut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sharedObject.put("/ID:ANDROID"+user.getEmail()+" OUT");
                 FirebaseAuth.getInstance().signOut();
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                googleSignInClient.signOut();
                 Intent intToMain = new Intent(context, LoginActivity.class);
+                ((MainActivity)getActivity()).finish();
                 startActivity(intToMain);
+
             }
         });
 

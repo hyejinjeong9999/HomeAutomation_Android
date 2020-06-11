@@ -8,8 +8,10 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -30,6 +32,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     String TAG = "VerticalAdapter";
     Context context;
     View view;
+    LayoutInflater inflater;
     BufferedReader bufferedReader;
     SharedObject sharedObject;
     ArrayList<SystemInfoVO> itemList;
@@ -38,8 +41,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     DisplayMetrics displayMetrics = new DisplayMetrics();
     //Item 의 클릭 상태를 저장 하는 ArrayObject
     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+
+    int oldPosition;
+    int lastPosition;
     // Item Position clicked before
     int prePosition = -1;
+    ViewGroup myParent;
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList,WeatherVO weathers,
@@ -60,8 +67,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        myParent = parent;
         context = parent.getContext();
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Log.v(TAG,"onCreateViewHolder()_viewType=="+viewType);
         if(viewType == ViewType.ItemVertical){
             view = inflater.inflate(R.layout.recycler_item_systeminfo,parent,false);
@@ -81,7 +89,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         Log.v(TAG,"onBindViewHolder()"+holder.itemView);
         if (holder instanceof SystemInfo){
             Log.v(TAG,""+itemList.get(position).getTitle());
@@ -150,7 +158,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((SystemInfoWeather)holder).ivWeather.setImageResource(R.drawable.sunny);
             }
             Log.v(TAG,"================================"+weathers.getPm10Value());
-            Log.v(TAG, "@@@@@@@@@@@@" + weathers.getPm10Value());
             double dustDensityOut = Double.parseDouble(weathers.getPm10Value());
             if (dustDensityOut<=15){
                 ((SystemInfoWeather)holder).ivDustOut.setImageResource(R.drawable.ic_dusty_verygood);
@@ -184,6 +191,16 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         /**
          * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
          */
+        if (lastPosition == position) {
+
+            holder.mTxvTest.setBackgroundColor(Color.RED);
+        }else {
+
+            holder.mTxvTest.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +208,9 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 switch (position){
                     case 1:
                         sharedObject.put("/ANDROID>/MODE SMART");
+                        oldPosition = lastPosition;
+                        lastPosition = position;
+                        notifyItemChanged();
                         break;
                     case 2:
                         sharedObject.put("/ANDROID>/MODE SLEEP");
@@ -198,6 +218,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     case 3:
                         sharedObject.put("/ANDROID>/MODE OUTING");
                         break;
+                    default:
                 }
             }
         });
@@ -227,12 +248,14 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ImageView ivTitle;
         public TextView tvSystemName;
         public TextView tvSituation;
+        public LinearLayout layoutSystemInfo;
 
         public SystemInfo(@NonNull View itemView) {
             super(itemView);
             ivTitle = itemView.findViewById(R.id.ivTitle);
             tvSystemName=itemView.findViewById(R.id.tvSystemName);
             tvSituation=itemView.findViewById(R.id.tvSituation);
+            layoutSystemInfo=itemView.findViewById(R.id.layoutSystemInfo);
             Log.v(TAG,"SystemInfo.class");
         }
     }
@@ -320,5 +343,11 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
+    }
+    public void setCliked(RecyclerView.ViewHolder holder, LayoutInflater inflater) {
+    }
+
+    public void unCliked(RecyclerView.ViewHolder holder) {
+        ((SystemInfo)holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border);
     }
 }

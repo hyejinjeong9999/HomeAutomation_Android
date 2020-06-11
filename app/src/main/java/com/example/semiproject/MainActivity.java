@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     BackPressCloseHandler backPressCloseHandler;
 
+    boolean voiceRecognition;
     private SharedPreferences appData;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -123,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         appData = getSharedPreferences("appData", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = appData.edit();
+        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
 
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
@@ -523,42 +526,45 @@ public class MainActivity extends AppCompatActivity {
      * * Speech recognition
      */
     public void pattenRecognition(final Intent pattenIntent) {
-        dispatcher =
-                AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
-        double threshold = 6;
-        double sensitivity = 25;
-        final Handler handler = new Handler();
-        final Runnable runn = new Runnable() {
-            @Override
-            public void run() {
-                if (!dispatcher.isStopped()) {
-                    dispatcher.stop();
-                    pattenThread.interrupt();
-                }
-                speechRecognizer.startListening(pattenIntent);
-            }
-        };
 
-        mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
-                new OnsetHandler() {
-                    @Override
-                    public void handleOnset(double time, double salience) {
-                        Log.v(TAG, "time : " + time + ", salience : " + salience);
-                        Log.v(TAG, "Clap detected!");
-                        cntPatten++;
-                        if (time - lastClapTime < 1 && time - lastClapTime > 0&& cntPatten >= 1) {
-                            cntPatten = 0;
-                            lastClapTime = 0;
-                            handler.post(runn);
-                        }
-                        lastClapTime = time;
+            dispatcher =
+                    AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
+            double threshold = 6;
+            double sensitivity = 25;
+            final Handler handler = new Handler();
+            final Runnable runn = new Runnable() {
+                @Override
+                public void run() {
+                    if (!dispatcher.isStopped()) {
+                        dispatcher.stop();
+                        pattenThread.interrupt();
                     }
+                    speechRecognizer.startListening(pattenIntent);
+                }
+            };
 
-                }, sensitivity, threshold);
+            mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
+                    new OnsetHandler() {
+                        @Override
+                        public void handleOnset(double time, double salience) {
+                            if (voiceRecognition) {
+                                Log.v(TAG, "time : " + time + ", salience : " + salience);
+                                Log.v(TAG, "Clap detected!");
+                                cntPatten++;
+                                if (time - lastClapTime < 1 && time - lastClapTime > 0 && cntPatten >= 1) {
+                                    cntPatten = 0;
+                                    lastClapTime = 0;
+                                    handler.post(runn);
+                                }
+                                lastClapTime = time;
+                            }
+                        }
 
-        dispatcher.addAudioProcessor(mPercussionDetector);
-        pattenThread = new Thread(dispatcher, "Audio Dispatcher");
-        pattenThread.start();
+                    }, sensitivity, threshold);
+
+            dispatcher.addAudioProcessor(mPercussionDetector);
+            pattenThread = new Thread(dispatcher, "Audio Dispatcher");
+            pattenThread.start();
     }
 
     private RecognitionListener recognitionListener = new RecognitionListener() {
