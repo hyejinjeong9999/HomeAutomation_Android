@@ -90,9 +90,7 @@ public class FragmentSetting extends Fragment {
         settingLogut = view.findViewById(R.id.settingLogout);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
 
-
         String str = "test";
-
 
         //profiles
         //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -124,7 +122,6 @@ public class FragmentSetting extends Fragment {
             settingVoiceRecognitionBtn.setChecked(false);
         }
 
-
         // btn_logout
         settingLogut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,12 +134,18 @@ public class FragmentSetting extends Fragment {
                 Intent intToMain = new Intent(context, LoginActivity.class);
                 ((MainActivity)getActivity()).finish();
                 startActivity(intToMain);
-
             }
         });
 
         return view;
     }
-
+//    View.OnClickListener mClick = new View.OnClickListener(){
+//        @Override
+//        public void onClick(View v) {
+//            switch (v.getId()){
+//                case R.id.
+//            }
+//        }
+//    };
 }
 

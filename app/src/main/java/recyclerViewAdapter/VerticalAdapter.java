@@ -95,16 +95,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Log.v(TAG,"onBindViewHolder()"+holder.itemView);
         if (holder instanceof SystemInfo){
             Log.v(TAG,""+itemList.get(position).getTitle());
-            if (itemList.get(position).getTitle().equals("냉장고")){
-                ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
-                ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
-                ((SystemInfo)holder).tvSituation.setText("장고장고");
-
-            }else {
-                ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
-                ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
-                ((SystemInfo)holder).tvSituation.setText(itemList.get(position).getSituation());
-            }
+            ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
+            ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
 //            int deviceHeight = (int) (deviceWidth * 1.5);
@@ -212,25 +204,30 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         sharedObject.put("/ANDROID>/MODE SMART");
                         oldPosition = selectedPosition;
                         selectedPosition = position;
-
                         notifyItemChanged(oldPosition);
                         notifyItemChanged(selectedPosition);
                         break;
                     case 2:
+                        sharedObject.put("/ANDROID>/MODE SLEEP");
                         oldPosition = selectedPosition;
                         selectedPosition = position;
-
                         notifyItemChanged(oldPosition);
                         notifyItemChanged(selectedPosition);
                         break;
                     case 3:
+                        sharedObject.put("/ANDROID>/MODE VENTILATION");
                         oldPosition = selectedPosition;
                         selectedPosition = position;
-
                         notifyItemChanged(oldPosition);
                         notifyItemChanged(selectedPosition);
                         break;
-                    default:
+                    case 4:
+                        sharedObject.put("/ANDROID>/MODE OUTING");
+                        oldPosition = selectedPosition;
+                        selectedPosition = position;
+                        notifyItemChanged(oldPosition);
+                        notifyItemChanged(selectedPosition);
+                        break;
                 }
             }
         });

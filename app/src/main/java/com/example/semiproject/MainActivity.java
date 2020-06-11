@@ -275,11 +275,13 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SystemInfoVO(
                 R.drawable.angry, "대기상태", "좋음", ViewType.ItemVerticalWeather));
         list.add(new SystemInfoVO(
-                R.drawable.smart, "SMART MODE", "", ViewType.ItemVertical));
+                R.drawable.smart, "SMART MODE",  ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.sleep, "SLEEP MODE", "", ViewType.ItemVertical));
+                R.drawable.sleep, "SLEEP MODE",  ViewType.ItemVertical));
         list.add(new SystemInfoVO(
-                R.drawable.outing, "OUTING MODE", "", ViewType.ItemVertical));
+                R.drawable.ic_windy, "VENTILATION MODE",  ViewType.ItemVertical));
+        list.add(new SystemInfoVO(
+                R.drawable.outing, "OUTING MODE",  ViewType.ItemVertical));
 
         listFragmentWindow = new ArrayList<>();
         listFragmentWindow.add(new SystemInfoVO("대기질상태", ViewType.ItemVerticalAir));
@@ -622,9 +624,9 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "음성인식size==" + mResult.size());
             if (rs[0].contains("창문")) {
                 if (rs[0].contains("열어")) {
-                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                    sharedObject.put("/ANDROID>/WINDOW ON");
                 } else if (rs[0].contains("닫아")) {
-                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                    sharedObject.put("/ANDROID>/WINDOW OFF");
                 }
 
                 for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
