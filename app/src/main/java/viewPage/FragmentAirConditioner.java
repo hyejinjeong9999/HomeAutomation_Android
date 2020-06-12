@@ -161,7 +161,7 @@ public class FragmentAirConditioner extends Fragment {
                     break;
                 case R.id.btnSpeed1:
                     if (airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER  SPEED1");
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER  speed1");
                         setCliked(btnSpeed1, context);
                         unCliked(btnSpeed2, context);
                         unCliked(btnSpeed3, context);
@@ -169,7 +169,7 @@ public class FragmentAirConditioner extends Fragment {
                     break;
                 case R.id.btnSpeed2:
                     if (airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER  SPEED2");
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER  speed2");
                         unCliked(btnSpeed1, context);
                         setCliked(btnSpeed2, context);
                         unCliked(btnSpeed3, context);
@@ -177,7 +177,7 @@ public class FragmentAirConditioner extends Fragment {
                     break;
                 case R.id.btnSpeed3:
                     if (airConditionerOnOff) {
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER  SPEED3");
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER  speed3");
                         unCliked(btnSpeed1, context);
                         unCliked(btnSpeed2, context);
                         setCliked(btnSpeed3, context);

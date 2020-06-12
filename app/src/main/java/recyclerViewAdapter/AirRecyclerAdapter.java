@@ -117,21 +117,19 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             if (isChecked) {
                                 //공기청정기 Check
                                 Log.v(TAG, "공기청정기 가동");
-                                String totalSpeak = "공기청정기를 가동합니다";
-                                speech(totalSpeak);
                                 airPurifierSituation = true;
                                 airManualMode = true;
                                 airControlTouch = false;
                                 sharedObject.put("/ANDROID>/AIRPURIFIER ON");
+                                sharedObject.put("/ANDROID>/MODE OFF");
                             } else {
                                 //공기청정기 unCheck
                                 Log.v(TAG, "공기청정기 OFF");
-                                String totalSpeak = "공기청정기 작동을 중지합니다";
-                                speech(totalSpeak);
                                 airPurifierSituation = false;
                                 airManualMode = true;
                                 airControlTouch = false;
                                 sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
+                                sharedObject.put("/ANDROID>/MODE OFF");
                             }
                         }
                     });
@@ -146,19 +144,17 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         public void onClick(View v) {
                             if (isChecked) {
                                 Log.v(TAG, "창문 ON");
-                                String totalSpeak = "창문을 열겠습니다";
-                                speech(totalSpeak);
                                 windowSituation = true;
                                 airManualMode = true;
                                 sharedObject.put("/ANDROID>/WINDOW ON");
+                                sharedObject.put("/ANDROID>/MODE OFF");
                             } else {
                                 //공기청정기 unCheck
                                 Log.v(TAG, "창문 OFF");
-                                String totalSpeak = "창문을 닫겠습니다";
-                                speech(totalSpeak);
                                 windowSituation = false;
                                 airManualMode = true;
                                 sharedObject.put("/ANDROID>/WINDOW OFF");
+                                sharedObject.put("/ANDROID>/MODE OFF");
                             }
                         }
                     });
