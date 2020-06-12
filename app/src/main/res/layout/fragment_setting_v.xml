@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="25dp"
-            android:text="vvvvvvvvoin@gmail.com"
+            android:text="null@null.null"
             android:textAlignment="center"
             android:textColor="@color/fontDark"
             android:textSize="15sp" />

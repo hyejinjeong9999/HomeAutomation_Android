@@ -2,7 +2,9 @@ package viewPage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 
@@ -44,6 +47,12 @@ public class FragmentSetting extends Fragment {
     TextView settingEmail;
     Button settingLogut;
 
+    // firebaseAuth
+    String userEmail, userName;
+    Uri userPhotoURI;
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser user;
+
     public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
@@ -61,27 +70,78 @@ public class FragmentSetting extends Fragment {
 
         // google profiles
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        // custom firebaseAuth profiles
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
-        Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
+        if (acct != null) {     //  google acct profiles
+            Log.i("ltest", "acct != null");
+            settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+            Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
+        }else if(user != null){ //  custom firebaseAuth profiles
+            Log.i("ltest", "user != null");
+            // Name, email address, and profile photo Url
+            userName = user.getDisplayName();
+            userEmail = user.getEmail();
+            userPhotoURI = user.getPhotoUrl();
+            boolean emailVerified = user.isEmailVerified();
+            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
+
+            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
+                    "\n" + " 반갑습니당, '" + userName + "'님");
+            Glide.with(context).load(userPhotoURI).into(settingProfile);
+        }
+
+
+//        if (acct != null) {
+//            settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+//            Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
+//        }else{
+//            settingEmail.setText("Null");
+//        }
+//
+//        // firebaseAuth profiles
+//        if (user != null) {
+//            // Name, email address, and profile photo Url
+//            userName = user.getDisplayName();
+//            userEmail = user.getEmail();
+//            userPhotoURI = user.getPhotoUrl();
+//
+//            // Check if user's email is verified
+//            boolean emailVerified = user.isEmailVerified();
+//
+//            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
+//                    "\n" + " 반갑습니당, '" + userName + "'님");
+//            Glide.with(context).load(userPhotoURI).into(settingProfile);
+//        } else {
+//            settingEmail.setText("NotloggedIn");
+//            Toast.makeText(context, "user: null이 떠버렸는데요?", Toast.LENGTH_SHORT).show();
+//        }
+
+//        userEmail = mFirebaseAuth.getCurrentUser().getEmail();
+//        Log.i("ltest", "email: " + userEmail);
+//        userName = mFirebaseAuth.getCurrentUser().getDisplayName();
+//        Log.i("ltest", "name: " + userName);
+//        userPhotoURI = mFirebaseAuth.getCurrentUser().getPhotoUrl();
+//        Log.i("ltest", "photo: " + String.valueOf(userPhotoURI));
+//        settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다.");
+//        Glide.with(context).load(userPhotoURI).into(settingProfile);
 
         // btn_logout
         settingLogut = view.findViewById(R.id.settingLogout);
         settingLogut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // firebase user logout
+                Log.i("ltest", "logout~");
                 FirebaseAuth.getInstance().signOut();
 
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
-                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, gso);
                 googleSignInClient.signOut();
 
                 ((MainActivity)getActivity()).finish();
-
                 Intent i = new Intent(context, LoginActivity.class);
                 startActivity(i);
-
             }
         });
 
