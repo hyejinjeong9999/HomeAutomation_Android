@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUpTv;
     //  FirebaseAuth
     FirebaseAuth mAuth;
+    FirebaseUser user;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     // Access a Cloud Firestore instance from your Activity
     // FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -287,16 +288,16 @@ public class LoginActivity extends AppCompatActivity {
         if(mAuthStateListener != null){
             mAuth.removeAuthStateListener(mAuthStateListener);
             FirebaseAuth.getInstance().signOut();
-            Log.i("LoginTest", "onStop;signOut()");
+            Log.i("ltest", "onStop;signOut()");
         }
     }
 
     private void signIn() {
-        Log.i("LoginTest", "signIn");
+        Log.i("ltest", "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        Log.i("LoginTest", "signIn;Intent signInIntent");
+        Log.i("ltest", "signIn;Intent signInIntent");
         startActivityForResult(signInIntent, req_code);
-        Log.i("LoginTest", "signIn;req_code");
+        Log.i("ltest", "signIn;req_code");
     }
 
 
@@ -357,7 +358,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             Log.i("ltest", "Authentication Success");
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -400,7 +401,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            user = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
                             Log.i("ltest", "email > " + acct.getEmail());
