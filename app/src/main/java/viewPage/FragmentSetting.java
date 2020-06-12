@@ -1,13 +1,24 @@
 package viewPage;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.QuickContactBadge;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
 import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
@@ -24,12 +36,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 
 import communication.SharedObject;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class FragmentSetting extends Fragment {
@@ -46,6 +66,11 @@ public class FragmentSetting extends Fragment {
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
+    Button btnLog;
+    Switch settingVoiceRecognitionBtn;
+
+    boolean voiceRecognition;
+    private SharedPreferences appData;
 
     // firebaseAuth
     String userEmail, userName;
@@ -64,12 +89,27 @@ public class FragmentSetting extends Fragment {
         view = inflater.inflate(R.layout.fragment_setting_v, container, false);
         context = container.getContext();
 
-        settingProfile = (ImageView) view.findViewById(R.id.settingProfile);
-        settingLogut = (Button) view.findViewById(R.id.settingLogout);
-        settingEmail = (TextView) view.findViewById(R.id.settingEmail);
+        appData = context.getSharedPreferences("appData", context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = appData.edit();
 
-        // google profiles
-        final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        settingProfile = view.findViewById(R.id.settingProfile);
+        settingName = view.findViewById(R.id.settingName);
+        settingEmail = view.findViewById(R.id.settingEmail);
+        settingLogut = view.findViewById(R.id.settingLogout);
+        btnLog = view.findViewById(R.id.btnLog);
+        settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
+
+        //profiles
+
+        //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
+        settingProfile.setBackground(new ShapeDrawable(new OvalShape()));
+        settingProfile.setClipToOutline(true);
+        //settingName.setText(acct.getDisplayName());
+        //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+
         // custom firebaseAuth profiles
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -126,27 +166,70 @@ public class FragmentSetting extends Fragment {
 //        settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다.");
 //        Glide.with(context).load(userPhotoURI).into(settingProfile);
 
-        // btn_logout
-        settingLogut = view.findViewById(R.id.settingLogout);
-        settingLogut.setOnClickListener(new View.OnClickListener() {
+
+        settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // firebase user logout
-                Log.i("ltest", "logout~");
-                FirebaseAuth.getInstance().signOut();
-
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
-                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, gso);
-                googleSignInClient.signOut();
-
-                ((MainActivity)getActivity()).finish();
-                Intent i = new Intent(context, LoginActivity.class);
-                startActivity(i);
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                buttonView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isChecked) {
+                            editor.putBoolean("VOICE_RECOGNITION", true);
+                            editor.apply();
+                        } else {
+                            editor.putBoolean("VOICE_RECOGNITION", false);
+                            editor.apply();
+                        }
+                    }
+                });
             }
         });
+        if (voiceRecognition) {
+            settingVoiceRecognitionBtn.setChecked(true);
+        } else {
+            settingVoiceRecognitionBtn.setChecked(false);
+        }
+        // btn
+        btnLog.setOnClickListener(mClick);
+        settingLogut.setOnClickListener(mClick);
 
         return view;
     }
 
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
+    }
+
+    View.OnClickListener mClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.settingLogout: {
+                    sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+
+                    // firebase user logout
+                    Log.i("ltest", "logout~");
+                    FirebaseAuth.getInstance().signOut();
+
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                    googleSignInClient.signOut();
+                    Intent intToMain = new Intent(context, LoginActivity.class);
+                    /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
+                    ((MainActivity) getActivity()).finish();
+                    startActivity(intToMain);
+
+                }
+                break;
+                case R.id.btnLog:{
+
+                }
+                break;
+            }
+        }
+    };
 }
 

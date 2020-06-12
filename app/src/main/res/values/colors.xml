@@ -11,6 +11,8 @@
     <color name="tabBackGroundCol">#70918F83</color>
     <color name="recyclerItemCol">#191813</color>
     <color name="recyclerViewItemBack">#000D1115</color>
+    <color name="recyclerViewItemBackSelect">#4D0D1115</color>
+    <color name="recyclerViewItemBackCliked">#80D3D7DC</color>
     <color name="recyclerViewItemLine">#D3D7DC</color>
     <color name="recyclerViewItemFont">#BDB7B7</color>
     <color name="recyclerViewItemFontValue">#FFFFFF</color>

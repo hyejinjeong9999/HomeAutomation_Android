@@ -162,7 +162,57 @@ ViewPagerActivity에서는 어댑터에 add하기 전에, 미리 프래그먼트
 
 ## [RecyclerView](https://github.com/hyunho058/AndroidTIL/blob/master/RecyclerVIew.md)
 
+### Item Select Event
+
+```java
+///RecyclerView Item Background Change///
+if (selectedPosition == position && selectedPosition != 0)
+    holder.itemView.setBackgroundResource(R.drawable.round_border_select);
+else
+    holder.itemView.setBackgroundResource(R.drawable.round_border);
+
+/**
+         * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
+         */
+holder.itemView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Log.v(TAG,"onBindViewHolder()_onClick()_position=="+position);
+        switch (position){
+            case  0:
+                break;
+            case 1:
+                sharedObject.put("/ANDROID>/MODE SMART");
+                oldPosition = selectedPosition;
+                selectedPosition = position;
+
+                notifyItemChanged(oldPosition);
+                notifyItemChanged(selectedPosition);
+                break;
+            case 2:
+                oldPosition = selectedPosition;
+                selectedPosition = position;
+
+                notifyItemChanged(oldPosition);
+                notifyItemChanged(selectedPosition);
+                break;
+            case 3:
+                oldPosition = selectedPosition;
+                selectedPosition = position;
+
+                notifyItemChanged(oldPosition);
+                notifyItemChanged(selectedPosition);
+                break;
+        }
+    }
+});
+```
+
 ### Reference
+
+[ItemClickChangeEvent](https://marlboroyw.tistory.com/522)
+
+
 
 ## QR code
 

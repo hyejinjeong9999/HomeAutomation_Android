@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
         // facebook login
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setPermissions("email");
-            // Callback registration
+        // Callback registration
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -421,6 +421,10 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }   // google Login End
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     // remember ID; save(), load();
     // 설정 값 저장하기
@@ -442,5 +446,4 @@ public class LoginActivity extends AppCompatActivity {
         email = appData.getString("ID", "");
         Log.i("ltest", "load().email: " + email);
     }
-
 }

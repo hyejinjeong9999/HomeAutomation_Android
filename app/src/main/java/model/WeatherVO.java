@@ -117,6 +117,7 @@ public class WeatherVO implements Serializable {
         if(pm10Value24 == null || pm10Value24.equals("-"))pm10Value24 = "0";
         if(pm25Value == null || pm25Value.equals("-"))pm25Value = "0";
         if(pm25Value24 == null || pm25Value24.equals("-"))pm25Value24 = "0";
+
     }
 
 }
