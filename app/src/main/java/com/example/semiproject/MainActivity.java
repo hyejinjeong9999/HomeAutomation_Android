@@ -4,11 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import event.BackPressCloseHandler;
 import viewPage.FragmentAirConditioner;
@@ -117,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     boolean voiceRecognition;
     private SharedPreferences appData;
 
+    TextToSpeech tts;       //음석 출력관련 변수 선언
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +139,16 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
         //Communication Thread Start//
         thread.start();
+
+        //음석인식 변수 정의
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != android.speech.tts.TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
         /**
          * Implementing Pull to Refresh
          * WeatherService Restart
@@ -333,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Log.v(TAG,"onBackPressed() == IN");
+        Log.v(TAG, "onBackPressed() == IN");
         backPressCloseHandler.onBackPressed();
     }
 
@@ -342,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        sharedObject.put(name+user.getEmail()+" OUT");
+        sharedObject.put(name + user.getEmail() + " OUT");
         Log.v(TAG, "onDestroy()");
         try {
             printWriter.close();
@@ -368,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "Socket Situation==" + socket.isConnected());
                 name = name.trim();
                 user = FirebaseAuth.getInstance().getCurrentUser();
-                sharedObject.put(name+user.getEmail()+" IN");
-                Log.v(TAG,"user name =="+user.getEmail());
+                sharedObject.put(name + user.getEmail() + " IN");
+                Log.v(TAG, "user name ==" + user.getEmail());
 
 //                sharedObject.put(user.getEmail());
 
@@ -475,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 case 4:
                     if (fragmentSetting == null) {
                         fragmentSetting = new FragmentSetting(
-                                sharedObject,bufferedReader);
+                                sharedObject, bufferedReader);
 
                     }
                     fragmentTransaction.replace(
@@ -527,51 +542,52 @@ public class MainActivity extends AppCompatActivity {
      */
     public void pattenRecognition(final Intent pattenIntent) {
 
-            dispatcher =
-                    AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
-            double threshold = 6;
-            double sensitivity = 25;
-            final Handler handler = new Handler();
-            final Runnable runn = new Runnable() {
-                @Override
-                public void run() {
-                    if (!dispatcher.isStopped()) {
-                        dispatcher.stop();
-                        pattenThread.interrupt();
-                    }
-                    speechRecognizer.startListening(pattenIntent);
+        dispatcher =
+                AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
+        double threshold = 6;
+        double sensitivity = 25;
+        final Handler handler = new Handler();
+        final Runnable runn = new Runnable() {
+            @Override
+            public void run() {
+                if (!dispatcher.isStopped()) {
+                    dispatcher.stop();
+                    pattenThread.interrupt();
                 }
-            };
+                speechRecognizer.startListening(pattenIntent);
+            }
+        };
 
-            mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
-                    new OnsetHandler() {
-                        @Override
-                        public void handleOnset(double time, double salience) {
-                            if (voiceRecognition) {
-                                Log.v(TAG, "time : " + time + ", salience : " + salience);
-                                Log.v(TAG, "Clap detected!");
-                                cntPatten++;
-                                if (time - lastClapTime < 1 && time - lastClapTime > 0 && cntPatten >= 1) {
-                                    cntPatten = 0;
-                                    lastClapTime = 0;
-                                    handler.post(runn);
-                                }
-                                lastClapTime = time;
+        mPercussionDetector = new PercussionOnsetDetector(22050, 1024,
+                new OnsetHandler() {
+                    @Override
+                    public void handleOnset(double time, double salience) {
+                        if (voiceRecognition) {
+                            Log.v(TAG, "time : " + time + ", salience : " + salience);
+                            Log.v(TAG, "Clap detected!");
+                            cntPatten++;
+                            if (time - lastClapTime < 1 && time - lastClapTime > 0 && cntPatten >= 1) {
+                                cntPatten = 0;
+                                lastClapTime = 0;
+                                handler.post(runn);
                             }
+                            lastClapTime = time;
                         }
+                    }
 
-                    }, sensitivity, threshold);
+                }, sensitivity, threshold);
 
-            dispatcher.addAudioProcessor(mPercussionDetector);
-            pattenThread = new Thread(dispatcher, "Audio Dispatcher");
-            pattenThread.start();
+        dispatcher.addAudioProcessor(mPercussionDetector);
+        pattenThread = new Thread(dispatcher, "Audio Dispatcher");
+        pattenThread.start();
     }
 
     private RecognitionListener recognitionListener = new RecognitionListener() {
         String recogTAG = "RecognitionListener";
+
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            Log.v(recogTAG,"onReadyForSpeech()");
+            Log.v(recogTAG, "onReadyForSpeech()");
         }
 
         @Override
@@ -591,12 +607,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onEndOfSpeech() {
-            Log.v(recogTAG,"onEndOfSpeech()");
+            Log.v(recogTAG, "onEndOfSpeech()");
         }
 
         @Override
         public void onError(int i) {
-            Log.v(recogTAG,"너무 늦게 말하면 오류뜹니다");
+            Log.v(recogTAG, "너무 늦게 말하면 오류뜹니다");
 //            Toast.makeText(getApplicationContext(),"다시 말해",Toast.LENGTH_LONG);
 //            speechRecognizer.startListening(intent);
 
@@ -620,33 +636,49 @@ public class MainActivity extends AppCompatActivity {
 
             Log.v(TAG, "음성인식==" + rs[0]);
             Log.v(TAG, "음성인식size==" + mResult.size());
+            String str = "";
             if (rs[0].contains("창문")) {
                 if (rs[0].contains("열어")) {
-                    sharedObject.put("/ANDROID>/WINDOWS ON");
+                    str = "창문을 열겠습니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/WINDOW ON");
                 } else if (rs[0].contains("닫아")) {
-                    sharedObject.put("/ANDROID>/WINDOWS OFF");
+                    str = "창문을 닫겠습니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/WINDOW OFF");
                 }
-
-                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                    if (currentFragment.isVisible()) {
-                        if (currentFragment instanceof FragmentHome) {
-                            Log.v(TAG, "FragmentHome");
-                            startService(serviceIntent);
-                        } else if (currentFragment instanceof FragmentWindow) {
-                            fragmentTransaction = fragmentManager.beginTransaction();
-                            if (fragmentWindow == null) {
-                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
-                            }
-                            fragmentTransaction.replace(
-                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                            bundle.putSerializable("weather", weatherVO);
-                            bundle.putSerializable("sensorData", sensorDataVO);
-                            fragmentWindow.setArguments(bundle);
-                            Log.v(TAG, "FragmentA_OnRefreshListener");
+            }else if(rs[0].contains("공기")){
+                if(rs[0].contains("켜")){
+                    str = "공기청정기를 가동합니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/AIRPURIFIER ON");
+                }else  if(rs[0].contains("꺼")){
+                    str = "공기청정기 작동을 중지합니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
+                }
+            }
+            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                if (currentFragment.isVisible()) {
+                    if (currentFragment instanceof FragmentHome) {
+                        Log.v(TAG, "FragmentHome");
+                        startService(serviceIntent);
+                    } else if (currentFragment instanceof FragmentWindow) {
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        if (fragmentWindow == null) {
+                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                         }
+                        fragmentTransaction.replace(
+                                R.id.frame, fragmentWindow).commitAllowingStateLoss();
+                        bundle.putSerializable("weather", weatherVO);
+                        bundle.putSerializable("sensorData", sensorDataVO);
+                        fragmentWindow.setArguments(bundle);
+                        Log.v(TAG, "FragmentA_OnRefreshListener");
                     }
                 }
-            }if (!dispatcher.isStopped()) {
+            }
+
+            if (!dispatcher.isStopped()) {
                 dispatcher.stop();
                 pattenThread.interrupt();
             }
@@ -688,14 +720,14 @@ public class MainActivity extends AppCompatActivity {
                         bundle.putSerializable("weather", weatherVO);
                         bundle.putSerializable("sensorData", sensorDataVO);
                         fragmentWindow.setArguments(bundle);
-                        Log.v(TAG,"FragmentA_OnRefreshListener");
+                        Log.v(TAG, "FragmentA_OnRefreshListener");
 
-                    }  else if (currentFragment instanceof FragmentAirConditioner){
-                        Log.v(TAG,"FragmentAirConditioner");
-                    } else if (currentFragment instanceof FragmentSetting){
-                        Log.v(TAG,"FragmentSetting");
-                    }  else if (currentFragment instanceof FragmentLight){
-                        Log.v(TAG,"FragmentLight");
+                    } else if (currentFragment instanceof FragmentAirConditioner) {
+                        Log.v(TAG, "FragmentAirConditioner");
+                    } else if (currentFragment instanceof FragmentSetting) {
+                        Log.v(TAG, "FragmentSetting");
+                    } else if (currentFragment instanceof FragmentLight) {
+                        Log.v(TAG, "FragmentLight");
                     }
                 }
             }
@@ -703,4 +735,15 @@ public class MainActivity extends AppCompatActivity {
             sharedObject.put("/ANDROID>/REFRESH ON");
         }
     };
+
+    //실제 음성이 말하는 메소드
+    private void speech(String msg) {
+        tts.setPitch(1.5f); //1.5톤 올려서
+        tts.setSpeechRate(1.0f); //1배속으로 읽기
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            tts.speak(msg, TextToSpeech.QUEUE_FLUSH, null, null);
+            // API 20
+        else
+            tts.speak(msg, TextToSpeech.QUEUE_FLUSH, null);
+    }
 }

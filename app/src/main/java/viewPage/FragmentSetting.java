@@ -63,7 +63,9 @@ public class FragmentSetting extends Fragment {
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
+    Button btnLog;
     Switch settingVoiceRecognitionBtn;
+
     boolean voiceRecognition;
     private SharedPreferences appData;
 
@@ -88,11 +90,8 @@ public class FragmentSetting extends Fragment {
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
+        btnLog = view.findViewById(R.id.btnLog);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
-
-
-        String str = "test";
-
 
         //profiles
         //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -107,10 +106,10 @@ public class FragmentSetting extends Fragment {
                 buttonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(isChecked){
+                        if (isChecked) {
                             editor.putBoolean("VOICE_RECOGNITION", isChecked);
                             editor.apply();
-                        }else{
+                        } else {
                             editor.putBoolean("VOICE_RECOGNITION", isChecked);
                             editor.apply();
                         }
@@ -118,31 +117,41 @@ public class FragmentSetting extends Fragment {
                 });
             }
         });
-        if(voiceRecognition){
+        if (voiceRecognition) {
             settingVoiceRecognitionBtn.setChecked(true);
-        }else{
+        } else {
             settingVoiceRecognitionBtn.setChecked(false);
         }
 
-
-        // btn_logout
-        settingLogut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sharedObject.put("/ID:ANDROID"+user.getEmail()+" OUT");
-                FirebaseAuth.getInstance().signOut();
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
-                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
-                googleSignInClient.signOut();
-                Intent intToMain = new Intent(context, LoginActivity.class);
-                ((MainActivity)getActivity()).finish();
-                startActivity(intToMain);
-
-            }
-        });
+        // btn
+        btnLog.setOnClickListener(mClick);
+        settingLogut.setOnClickListener(mClick);
 
         return view;
     }
 
+
+    View.OnClickListener mClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.settingLogout: {
+                    sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+                    FirebaseAuth.getInstance().signOut();
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                    googleSignInClient.signOut();
+                    Intent intToMain = new Intent(context, LoginActivity.class);
+                    ((MainActivity) getActivity()).finish();
+                    startActivity(intToMain);
+                }
+                break;
+                case R.id.btnLog:{
+
+                }
+                break;
+            }
+        }
+    };
 }
 
