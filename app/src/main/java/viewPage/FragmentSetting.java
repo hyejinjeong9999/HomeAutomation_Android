@@ -1,14 +1,12 @@
 package viewPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
 import com.example.semiproject.MainActivity;
@@ -36,20 +29,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 
 import communication.SharedObject;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class FragmentSetting extends Fragment {
@@ -77,6 +62,7 @@ public class FragmentSetting extends Fragment {
     Uri userPhotoURI;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser user;
+    GoogleSignInAccount acct;
 
     public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader) {
         this.sharedObject = sharedObject;
@@ -94,7 +80,7 @@ public class FragmentSetting extends Fragment {
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
+        acct = GoogleSignIn.getLastSignedInAccount(context);
         settingProfile = view.findViewById(R.id.settingProfile);
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
@@ -208,7 +194,11 @@ public class FragmentSetting extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.settingLogout: {
-                    sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+                    if(acct != null){
+                        Log.i("ltest", "acct: null");
+                    }else if(user != null){
+                        sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+                    }
 
                     // firebase user logout
                     Log.i("ltest", "logout~");

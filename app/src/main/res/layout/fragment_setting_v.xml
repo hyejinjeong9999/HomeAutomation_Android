@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
@@ -8,15 +9,15 @@
     android:layout_marginTop="30dp"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="25dp"
         android:background="@drawable/round_border"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingDefaultResource">
 
         <LinearLayout
@@ -34,99 +35,108 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout01">
+
             <ImageView
                 android:id="@+id/settingProfile"
-                android:layout_gravity="center"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:layout_weight="10"
                 android:adjustViewBounds="true" />
+
             <TextView
                 android:id="@+id/settingName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
+                android:text="null"
                 android:textAlignment="center"
-                android:text="vvvvvvvvoin"
                 android:textColor="@color/fontDark"
                 android:textSize="15sp" />
+
             <TextView
                 android:id="@+id/settingEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
+                android:text="null@null.null"
                 android:textAlignment="center"
-                android:text="vvvvvvvvoin@gmail.com"
                 android:textColor="@color/fontDark"
                 android:textSize="15sp" />
         </LinearLayout>
+
         <Button
             android:id="@+id/settingLogout"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:text="로그아웃"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginVertical="10dp"
             android:layout_marginLeft="55dp"
             android:layout_marginRight="55dp"
+            android:background="@drawable/air_temp_line_clicked"
+            android:text="로그아웃"
             android:textColor="@color/fontDark"
-            android:background="@drawable/air_temp_line_clicked"/>
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
 
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnLog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="로그보기"
-                android:textSize="15sp"
+                android:layout_gravity="center"
                 android:layout_margin="35dp"
                 android:layout_marginVertical="30dp"
-                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/air_temp_line_clicked"
+                android:text="로그보기"
                 android:textColor="@color/fontDark"
-                android:background="@drawable/air_temp_line_clicked"/>
+                android:textSize="15sp" />
+
             <Button
                 android:id="@+id/btnSpeed2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="로그보기"
-                android:textSize="15sp"
-                android:layout_margin="35dp"
                 android:layout_gravity="center"
+                android:layout_margin="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/air_temp_line_clicked"
+                android:text="로그보기"
                 android:textColor="@color/fontDark"
-                android:background="@drawable/air_temp_line_clicked"/>
+                android:textSize="15sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40pt"
             android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
                 android:layout_weight="10"
                 android:gravity="center_vertical"
-                android:textSize="15sp"
                 android:text="음성자동인식 감지"
-                android:layout_marginStart="15dp"
-                android:textColor="@color/recyclerViewItemFont"/>
+                android:textColor="@color/recyclerViewItemFont"
+                android:textSize="15sp" />
+
             <Switch
                 android:id="@+id/settingVoiceRecognitionBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:layout_marginEnd="10dp"
-                android:theme="@style/SwitchTheme"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="3"
+                android:theme="@style/SwitchTheme" />
         </LinearLayout>
 
     </LinearLayout>
