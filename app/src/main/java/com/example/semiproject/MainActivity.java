@@ -118,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
 
     boolean voiceRecognition;
+    boolean orderVoiceRecognition = false;
     private SharedPreferences appData;
+    SharedPreferences.Editor editor;
 
     TextToSpeech tts;       //음석 출력관련 변수 선언
 
@@ -128,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appData = getSharedPreferences("appData", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = appData.edit();
-        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
-
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
@@ -139,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
         //Communication Thread Start//
         thread.start();
+        //Voice Recognition Thread Start
+        appData = getApplicationContext().getSharedPreferences("appData", getApplicationContext().MODE_PRIVATE);
+        editor = appData.edit();
+        voiceRecognitionCheck.start();
 
         //음석인식 변수 정의
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -161,12 +163,14 @@ public class MainActivity extends AppCompatActivity {
          * 선언해 주지 않으면 MainActivity 의 빈 화면이 보이게 된다
          */
         fragmentManager = getSupportFragmentManager();
-
+        if (fragmentAirConditioner == null) {
+            fragmentAirConditioner = new FragmentAirConditioner(sharedObject, bufferedReader, this.sensorDataVO);
+        }
         if (fragmentHome == null) {
             weatherVO = new WeatherVO();
             fragmentTransaction = fragmentManager.beginTransaction();
             bundle = new Bundle();
-            fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
+            fragmentHome = new FragmentHome(sharedObject, bufferedReader, this.sensorDataVO);
             bundle.putSerializable("list", list);
             bundle.putSerializable("weather", weatherVO);
             bundle.putSerializable("sensorData", sensorDataVO);
@@ -325,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.v(TAG, "onNewIntent()_intent.getExtras()==" + intent.getExtras().get("weatherResult").toString());
-
         weathers = (WeatherVO[]) intent.getExtras().get("weatherResult");
         Log.v(TAG, "onNewIntent()_weathers[0].getTemp()==" + weathers[0].getTemp());
         Log.v(TAG, "onNewIntent()_weathers[0].getPm25Value()==" + weathers[0].getPm25Value());
@@ -334,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
         fragmentTransaction = fragmentManager.beginTransaction();
         bundle = new Bundle();
-        fragmentHome = new FragmentHome(sharedObject, bufferedReader, sensorDataVO);
+        fragmentHome = new FragmentHome(sharedObject, bufferedReader, this.sensorDataVO);
         bundle.putSerializable("list", list);
         bundle.putSerializable("weather", weatherVO);
         bundle.putSerializable("sensorData", sensorDataVO);
@@ -364,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             printWriter.close();
             bufferedReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.v(TAG, "onDestroy()_bufferedReader.close()_IOException==" + e.toString());
         }
         super.onDestroy();
@@ -395,6 +398,8 @@ public class MainActivity extends AppCompatActivity {
 //                            new Communication.DataReceveAsyncTask(bufferedReader);
 //                    asyncTask.execute();
                 Thread thread1 = new Thread(new Runnable() {
+                    private SensorDataVO sensorDataVO2;
+
                     @Override
                     public void run() {
                         //sensorDataVO = new SensorDataVO();
@@ -404,7 +409,20 @@ public class MainActivity extends AppCompatActivity {
                                 jsonData = bufferedReader.readLine();
                                 Log.v(TAG, "jsonDataReceive==" + jsonData);
                                 if (jsonData != null) {
-                                    sensorDataVO = objectMapper.readValue(jsonData, SensorDataVO.class);
+                                    sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
+
+                                     sensorDataVO.setMode(sensorDataVO2.getMode());
+                                     sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
+                                     sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
+                                     sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
+                                     sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
+                                     sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
+                                     sensorDataVO.setDust10(sensorDataVO2.getDust10());
+                                     sensorDataVO.setDust25(sensorDataVO2.getDust25());
+                                     sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
+                                     sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
+                                     sensorDataVO.setTemp(sensorDataVO2.getTemp());
+                                     sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
 
                                     bundle.putSerializable("sensorData", sensorDataVO);
                                     //fragmentWindow.setArguments(bundle);
@@ -429,6 +447,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     });
+
+    //음성인식 변화를 지속적으로 체크하여 실시간 반영되게 하는 Thread
+    Thread voiceRecognitionCheck = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while(true) {
+                appData = getSharedPreferences("appData", MODE_PRIVATE);
+                voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
+                editor = appData.edit();
+                if(orderVoiceRecognition){
+                    orderVoiceRecognition = false;
+                    editor.putBoolean("VOICE_RECOGNITION", false);
+                    editor.apply();
+                }
+            }
+        }
+    });
+
+
     //*************************** EventListener ***************************//
     /**
      * TabLayout SelectListenerEvent
@@ -477,9 +514,9 @@ public class MainActivity extends AppCompatActivity {
                     speechRecognizer.startListening(intent);
                     break;
                 case 3:
-                    if (fragmentAirConditioner == null) {
-                        fragmentAirConditioner = new FragmentAirConditioner(sharedObject, bufferedReader);
-                    }
+//                    if (fragmentAirConditioner == null) {
+//                        fragmentAirConditioner = new FragmentAirConditioner(sharedObject, bufferedReader, this.sensorDataVO);
+//                    }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentAirConditioner).commitAllowingStateLoss();
                     bundle.putSerializable("weather", weatherVO);
@@ -543,8 +580,8 @@ public class MainActivity extends AppCompatActivity {
 
         dispatcher =
                 AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0);
-        double threshold = 6;
-        double sensitivity = 25;
+        double threshold = 5;
+        double sensitivity = 45;
         final Handler handler = new Handler();
         final Runnable runn = new Runnable() {
             @Override
@@ -656,6 +693,10 @@ public class MainActivity extends AppCompatActivity {
                     speech(str);
                     sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
                 }
+            }else if(rs[0].contains("조용")){
+                str = "음성감지를 중단합니다";
+                speech(str);
+                orderVoiceRecognition = true;
             }
             for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
                 if (currentFragment.isVisible()) {

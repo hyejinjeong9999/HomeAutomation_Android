@@ -260,7 +260,6 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             lastPosition = position;
             notifyItemChanged(oldPosition);
             notifyItemChanged(lastPosition);
-
         }
     }
 
@@ -387,12 +386,5 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
-    }
-
-    public void setCliked(RecyclerView.ViewHolder holder, LayoutInflater inflater) {
-    }
-
-    public void unCliked(RecyclerView.ViewHolder holder) {
-        ((SystemInfo) holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border);
     }
 }

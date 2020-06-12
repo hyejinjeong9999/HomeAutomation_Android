@@ -107,10 +107,10 @@ public class FragmentSetting extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (isChecked) {
-                            editor.putBoolean("VOICE_RECOGNITION", isChecked);
+                            editor.putBoolean("VOICE_RECOGNITION", true);
                             editor.apply();
                         } else {
-                            editor.putBoolean("VOICE_RECOGNITION", isChecked);
+                            editor.putBoolean("VOICE_RECOGNITION", false);
                             editor.apply();
                         }
                     }
@@ -127,6 +127,13 @@ public class FragmentSetting extends Fragment {
         settingLogut.setOnClickListener(mClick);
 
         return view;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
     }
 
     View.OnClickListener mClick = new View.OnClickListener() {
