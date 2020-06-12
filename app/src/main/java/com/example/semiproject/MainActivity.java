@@ -1,6 +1,5 @@
 package com.example.semiproject;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,10 +15,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,30 +37,29 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import event.BackPressCloseHandler;
-import viewPage.FragmentAirConditioner;
-import communication.SharedObject;
-import communication.WeatherService;
-import recyclerViewAdapter.ViewType;
-import viewPage.FragmentHome;
-import viewPage.FragmentLight;
-
-import viewPage.FragmentSetting;
-import viewPage.FragmentWindow;
-
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import communication.SharedObject;
+import communication.WeatherService;
+import event.BackPressCloseHandler;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
+import recyclerViewAdapter.ViewType;
+import viewPage.FragmentAirConditioner;
+import viewPage.FragmentHome;
+import viewPage.FragmentLight;
+import viewPage.FragmentSetting;
+import viewPage.FragmentWindow;
 
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";
     String name = "/ID:ANDROID";
 
+    String user_email = "";
     FirebaseUser user;
     FirebaseAuth.AuthStateListener mAuthStateListener;
     RecyclerView recyclerVIew;
@@ -362,15 +358,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        sharedObject.put(name + user.getEmail() + " OUT");
+        /* TODO: FragmentSetting에 있는 sharedObject, 여기에 있는 sharedObject, 둘 다 필요?*/
+        sharedObject.put(name + user_email + " OUT");
         Log.v(TAG, "onDestroy()");
         try {
             printWriter.close();
             bufferedReader.close();
         } catch (Exception e) {
             Log.v(TAG, "onDestroy()_bufferedReader.close()_IOException==" + e.toString());
-        } catch (Exception e1){
-            Log.v(TAG, "보나마나 null");
         }
         super.onDestroy();
     }
@@ -390,10 +385,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TAG, "Socket Situation==" + socket.isConnected());
                 name = name.trim();
                 user = FirebaseAuth.getInstance().getCurrentUser();
-                sharedObject.put(name + user.getEmail() + " IN");
-                Log.v(TAG, "user name ==" + user.getEmail());
+                user_email = user.getEmail();
+                sharedObject.put(name + user_email + " IN");
+                Log.v(TAG, "user name ==" + user_email);
 
-//                sharedObject.put(user.getEmail());
+//                sharedObject.put(user_email);
 
                 Log.v(TAG, "name==" + name);
 //                    Communication.DataReceveAsyncTask asyncTask =
