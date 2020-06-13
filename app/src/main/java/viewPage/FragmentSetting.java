@@ -93,6 +93,8 @@ public class FragmentSetting extends Fragment {
         btnLog = view.findViewById(R.id.btnLog);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
 
+        Bundle bundle = getArguments();
+        settingName.setText(bundle.getString("userEmail"));
         //profiles
         //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
         settingProfile.setBackground(new ShapeDrawable(new OvalShape()));

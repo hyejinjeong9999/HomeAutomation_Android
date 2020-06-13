@@ -622,8 +622,6 @@ swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
   
 
-
-
 ### [Reeference](https://itpangpang.xyz/198)
 
 ## Err
