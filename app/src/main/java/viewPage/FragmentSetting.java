@@ -54,7 +54,7 @@ public class FragmentSetting extends Fragment {
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
-    Button btnLog;
+    Button btnLog1;
     Switch settingVoiceRecognitionBtn;
 
     boolean voiceRecognition;
@@ -88,7 +88,7 @@ public class FragmentSetting extends Fragment {
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
-        btnLog = view.findViewById(R.id.btnLog);
+        btnLog1 = view.findViewById(R.id.btnLog1);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
 
 //        Bundle bundle = getArguments();
@@ -181,7 +181,7 @@ public class FragmentSetting extends Fragment {
             settingVoiceRecognitionBtn.setChecked(false);
         }
         // btn
-        btnLog.setOnClickListener(mClick);
+        btnLog1.setOnClickListener(mClick);
         settingLogut.setOnClickListener(mClick);
 
         return view;
@@ -198,18 +198,16 @@ public class FragmentSetting extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.settingLogout: {
+                case R.id.settingLogout:
                     if(acct != null){
                     }else if(user != null){
-                        sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
-                    }
-                }
-                alertsignout();
-                break;
-                case R.id.btnLog:{
 
-                }
-                break;
+                    }
+                    alertsignout();
+                    break;
+                case R.id.btnLog1:
+                    sharedObject.put("/ANDROID>/LOG");
+                    break;
             }
         }
     };
@@ -234,6 +232,7 @@ public class FragmentSetting extends Fragment {
                         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
                         googleSignInClient.signOut();
                         ((MainActivity) getActivity()).finish();
+                        Log.v(TAG,"getActivity=="+getActivity());
                         Intent i = new Intent(context, LoginActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
