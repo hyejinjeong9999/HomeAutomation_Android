@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:textAlignment="center"
-                android:text="vvvvvvvvoin"
+                android:text="null"
                 android:textColor="@color/fontDark"
                 android:textSize="15sp" />
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:textAlignment="center"
-                android:text="vvvvvvvvoin@gmail.com"
+                android:text="null@null.null"
                 android:textColor="@color/fontDark"
                 android:textSize="15sp" />
         </LinearLayout>
