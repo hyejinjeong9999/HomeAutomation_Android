@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         LoginActivity a = (LoginActivity)LoginActivity.loginActivity;
         a.finish();
 
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
         weatherVO.checkElement();
 
         //아래꺼에서 이걸로 교체함
+
         for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
             if (currentFragment.isVisible()) {
                 if (currentFragment instanceof FragmentHome) {
@@ -551,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
                 case 4:
                     if (fragmentSetting == null) {
                         fragmentSetting = new FragmentSetting(
-                                sharedObject, bufferedReader);
+                                sharedObject, bufferedReader, user);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentSetting).commitAllowingStateLoss();

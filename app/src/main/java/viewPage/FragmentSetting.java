@@ -51,7 +51,6 @@ public class FragmentSetting extends Fragment {
     BufferedReader bufferedReader;
 
     ImageView settingProfile;
-    TextView settingName;
     TextView settingEmail;
     Button settingLogut;
     Button btnLog;
@@ -63,13 +62,13 @@ public class FragmentSetting extends Fragment {
     // firebaseAuth
     String userEmail, userName;
     Uri userPhotoURI;
-    FirebaseAuth mFirebaseAuth;
     FirebaseUser user;
     GoogleSignInAccount acct;
 
-    public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader) {
+    public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader, FirebaseUser user) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
+        this.user = user;
     }
 
     @Nullable
@@ -85,7 +84,6 @@ public class FragmentSetting extends Fragment {
 
         acct = GoogleSignIn.getLastSignedInAccount(context);
         settingProfile = view.findViewById(R.id.settingProfile);
-        settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
         btnLog = view.findViewById(R.id.btnLog);
@@ -100,10 +98,7 @@ public class FragmentSetting extends Fragment {
         settingProfile.setClipToOutline(true);
         //settingName.setText(acct.getDisplayName());
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
-
         // custom firebaseAuth profiles
-        user = mFirebaseAuth.getInstance().getCurrentUser();
-
         if (acct != null) {     //  google acct profiles
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
@@ -228,7 +223,7 @@ public class FragmentSetting extends Fragment {
         signOutAlertDialog.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mFirebaseAuth.getInstance().signOut();
+                        FirebaseAuth.getInstance().signOut();
                         // google signout
                         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
                         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
