@@ -76,28 +76,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginVertical="30dp"
             android:layout_marginTop="10dp">
             <Button
-                android:id="@+id/btnLog"
+                android:id="@+id/btnLog1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="10"
                 android:text="로그보기"
                 android:textSize="15sp"
-                android:layout_margin="35dp"
-                android:layout_marginVertical="30dp"
-                android:layout_gravity="center"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
             <Button
-                android:id="@+id/btnSpeed2"
+                android:id="@+id/btnLog2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="10"
                 android:text="로그보기"
                 android:textSize="15sp"
-                android:layout_margin="35dp"
-                android:layout_gravity="center"
+                android:textColor="@color/fontDark"
+                android:background="@drawable/air_temp_line_clicked"/>
+            <Button
+                android:id="@+id/btnLog3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:text="로그보기"
+                android:textSize="15sp"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
         </LinearLayout>
@@ -126,8 +131,10 @@
                 android:layout_centerHorizontal="true"/>
         </LinearLayout>
     </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

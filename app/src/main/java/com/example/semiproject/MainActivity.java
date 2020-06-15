@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import event.BackPressCloseHandler;
@@ -305,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
         listFragmentWindow = new ArrayList<>();
         listFragmentWindow.add(new SystemInfoVO("대기질상태", ViewType.ItemVerticalAir));
         listFragmentWindow.add(new SystemInfoVO(R.drawable.window1, "대기질컨트롤", ViewType.ItemVerticalAirControl));
+
     }
 
 
@@ -659,7 +661,6 @@ public class MainActivity extends AppCompatActivity {
             lastClapTime = 0;
             pattenRecognition(intent);
             Log.v(TAG, "너무 늦게 말하면 오류뜹니다");
-
         }
 
         @Override
