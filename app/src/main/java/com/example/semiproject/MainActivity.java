@@ -126,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LoginActivity a = (LoginActivity)LoginActivity.loginActivity;
+        a.finish();
+
+
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//

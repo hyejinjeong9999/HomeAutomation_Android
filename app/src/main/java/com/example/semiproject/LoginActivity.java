@@ -1,5 +1,7 @@
 package com.example.semiproject;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean isRemembered = false;
     private SharedPreferences appData;
 
-
+    public static Activity loginActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
         //facebook activate logging
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
+
+        loginActivity = LoginActivity.this;
 
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
@@ -393,12 +397,13 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
+                            Log.v("login", "여기 실행되는 거임???#@$?#@$?%#$?%#$?%");
                             user = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
-                            finish();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
