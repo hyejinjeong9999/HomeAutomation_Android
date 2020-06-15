@@ -137,7 +137,10 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="10"
-            android:gravity="center_horizontal"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:gravity="center"
             android:text="0"
             android:textSize="28sp"
             android:textColor="@color/recyclerViewItemFontValue"/>

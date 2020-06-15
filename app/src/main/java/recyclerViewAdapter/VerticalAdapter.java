@@ -2,14 +2,12 @@ package recyclerViewAdapter;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -175,20 +173,24 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Log.v(TAG, "TEST==" + sensorDataVO.getTemp());
             ((SystemInfoWeather) holder).tvTempIn.setText(sensorDataVO.getTemp() + " ℃");
             ((SystemInfoWeather) holder).tvModeSituation.setText(sensorDataVO.getMode());
-            if (sensorDataVO.getMode().equals("OFF")) {
-                oldPosition = position;
-            } else if (sensorDataVO.getMode().equals("SMART")) {
-                lastPosition = 1;
-                oldPosition = position;
-            } else if (sensorDataVO.getMode().equals("SLEEP")) {
-                lastPosition = 2;
-                oldPosition = position;
-            } else if (sensorDataVO.getMode().equals("VENTILATION")) {
-                lastPosition = 3;
-                oldPosition = position;
-            }else if (sensorDataVO.getMode().equals("OUTING")) {
-                lastPosition = 4;
-                oldPosition = position;
+            //TestView 글자 흐름//
+            ((SystemInfoWeather) holder).tvModeSituation.setSelected(true);
+            if (position != 0){
+                if (sensorDataVO.getMode().equals("OFF")) {
+                    oldPosition = position;
+                } else if (sensorDataVO.getMode().equals("SMART")) {
+                    lastPosition = 1;
+                    oldPosition = position;
+                } else if (sensorDataVO.getMode().equals("SLEEP")) {
+                    lastPosition = 2;
+                    oldPosition = position;
+                } else if (sensorDataVO.getMode().equals("VENTILATION")) {
+                    lastPosition = 3;
+                    oldPosition = position;
+                }else if (sensorDataVO.getMode().equals("OUTING")) {
+                    lastPosition = 4;
+                    oldPosition = position;
+                }
             }
 
             double dustDensity = Double.parseDouble(sensorDataVO.getDust10());
@@ -228,32 +230,31 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 switch (position) {
                     case 1:
                         mode = "SMART";
-                        changeBackgoround(position, mode);
+                        changeBackground(position, mode);
                         break;
                     case 2:
                         mode = "SLEEP";
-                        changeBackgoround(position, mode);
+                        changeBackground(position, mode);
                         break;
                     case 3:
                         mode = "VENTILATION";
-                        changeBackgoround(position, mode);
+                        changeBackground(position, mode);
                         break;
                     case 4:
                         mode = "OUTING";
-                        changeBackgoround(position, mode);
+                        changeBackground(position, mode);
                         break;
                 }
             }
         });
     }
-    public void changeBackgoround(int position, String mode) {
+    public void changeBackground(int position, String mode) {
         if (lastPosition == position) {
             sharedObject.put("/ANDROID>/MODE OFF");
             oldPosition = lastPosition;
             lastPosition = 999;
             notifyItemChanged(oldPosition);
             notifyItemChanged(lastPosition);
-
         } else {
             sharedObject.put("/ANDROID>/MODE "+mode);
             oldPosition = lastPosition;
@@ -261,6 +262,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyItemChanged(oldPosition);
             notifyItemChanged(lastPosition);
         }
+        notifyItemChanged(0);
     }
 
     /**

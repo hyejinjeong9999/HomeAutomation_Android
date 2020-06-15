@@ -22,6 +22,8 @@
   * /ANDROID>/AIRCONDITIONER OFF
 * REFRESH
   * /ANDROID>/REFRESH ON
+* Log
+  * /ANDROID>/LOG
 
 ## Server => Android
 
