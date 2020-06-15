@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
  */
 public class SplashActivity extends AppCompatActivity {
     String TAG="SplashActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

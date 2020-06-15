@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUpTv;
     //  FirebaseAuth
     FirebaseAuth mAuth;
+    FirebaseUser user;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     // Access a Cloud Firestore instance from your Activity
     // FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -141,21 +142,20 @@ public class LoginActivity extends AppCompatActivity {
 
         // google Login
         iv_ic_google = findViewById(R.id.iv_ic_google);
-// 여기서 충돌??
+        // LoginListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
                 FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
                     Toast.makeText(LoginActivity.this, "You are logged in..", Toast.LENGTH_SHORT).show();
-
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 }else{
                     Toast.makeText(LoginActivity.this, "Please LogIn", Toast.LENGTH_SHORT).show();
-
                 }
             }
         };
-
 
         // facebook login
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -286,17 +286,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
         if(mAuthStateListener != null){
             mAuth.removeAuthStateListener(mAuthStateListener);
-            FirebaseAuth.getInstance().signOut();
-            Log.i("LoginTest", "onStop;signOut()");
+            mAuth.getInstance().signOut();
         }
     }
 
     private void signIn() {
-        Log.i("LoginTest", "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        Log.i("LoginTest", "signIn;Intent signInIntent");
         startActivityForResult(signInIntent, req_code);
-        Log.i("LoginTest", "signIn;req_code");
     }
 
 
@@ -309,9 +305,7 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if(result.isSuccess()){
                 GoogleSignInAccount account = result.getSignInAccount();
-                Log.i("LoginTest", " GoogleSignInAccount account = result.getSignInAccount();");
                 firebaseAuthWithGoogle(account);
-                Log.i("LoginTest", "firebaseAuthWithGoogle(account);");
             }else{
 
             }
@@ -355,9 +349,8 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
-                            Log.i("ltest", "Authentication Success");
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -400,15 +393,11 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            user = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
-                            Log.i("ltest", "email > " + acct.getEmail());
-                            Log.i("ltest", "uri > " + acct.getPhotoUrl());
-                            Log.i("ltest", "login_success_firebaseAuthWithGoogle");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
-                            Log.i("ltest", "intent google login 가니?");
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -442,9 +431,6 @@ public class LoginActivity extends AppCompatActivity {
     // 설정 값 불러오기
     private void load(){
         isRemembered = appData.getBoolean("SAVE_LOGIN_DATA", false);
-        Log.i("ltest", "load()");
         email = appData.getString("ID", "");
-        Log.i("ltest", "load().email: " + email);
     }
-
 }
