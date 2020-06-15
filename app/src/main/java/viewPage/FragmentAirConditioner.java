@@ -204,15 +204,16 @@ public class FragmentAirConditioner extends Fragment {
                     if (sensorDataVO.getAirconditionerStatus().equals("OFF")) {
                         Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
-                        savedTemp = appData.getInt("AIRCONDITIONOR TEMP", 26);
+                        savedTemp = appData.getInt("AIRCONDITIONOR_TEMP", 26);
+                        Log.v(TAG, "저장된 값은 ======" + savedTemp);
                         setCliked(btnPower, context);
                         setCliked(btnCold, context);
                         unCliked(btnDry, context);
-                        tvSelectTemp.setText(savedTemp);
-                        sharedObject.put("/ANDROID>/AIRCONDITIONER " +savedTemp);
+                        tvSelectTemp.setText(String.valueOf(savedTemp));
                         setCliked(btnSpeed1, context);
                         unCliked(btnSpeed2, context);
                         unCliked(btnSpeed3, context);
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER " +savedTemp);
                     } else if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
