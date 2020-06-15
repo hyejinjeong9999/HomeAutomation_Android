@@ -531,6 +531,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentSetting).commitAllowingStateLoss();
+                    bundle.putString("userEmail", user.getEmail());
                     fragmentSetting.setArguments(bundle);
                     fragmentTag = 2;
 //                    if (fragmentLight == null) {

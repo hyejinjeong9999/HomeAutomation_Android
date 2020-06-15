@@ -589,7 +589,40 @@ swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 
 
+## TestVIew 글자 Event
 
+* XML 에 아래 3개를 추가
+  * android:ellipsize="marquee"
+  * android:marqueeRepeatLimit="marquee_forever"
+  * android:singleLine="true"
+
+  ```xml
+  <TextView
+  	android:id="@+id/tvModeSituation"
+  	android:layout_width="0dp"
+  	android:layout_height="match_parent"
+  	android:layout_margin="10dp"
+  	android:layout_weight="10"
+  	android:ellipsize="marquee"
+  	android:marqueeRepeatLimit="marquee_forever"
+  	android:singleLine="true"
+  	android:text="0"
+  	android:textSize="28sp"
+  	android:textColor="@color/recyclerViewItemFontValue"/>
+  ```
+
+* Java Class code 추가
+
+  * TestView.setSelected(true);
+
+  ```java
+  ((SystemInfoWeather) holder).tvModeSituation.setText(sensorDataVO.getMode());     	
+  ((SystemInfoWeather) holder).tvModeSituation.setSelected(true);
+  ```
+
+  
+
+### [Reeference](https://itpangpang.xyz/198)
 
 ## Err
 
