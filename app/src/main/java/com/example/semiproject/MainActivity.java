@@ -29,6 +29,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -411,27 +415,33 @@ public class MainActivity extends AppCompatActivity {
                                 if (jsonData != null) {
                                     sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
 
-                                     sensorDataVO.setMode(sensorDataVO2.getMode());
-                                     sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
-                                     sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
-                                     sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
-                                     sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
-                                     sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
-                                     sensorDataVO.setDust10(sensorDataVO2.getDust10());
-                                     sensorDataVO.setDust25(sensorDataVO2.getDust25());
-                                     sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
-                                     sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
-                                     sensorDataVO.setTemp(sensorDataVO2.getTemp());
-                                     sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
+                                    sensorDataVO.setMode(sensorDataVO2.getMode());
+                                    sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
+                                    sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
+                                    sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
+                                    sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
+                                    sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
+                                    sensorDataVO.setDust10(sensorDataVO2.getDust10());
+                                    sensorDataVO.setDust25(sensorDataVO2.getDust25());
+                                    sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
+                                    sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
+                                    sensorDataVO.setTemp(sensorDataVO2.getTemp());
+                                    sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
 
                                     bundle.putSerializable("sensorData", sensorDataVO);
-                                    //fragmentWindow.setArguments(bundle);
-//                                        SensorDataVO vo1 = (SensorDataVO)jsonObject.get(jsonData);
-//                                        Log.v(TAG,"jsonObject.get(\"temp\")"+vo1.getTemp());
+
                                     Log.v(TAG, sensorDataVO.toString());
+
+
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    JSONArray airconditionerList = jsonObject.getJSONArray("airconditionerList");
+                                    
+
                                 }
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                Log.v(TAG, "IOException==" + e);
+                            } catch (JSONException e){
+                                Log.v(TAG, "JSONException==" + e);
                             }
                         }
                     }
