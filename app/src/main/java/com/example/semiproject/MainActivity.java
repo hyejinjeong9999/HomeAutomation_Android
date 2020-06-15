@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // FragmentSetting firebase user
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//

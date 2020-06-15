@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences appData;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         chbx_remember = (CheckBox) findViewById(R.id.chbx_remember);
         signInBtn = (Button) findViewById(R.id.btn2);
         signUpTv = (TextView) findViewById(R.id.textView);
-
 
         // remember ID; 설정값 불러오기
         appData = getSharedPreferences("appData", MODE_PRIVATE);
@@ -149,8 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
                     Toast.makeText(LoginActivity.this, "You are logged in..", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
                 }else{
                     Toast.makeText(LoginActivity.this, "Please LogIn", Toast.LENGTH_SHORT).show();
                 }
@@ -223,8 +219,8 @@ public class LoginActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
                             }else {
-                                Intent intHome = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intHome);
+                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(i);
                                 finish();
                                 save();
                             }
