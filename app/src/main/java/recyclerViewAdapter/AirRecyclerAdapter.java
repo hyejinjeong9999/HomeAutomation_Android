@@ -160,12 +160,12 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     });
                 }
             });
-            if(sensorDataVO.getAirpurifierStatus().equals("1")){
+            if(sensorDataVO.getAirpurifierStatus().equals("ON")){
                 ((AirControl) holder).swAirControl.setChecked(true);
             }else{
                 ((AirControl) holder).swAirControl.setChecked(false);
             }
-            if(sensorDataVO.getWindowStatus().equals("1")){
+            if(sensorDataVO.getWindowStatus().equals("ON")){
                 ((AirControl) holder).swWindowControl.setChecked(true);
             }else{
                 ((AirControl) holder).swWindowControl.setChecked(false);

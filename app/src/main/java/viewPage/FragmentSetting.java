@@ -58,6 +58,7 @@ public class FragmentSetting extends Fragment {
     BufferedReader bufferedReader;
 
     FirebaseUser user;
+    FirebaseAuth mAuth;
 
     ImageView settingProfile;
     TextView settingName;
@@ -84,6 +85,9 @@ public class FragmentSetting extends Fragment {
         final SharedPreferences.Editor editor = appData.edit();
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(context);
         settingProfile = view.findViewById(R.id.settingProfile);
