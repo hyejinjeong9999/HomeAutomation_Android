@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     // add the Firebase SDK for facebook
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.facebook.android:facebook-login:5.15.3'
     // add the Firebase SDK for kakao
     implementation "com.kakao.sdk:v2-user-rx:2.0.0-beta02"
 }
