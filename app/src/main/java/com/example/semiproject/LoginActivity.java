@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUpTv;
     //  FirebaseAuth
     FirebaseAuth mAuth;
-    FirebaseUser user;
+    FirebaseUser mFirebaseUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     // Access a Cloud Firestore instance from your Activity
     // FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -70,13 +70,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         //facebook activate logging
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
 
-        mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
+        mCallbackManager = CallbackManager.Factory.create();
+        mFirebaseUser = mAuth.getCurrentUser();
         emailId = (EditText) findViewById(R.id.et_email);
         password = (EditText) findViewById(R.id.et_password);
         chbx_remember = (CheckBox) findViewById(R.id.chbx_remember);
@@ -91,58 +93,20 @@ public class LoginActivity extends AppCompatActivity {
             emailId.setText(email);
             chbx_remember.setChecked(isRemembered);
         }
-/*
 
-        // 세션 콜백 구현
-        private ISessionCallback sessionCallback = new ISessionCallback() {
-            @Override
-            public void onSessionOpened() {
-                Log.i("KAKAO_SESSION", "로그인 성공");
-            }
 
-            @Override
-            public void onSessionOpenFailed(KakaoException exception) {
-                Log.e("KAKAO_SESSION", "로그인 실패", exception);
-            }
-        };
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
-
-            // 세션 콜백 등록
-            Session.getCurrentSession().addCallback(sessionCallback);
-        }
-
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-
-            // 세션 콜백 삭제
-            Session.getCurrentSession().removeCallback(sessionCallback);
-        }
-
-        @Override
-        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-            // 카카오톡|스토리 간편로그인 실행 결과를 받아서 SDK로 전달
-            if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-                return;
-            }
-
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-*/
         // LoginListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
-                FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
-                    Toast.makeText(LoginActivity.this, "You are logged in..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "mFirebaseUser != null # You are logged in..", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+//                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
                 }else{
-                    Toast.makeText(LoginActivity.this, "Please LogIn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "mFirebaseUser == null # Please LogIn", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -210,13 +174,13 @@ public class LoginActivity extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
-                                Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
-                            }else {
+                            if(task.isSuccessful()){
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(i);
                                 finish();
                                 save();
+                            }else {
+                                Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -270,7 +234,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
-                            user = mAuth.getCurrentUser();
+//                            mFirebaseUser = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
@@ -289,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        mFirebaseUser = mAuth.getCurrentUser();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -330,6 +294,51 @@ public class LoginActivity extends AppCompatActivity {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+/*
+
+        // 세션 콜백 구현
+        private ISessionCallback sessionCallback = new ISessionCallback() {
+            @Override
+            public void onSessionOpened() {
+                Log.i("KAKAO_SESSION", "로그인 성공");
+            }
+
+            @Override
+            public void onSessionOpenFailed(KakaoException exception) {
+                Log.e("KAKAO_SESSION", "로그인 실패", exception);
+            }
+        };
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+
+            // 세션 콜백 등록
+            Session.getCurrentSession().addCallback(sessionCallback);
+        }
+
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+
+            // 세션 콜백 삭제
+            Session.getCurrentSession().removeCallback(sessionCallback);
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+            // 카카오톡|스토리 간편로그인 실행 결과를 받아서 SDK로 전달
+            if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+                return;
+            }
+
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+*/
+
 /*
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -381,7 +390,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            mFirebaseUser = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
