@@ -63,5 +63,6 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:5.15.3'
     // add the Firebase SDK for kakao
     implementation "com.kakao.sdk:v2-user-rx:2.0.0-beta02"
+    implementation group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
 }
 apply plugin: 'com.google.gms.google-services'
