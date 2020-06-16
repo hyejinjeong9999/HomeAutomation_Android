@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -30,12 +29,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -137,9 +134,6 @@ public class LoginActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
 */
-
-        // google Login
-        iv_ic_google = findViewById(R.id.iv_ic_google);
         // LoginListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -240,18 +234,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mAuth.addAuthStateListener(mAuthStateListener);
-
-
-        // Google Login start
+        // google Login
+        iv_ic_google = findViewById(R.id.iv_ic_google);
         iv_ic_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,6 +260,39 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
+                            // Sign in success, update UI with the signed-in user's information
+                            user = mAuth.getCurrentUser();
+                            google_profile = String.valueOf(acct.getPhotoUrl());
+                            google_email = acct.getEmail();
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }   // google Login End
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
     @Override
     protected void onStop() {
         Log.i("LoginTest", "onStop");
@@ -291,7 +308,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, req_code);
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -302,9 +318,7 @@ public class LoginActivity extends AppCompatActivity {
             if(result.isSuccess()){
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-            }else{
-
-            }
+            }else{  }
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             // ??
@@ -315,9 +329,8 @@ public class LoginActivity extends AppCompatActivity {
         // facebook
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-
     }
-
+/*
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -354,6 +367,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+    */
 /*
 
     // kakao Login start
@@ -376,35 +390,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 */
-
-
-
-    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
-                            // Sign in success, update UI with the signed-in user's information
-                            user = mAuth.getCurrentUser();
-                            google_profile = String.valueOf(acct.getPhotoUrl());
-                            google_email = acct.getEmail();
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
-    }   // google Login End
 
     @Override
     public void onBackPressed() {

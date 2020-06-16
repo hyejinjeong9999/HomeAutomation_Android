@@ -208,6 +208,7 @@ public class FragmentSetting extends Fragment {
                             Objects.requireNonNull(getActivity()).finish();
                         }else{
                             FirebaseAuth.getInstance().signOut();
+                            Objects.requireNonNull(getActivity()).finish();
                         }
                         Intent i = new Intent(context, LoginActivity.class);
                         /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
