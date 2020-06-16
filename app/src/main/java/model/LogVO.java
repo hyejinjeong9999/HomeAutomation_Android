@@ -1,8 +1,12 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LogVO {
+public class LogVO implements Serializable {
 
     ArrayList<AirconditionerVO> airconditionerList = new ArrayList<AirconditionerVO>();
     ArrayList <AirpurifierVO> airpurifierList = new ArrayList<AirpurifierVO>();
@@ -29,13 +33,13 @@ public class LogVO {
         this.doorList = doorList;
     }
 
-
     public ArrayList<LightVO> getLightList() {
         return lightList;
     }
     public void setLightList(ArrayList<LightVO> lightList) {
         this.lightList = lightList;
     }
+
     public ArrayList<WindowVO> getWindowList() {
         return windowList;
     }

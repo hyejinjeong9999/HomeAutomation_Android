@@ -49,9 +49,15 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 import communication.SharedObject;
 import communication.WeatherService;
 import event.BackPressCloseHandler;
+import model.AirconditionerVO;
+import model.AirpurifierVO;
+import model.DoorVO;
+import model.LightVO;
+import model.LogVO;
 import model.SensorDataVO;
 import model.SystemInfoVO;
 import model.WeatherVO;
+import model.WindowVO;
 import recyclerViewAdapter.ViewType;
 import viewPage.FragmentAirConditioner;
 import viewPage.FragmentHome;
@@ -124,6 +130,13 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     TextToSpeech tts;       //음석 출력관련 변수 선언
+
+    LogVO logVO = new LogVO();
+    ArrayList<AirconditionerVO> airconditionerData = new ArrayList<AirconditionerVO>();
+    ArrayList<AirpurifierVO> airpurifierData = new ArrayList<AirpurifierVO>();
+    ArrayList<DoorVO> doorData = new ArrayList<DoorVO>();
+    ArrayList<WindowVO> windowData = new ArrayList<WindowVO>();
+    ArrayList<LightVO> lightData = new ArrayList<LightVO>();
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -395,6 +408,8 @@ public class MainActivity extends AppCompatActivity {
                 sharedObject.put(name + user_email + " IN");
                 Log.v(TAG, "user name ==" + user_email);
 
+                sharedObject.put("/ANDROID>/LOG");
+
 //                sharedObject.put(user_email);
 
                 Log.v(TAG, "name==" + name);
@@ -413,29 +428,66 @@ public class MainActivity extends AppCompatActivity {
                                 jsonData = bufferedReader.readLine();
                                 Log.v(TAG, "jsonDataReceive==" + jsonData);
                                 if (jsonData != null) {
-                                    sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
-
-                                    sensorDataVO.setMode(sensorDataVO2.getMode());
-                                    sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
-                                    sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
-                                    sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
-                                    sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
-                                    sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
-                                    sensorDataVO.setDust10(sensorDataVO2.getDust10());
-                                    sensorDataVO.setDust25(sensorDataVO2.getDust25());
-                                    sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
-                                    sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
-                                    sensorDataVO.setTemp(sensorDataVO2.getTemp());
-                                    sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
-
-                                    bundle.putSerializable("sensorData", sensorDataVO);
-
-                                    Log.v(TAG, sensorDataVO.toString());
-
+//                                    sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
+//
+//                                    sensorDataVO.setMode(sensorDataVO2.getMode());
+//                                    sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
+//                                    sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
+//                                    sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
+//                                    sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
+//                                    sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
+//                                    sensorDataVO.setDust10(sensorDataVO2.getDust10());
+//                                    sensorDataVO.setDust25(sensorDataVO2.getDust25());
+//                                    sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
+//                                    sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
+//                                    sensorDataVO.setTemp(sensorDataVO2.getTemp());
+//                                    sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
+//
+//                                    bundle.putSerializable("sensorData", sensorDataVO);
+//
+//                                    Log.v(TAG, sensorDataVO.toString());
 
                                     JSONObject jsonObject = new JSONObject(jsonData);
+                                    Log.v(TAG,"JSON TEST  jsonObject.length()=="+ jsonObject.length());
                                     JSONArray airconditionerList = jsonObject.getJSONArray("airconditionerList");
-                                    
+                                    JSONArray airpurifierList = jsonObject.getJSONArray("airpurifierList");
+                                    JSONArray doorList = jsonObject.getJSONArray("doorList");
+                                    JSONArray lightList = jsonObject.getJSONArray("lightList");
+                                    JSONArray windowList = jsonObject.getJSONArray("windowList");
+                                    Log.v(TAG,"JSON TEST  airconditionerList.length()=="+ airconditionerList.length());
+                                    Log.v(TAG,"JSON TEST  airconditionerStatus=="+ airconditionerList.getJSONObject(0).getString("airconditionerStatus"));
+                                    Log.v(TAG,"JSON TEST  airpurifierList.length()=="+ airpurifierList.length());
+                                    Log.v(TAG,"JSON TEST  doorList.length()=="+ doorList.length());
+                                    Log.v(TAG,"JSON TEST  lightList.length()=="+ lightList.length());
+                                    Log.v(TAG,"JSON TEST  windowList.length()=="+ windowList.length());
+
+                                   for(int i = 0; i < airconditionerList.length(); i++){
+                                       Log.v(TAG,"JSON TEST i=="+i);
+                                       AirconditionerVO airconditionerVO = new AirconditionerVO();
+                                       JSONObject airconditionerListData = airconditionerList.getJSONObject(i);
+                                       airconditionerVO.setAirconditionerStatus(airconditionerListData.getString("airconditionerStatus"));
+                                       airconditionerVO.setAirconditionerTime(airconditionerListData.getString("airconditionerTime"));
+                                       airconditionerData.add(airconditionerVO);
+                                       logVO.setAirconditionerList(airconditionerData);
+                                       Log.v(TAG,"JSON TEST airconditionerList=="+airconditionerListData);
+                                   }
+
+
+//                                    Log.v(TAG, "DEBUG:stringBuffer==" + stringBuffer);
+//                                    String data = stringBuffer.toString();
+//                                    JSONObject jsonData = new JSONObject(data);
+//                                    JSONArray documents = jsonData.getJSONArray("documents");
+//                                    docList = new ArrayList();
+//                                    documentList = new ArrayList<Document>();
+//                                    for(int i = 0; i < documents.length(); i++) {
+//                                        JSONObject document = documents.getJSONObject(i);
+//                                        Document doc = new Document(document);
+//                                        docList.add(doc);
+//                                        documentList.add(doc);
+//                                        Log.v(TAG, "DEBUG:document[" + i + "]=" + document);
+//                                    }
+//                                    Log.v(TAG, "DEBUG:jsonData==" + jsonData);
+//                                    Log.v(TAG,"docList==="+documentList);
 
                                 }
                             } catch (IOException e) {
@@ -501,7 +553,6 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTag = 0;
                     break;
                 case 1:
-                    swipeRefresh.setEnabled(false);
                     if (fragmentWindow == null) {
                         fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
                     }
@@ -535,6 +586,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTag = 3;
                     break;
                 case 4:
+                    swipeRefresh.setEnabled(false);
                     if (fragmentSetting == null) {
                         fragmentSetting = new FragmentSetting(
                                 sharedObject, bufferedReader);
@@ -542,6 +594,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.replace(
                             R.id.frame, fragmentSetting).commitAllowingStateLoss();
 //                    bundle.putString("userEmail", user.getEmail());
+                    bundle.putSerializable("LOGVO", logVO);
                     fragmentSetting.setArguments(bundle);
                     fragmentTag = 2;
 //                    if (fragmentLight == null) {
