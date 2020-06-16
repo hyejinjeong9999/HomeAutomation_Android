@@ -1,5 +1,7 @@
 package com.example.semiproject;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -29,10 +32,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -48,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUpTv;
     //  FirebaseAuth
     FirebaseAuth mAuth;
-    FirebaseUser mFirebaseUser;
+    FirebaseUser user;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     // Access a Cloud Firestore instance from your Activity
     // FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,19 +71,20 @@ public class LoginActivity extends AppCompatActivity {
     boolean isRemembered = false;
     private SharedPreferences appData;
 
+    public static Activity loginActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
         //facebook activate logging
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
 
-        mAuth = FirebaseAuth.getInstance();
+        loginActivity = LoginActivity.this;
+
         mCallbackManager = CallbackManager.Factory.create();
-        mFirebaseUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
         emailId = (EditText) findViewById(R.id.et_email);
         password = (EditText) findViewById(R.id.et_password);
         chbx_remember = (CheckBox) findViewById(R.id.chbx_remember);
@@ -100,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
+                FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
                     Toast.makeText(LoginActivity.this, "mFirebaseUser != null # You are logged in..", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);

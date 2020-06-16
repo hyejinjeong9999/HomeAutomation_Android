@@ -126,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // FragmentSetting firebase user
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        LoginActivity a = (LoginActivity)LoginActivity.loginActivity;
+        a.finish();
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
         //RecyclerView Item List 생성성//
         initRecyclerAdapter();
         //Service Start//
@@ -333,7 +334,28 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG, "onNewIntent()_weathers[0].getPm25Value()==" + weathers[0].getPm25Value());
         weatherVO = weathers[0];
         weatherVO.checkElement();
+
+        //아래꺼에서 이걸로 교체함
+
+        for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+            if (currentFragment.isVisible()) {
+                if (currentFragment instanceof FragmentHome) {
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    bundle = new Bundle();
+                    fragmentHome = new FragmentHome(sharedObject, bufferedReader, this.sensorDataVO);
+                    bundle.putSerializable("list", list);
+                    bundle.putSerializable("weather", weatherVO);
+                    bundle.putSerializable("sensorData", sensorDataVO);
+                    Log.v(TAG, "WeatherTEST" + sensorDataVO.getTemp());
+                    fragmentHome.setArguments(bundle);
+                    fragmentTransaction.replace(
+                            R.id.frame, fragmentHome).commitAllowingStateLoss();
+                }
+            }
+        }
+
         // WebServer로 부터 가져온 데이터를 Fragment 를 생성하면서 Fragment 에 데이터를 넘겨준다
+        /*
         fragmentTransaction = fragmentManager.beginTransaction();
         bundle = new Bundle();
         fragmentHome = new FragmentHome(sharedObject, bufferedReader, this.sensorDataVO);
@@ -344,6 +366,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome.setArguments(bundle);
         fragmentTransaction.replace(
                 R.id.frame, fragmentHome).commitAllowingStateLoss();
+
+         */
         super.onNewIntent(intent);
     }
 
@@ -528,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
                 case 4:
                     if (fragmentSetting == null) {
                         fragmentSetting = new FragmentSetting(
-                                sharedObject, bufferedReader);
+                                sharedObject, bufferedReader, user);
                     }
                     fragmentTransaction.replace(
                             R.id.frame, fragmentSetting).commitAllowingStateLoss();

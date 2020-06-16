@@ -1,7 +1,9 @@
 package viewPage;
 
 import android.annotation.SuppressLint;
+import android.app.IntentService;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -47,6 +49,10 @@ public class FragmentAirConditioner extends Fragment {
     Button btnSpeed3;
     Button btnPower;
 
+    private SharedPreferences appData;
+    SharedPreferences.Editor editor;
+    int savedTemp;
+
     public FragmentAirConditioner(SharedObject sharedObject, BufferedReader bufferedReader, SensorDataVO sensorDataVO) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
@@ -58,6 +64,10 @@ public class FragmentAirConditioner extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_airconditioner_vvvvvvvvvv, container, false);
         context = container.getContext();
+
+        appData = context.getSharedPreferences("appData", context.MODE_PRIVATE);
+        editor = appData.edit();
+
 
         weatherVO = (WeatherVO) getArguments().get("weather");
         Log.v(TAG, "weather.getTemp==" + weatherVO.getTemp());
@@ -107,7 +117,7 @@ public class FragmentAirConditioner extends Fragment {
                 unCliked(btnSpeed2, context);
                 setCliked(btnSpeed3, context);
             }
-        }else{
+        } else {
             unCliked(btnPower, context);
             unCliked(btnDry, context);
             unCliked(btnCold, context);
@@ -149,6 +159,8 @@ public class FragmentAirConditioner extends Fragment {
                     if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         if (Integer.parseInt(tvSelectTemp.getText().toString()) < 30) {
                             sharedObject.put("/ANDROID>/AIRCONDITIONER " + tempChange(1));
+                            editor.putInt("AIRCONDITIONOR_TEMP", Integer.parseInt((String) tvSelectTemp.getText()));
+                            editor.apply();
                         }
                     }
                     break;
@@ -156,11 +168,12 @@ public class FragmentAirConditioner extends Fragment {
                     if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         if (Integer.parseInt(tvSelectTemp.getText().toString()) > 18) {
                             sharedObject.put("/ANDROID>/AIRCONDITIONER " + tempChange(-1));
+                            editor.putInt("AIRCONDITIONOR_TEMP", Integer.parseInt((String) tvSelectTemp.getText()));
+                            editor.apply();
                         }
                     }
                     break;
                 case R.id.btnSpeed1:
-
                     if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         sharedObject.put("/ANDROID>/AIRCONDITIONER speed1");
                         setCliked(btnSpeed1, context);
@@ -169,7 +182,6 @@ public class FragmentAirConditioner extends Fragment {
                     }
                     break;
                 case R.id.btnSpeed2:
-
                     if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         sharedObject.put("/ANDROID>/AIRCONDITIONER speed2");
 
@@ -179,7 +191,6 @@ public class FragmentAirConditioner extends Fragment {
                     }
                     break;
                 case R.id.btnSpeed3:
-
                     if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         sharedObject.put("/ANDROID>/AIRCONDITIONER speed3");
 
@@ -189,17 +200,20 @@ public class FragmentAirConditioner extends Fragment {
                     }
                     break;
                 case R.id.btnPower:
-                    Log.v(TAG,"sensorDataVO.getAirconditionerStatus()=="+sensorDataVO.getAirconditionerStatus());
+                    Log.v(TAG, "sensorDataVO.getAirconditionerStatus()==" + sensorDataVO.getAirconditionerStatus());
                     if (sensorDataVO.getAirconditionerStatus().equals("OFF")) {
                         Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
+                        savedTemp = appData.getInt("AIRCONDITIONOR_TEMP", 26);
+                        Log.v(TAG, "저장된 값은 ======" + savedTemp);
                         setCliked(btnPower, context);
                         setCliked(btnCold, context);
                         unCliked(btnDry, context);
-                        tvSelectTemp.setText("26");
+                        tvSelectTemp.setText(String.valueOf(savedTemp));
                         setCliked(btnSpeed1, context);
                         unCliked(btnSpeed2, context);
                         unCliked(btnSpeed3, context);
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER " +savedTemp);
                     } else if (sensorDataVO.getAirconditionerStatus().equals("ON")) {
                         Log.v(TAG, sensorDataVO.getAirconditionerStatus());
                         sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
@@ -209,6 +223,8 @@ public class FragmentAirConditioner extends Fragment {
                         unCliked(btnSpeed1, context);
                         unCliked(btnSpeed2, context);
                         unCliked(btnSpeed3, context);
+                        editor.putInt("AIRCONDITIONOR_TEMP", Integer.parseInt((String) tvSelectTemp.getText()));
+                        editor.apply();
                     }
             }
         }

@@ -89,7 +89,13 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder instanceof AirInfo) {
             ((AirInfo) holder).tvPM25In.setText(sensorDataVO.getDust25() + " μg/m³");
             ((AirInfo) holder).tvPM10In.setText(sensorDataVO.getDust10() + " μg/m³");
-            ((AirInfo) holder).tvGas.setText(sensorDataVO.getGasStatus());
+            if(Integer.parseInt(sensorDataVO.getGasStatus()) < 900 && Integer.parseInt(sensorDataVO.getGasStatus()) >0){
+                ((AirInfo) holder).tvGas.setText("양호");
+                ((AirInfo) holder).tvGas.setTextColor(context.getResources().getColor(R.color.weatherColorGood, null));
+            }else{
+                ((AirInfo) holder).tvGas.setText("나쁨");
+                ((AirInfo) holder).tvGas.setTextColor(context.getResources().getColor(R.color.weatherColorVeryBad, null));
+            }
             ((AirInfo) holder).tvPM25Out.setText(weatherVO.getPm25Value() + " μg/m³");
             ((AirInfo) holder).tvPM10Out.setText(weatherVO.getPm10Value() + " μg/m³");
             // 공기상태 정보 표시 로직 끝
@@ -160,12 +166,12 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     });
                 }
             });
-            if(sensorDataVO.getAirpurifierStatus().equals("1")){
+            if(sensorDataVO.getAirpurifierStatus().equals("ON")){
                 ((AirControl) holder).swAirControl.setChecked(true);
             }else{
                 ((AirControl) holder).swAirControl.setChecked(false);
             }
-            if(sensorDataVO.getWindowStatus().equals("1")){
+            if(sensorDataVO.getWindowStatus().equals("ON")){
                 ((AirControl) holder).swWindowControl.setChecked(true);
             }else{
                 ((AirControl) holder).swWindowControl.setChecked(false);

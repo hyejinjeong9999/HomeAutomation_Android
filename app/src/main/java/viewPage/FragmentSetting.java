@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
+import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -63,14 +64,13 @@ public class FragmentSetting extends Fragment {
     // firebaseAuth
     String userEmail, userName;
     Uri userPhotoURI;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
-    private GoogleSignInAccount acct;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    FirebaseUser user;
+    GoogleSignInAccount acct;
 
-    public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader) {
+    public FragmentSetting(SharedObject sharedObject, BufferedReader bufferedReader, FirebaseUser user) {
         this.sharedObject = sharedObject;
         this.bufferedReader = bufferedReader;
+        this.user = user;
     }
 
     @Nullable
@@ -103,16 +103,14 @@ public class FragmentSetting extends Fragment {
         settingProfile.setClipToOutline(true);
         //settingName.setText(acct.getDisplayName());
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
-
         // custom firebaseAuth profiles
-        // user = FirebaseAuth.getInstance().getCurrentUser();
-
         if (acct != null) {     //  google acct profiles
             settingName.setText(acct.getDisplayName());
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
-        }else if(user != null){
+        }else if(user != null){ //  custom firebaseAuth profiles
+            Log.i("ltest", "user != null");
             // Name, email address, and profile photo Url
             userName = user.getDisplayName();
             userEmail = user.getEmail();
