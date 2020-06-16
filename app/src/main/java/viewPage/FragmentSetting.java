@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
+import java.util.Objects;
 
 import communication.SharedObject;
 
@@ -51,6 +52,7 @@ public class FragmentSetting extends Fragment {
     BufferedReader bufferedReader;
 
     ImageView settingProfile;
+    TextView settingName;
     TextView settingEmail;
     Button settingLogut;
     Button btnLog;
@@ -82,8 +84,11 @@ public class FragmentSetting extends Fragment {
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
 
+        // firebase
         acct = GoogleSignIn.getLastSignedInAccount(context);
+
         settingProfile = view.findViewById(R.id.settingProfile);
+        settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
         btnLog = view.findViewById(R.id.btnLog);
@@ -100,6 +105,7 @@ public class FragmentSetting extends Fragment {
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
         // custom firebaseAuth profiles
         if (acct != null) {     //  google acct profiles
+            settingName.setText(acct.getDisplayName());
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -115,42 +121,9 @@ public class FragmentSetting extends Fragment {
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
             Glide.with(context).load(userPhotoURI).into(settingProfile);
+        }else {
+            Toast.makeText(context, "user == null", Toast.LENGTH_SHORT).show();
         }
-
-
-//        if (acct != null) {
-//            settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
-//            Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
-//        }else{
-//            settingEmail.setText("Null");
-//        }
-//
-//        // firebaseAuth profiles
-//        if (user != null) {
-//            // Name, email address, and profile photo Url
-//            userName = user.getDisplayName();
-//            userEmail = user.getEmail();
-//            userPhotoURI = user.getPhotoUrl();
-//
-//            // Check if user's email is verified
-//            boolean emailVerified = user.isEmailVerified();
-//
-//            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
-//                    "\n" + " 반갑습니당, '" + userName + "'님");
-//            Glide.with(context).load(userPhotoURI).into(settingProfile);
-//        } else {
-//            settingEmail.setText("NotloggedIn");
-//            Toast.makeText(context, "user: null이 떠버렸는데요?", Toast.LENGTH_SHORT).show();
-//        }
-
-//        userEmail = mFirebaseAuth.getCurrentUser().getEmail();
-//        Log.i("ltest", "email: " + userEmail);
-//        userName = mFirebaseAuth.getCurrentUser().getDisplayName();
-//        Log.i("ltest", "name: " + userName);
-//        userPhotoURI = mFirebaseAuth.getCurrentUser().getPhotoUrl();
-//        Log.i("ltest", "photo: " + String.valueOf(userPhotoURI));
-//        settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다.");
-//        Glide.with(context).load(userPhotoURI).into(settingProfile);
 
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -195,14 +168,16 @@ public class FragmentSetting extends Fragment {
             switch (v.getId()) {
                 case R.id.settingLogout: {
                     if(acct != null){
+                        // code
                     }else if(user != null){
+                        // code
                         sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
                     }
                 }
                 alertsignout();
                 break;
                 case R.id.btnLog:{
-
+                    // code
                 }
                 break;
             }
@@ -211,32 +186,35 @@ public class FragmentSetting extends Fragment {
 
     public void alertsignout()
     {
-        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(context);
 
         // Setting Dialog Title
         signOutAlertDialog.setTitle("Confirm SignOut");
 
         // Setting Dialog Message
-        signOutAlertDialog.setMessage("Are you sure you want to Signout?");
+        signOutAlertDialog.setMessage("로그아웃 하시겠습니까?");
 
         // Setting Positive "Yes" Btn
         signOutAlertDialog.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        FirebaseAuth.getInstance().signOut();
-                        // google signout
-                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
-                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
-                        googleSignInClient.signOut();
-                        ((MainActivity) getActivity()).finish();
+                        if(acct != null){
+                            // google signout
+                            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, gso);
+                            googleSignInClient.signOut();
+                            Objects.requireNonNull(getActivity()).finish();
+                        }else{
+                            FirebaseAuth.getInstance().signOut();
+                            Objects.requireNonNull(getActivity()).finish();
+                        }
                         Intent i = new Intent(context, LoginActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
                     }
                 });
-
-        /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
-
 
         // Setting Negative "NO" Btn
         signOutAlertDialog.setNegativeButton("NO",
