@@ -148,25 +148,6 @@ public class FragmentSetting extends Fragment {
                     "\n" + " 반갑습니당, '" );
             Glide.with(context).load(userPhotoURI).into(settingProfile);
         }
-        /*else {
-            Log.i("ltest", "else !");
-            // Name, email address, and profile photo Url
-            for (UserInfo userInfo : user.getProviderData()) {
-                if (userName == null && userInfo.getDisplayName() != null) {
-                    userName = userInfo.getDisplayName();
-                }
-                if (userEmail == null && userInfo.getEmail() != null) {
-                    userEmail = userInfo.getEmail();
-                }
-            }
-            userEmail = user.getEmail();
-            userName = user.getDisplayName();
-            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-            settingName.setText(userName);
-            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
-                    "\n" + " 반갑습니당, '" + userName + "'님");
-        }*/
-
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -190,10 +171,6 @@ public class FragmentSetting extends Fragment {
         } else {
             settingVoiceRecognitionBtn.setChecked(false);
         }
-        // btn
-//        btnLog.setOnClickListener(mClick);
-//        settingLogut.setOnClickListener(mClick);
-
         return view;
     }
 
@@ -209,10 +186,6 @@ public class FragmentSetting extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.settingLogout:
-                    if(acct != null){
-                    }else if(user != null){
-
-                    }
                     alertsignout();
                     break;
                 case R.id.btnairconditioner:
