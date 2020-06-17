@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
@@ -37,9 +41,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import communication.SharedObject;
+import model.AirconditionerVO;
+import model.LogVO;
+import recyclerViewAdapter.LogAdapter;
+import recyclerViewAdapter.VerticalAdapter;
 
 
 public class FragmentSetting extends Fragment {
@@ -51,13 +60,22 @@ public class FragmentSetting extends Fragment {
 
     SharedObject sharedObject;
     BufferedReader bufferedReader;
+    LogVO logVO;
+    LogAdapter logAdapter;
+    ArrayList<AirconditionerVO> airconditionerData  = new ArrayList<>();
+    ArrayList<String> airconditionerData1 = new ArrayList<>();
+    String[] abcData = new String[10];
+    String logDataStatus;
 
     ImageView settingProfile;
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
-    Button btnLog;
+    Button btnairconditioner;
+    Button btnAirpurifier;
+    Button btnWindow;
     Switch settingVoiceRecognitionBtn;
+    ListView lvLog;
 
     boolean voiceRecognition;
     private SharedPreferences appData;
@@ -65,6 +83,7 @@ public class FragmentSetting extends Fragment {
     // firebaseAuth
     String userEmail, userName;
     Uri userPhotoURI;
+    FirebaseAuth mFirebaseAuth;
     FirebaseUser user;
     GoogleSignInAccount acct;
 
@@ -89,14 +108,23 @@ public class FragmentSetting extends Fragment {
         acct = GoogleSignIn.getLastSignedInAccount(context);
 
         settingProfile = view.findViewById(R.id.settingProfile);
-        settingName = view.findViewById(R.id.settingName);
+//        settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
-        btnLog = view.findViewById(R.id.btnLog);
+        btnairconditioner = view.findViewById(R.id.btnairconditioner);
+        btnAirpurifier = view.findViewById(R.id.btnAirpurifier);
+        btnWindow = view.findViewById(R.id.btnWindow);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
 
-//        Bundle bundle = getArguments();
-//        settingName.setText(bundle.getString("userEmail"));
+        btnairconditioner.setOnClickListener(mClick);
+        btnAirpurifier.setOnClickListener(mClick);
+        btnWindow.setOnClickListener(mClick);
+        settingLogut.setOnClickListener(mClick);
+
+//        lvLog = view.findViewById(R.id.lvLog);
+        logVO = (LogVO)getArguments().get("LOGVO");
+
+
         //profiles
 
         //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -104,14 +132,15 @@ public class FragmentSetting extends Fragment {
         settingProfile.setClipToOutline(true);
         //settingName.setText(acct.getDisplayName());
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+
         // custom firebaseAuth profiles
+        user = mFirebaseAuth.getInstance().getCurrentUser();
+
         if (acct != null) {     //  google acct profiles
-            settingName.setText(acct.getDisplayName());
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
-
-        }else if(user.getEmail() != null){ //  custom firebaseAuth profiles
+        }else if(user != null){ //  custom firebaseAuth profiles
             Log.i("ltest", "user != null");
             // Name, email address, and profile photo Url
             userName = user.getDisplayName();
@@ -119,11 +148,12 @@ public class FragmentSetting extends Fragment {
             userPhotoURI = user.getPhotoUrl();
 
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-            settingName.setText(userName);
+
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
             Glide.with(context).load(userPhotoURI).into(settingProfile);
-        }else {
+        }
+        /*else {
             Log.i("ltest", "else !");
             // Name, email address, and profile photo Url
             for (UserInfo userInfo : user.getProviderData()) {
@@ -140,7 +170,7 @@ public class FragmentSetting extends Fragment {
             settingName.setText(userName);
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
-        }
+        }*/
 
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -166,8 +196,8 @@ public class FragmentSetting extends Fragment {
             settingVoiceRecognitionBtn.setChecked(false);
         }
         // btn
-        btnLog.setOnClickListener(mClick);
-        settingLogut.setOnClickListener(mClick);
+//        btnLog.setOnClickListener(mClick);
+//        settingLogut.setOnClickListener(mClick);
 
         return view;
     }
@@ -183,27 +213,28 @@ public class FragmentSetting extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.settingLogout: {
+                case R.id.settingLogout:
                     if(acct != null){
-                        // code
                     }else if(user != null){
-                        // code
-                        sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+
                     }
-                }
-                alertSingOut();
-                break;
-                case R.id.btnLog:{
-                    // code
-                }
-                break;
+                    alertsignout();
+                    break;
+                case R.id.btnairconditioner:
+                    recyclerViewCall("Airconditioner");
+                    break;
+                case R.id.btnAirpurifier:
+                    recyclerViewCall("Airpurifier");
+                    break;
+                case R.id.btnWindow:
+                    recyclerViewCall("Window");
+                    break;
             }
         }
     };
 
-    public void alertSingOut()
-    {
-        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(context);
+    public void alertsignout() {
+        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
         signOutAlertDialog.setTitle("Confirm SignOut");
@@ -234,6 +265,9 @@ public class FragmentSetting extends Fragment {
                     }
                 });
 
+        /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
+
+
         // Setting Negative "NO" Btn
         signOutAlertDialog.setNegativeButton("NO",
                 new DialogInterface.OnClickListener() {
@@ -245,6 +279,15 @@ public class FragmentSetting extends Fragment {
 
         // Showing Alert Dialog
         signOutAlertDialog.show();
+    }
+
+    public void recyclerViewCall(String keyword){
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                context, LinearLayoutManager.VERTICAL, false);
+        logAdapter = new LogAdapter(context,sharedObject,logVO,keyword);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(logAdapter);
     }
 }
 
