@@ -719,6 +719,16 @@ public class MainActivity extends AppCompatActivity {
                     speech(str);
                     sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
                 }
+            }else if(rs[0].contains("에어컨")){
+                if(rs[0].contains("켜")){
+                    str = "에어컨을 가동합니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
+                }else  if(rs[0].contains("꺼")){
+                    str = "에어컨 작동을 중지합니다";
+                    speech(str);
+                    sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
+                }
             }else if(rs[0].contains("조용")){
                 str = "음성감지를 중단합니다";
                 speech(str);
