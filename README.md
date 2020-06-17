@@ -1,6 +1,6 @@
 # Home Automation Android
 
-## [기술 참조]([https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/master/Android%20information.md](https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/master/Android information.md))
+## [기술 참조](https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/master/Android%20information.md](https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/master/Android information.md))
 
 * Android 사용 기술 자료
 
