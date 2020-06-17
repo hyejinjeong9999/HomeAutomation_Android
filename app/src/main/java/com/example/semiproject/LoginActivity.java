@@ -45,7 +45,7 @@ import java.util.Arrays;
 
 
 public class LoginActivity extends AppCompatActivity {
-
+    String TAG = "LoginActivity";
     public EditText emailId, password;
     String email, pwd, google_profile, google_email = "";
     CheckBox chbx_remember;
@@ -443,7 +443,7 @@ public class LoginActivity extends AppCompatActivity {
             if(result.isSuccess()){
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-            }else{  }
+            }else{}
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             // ??

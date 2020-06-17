@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextToSpeech tts;       //음석 출력관련 변수 선언
 
+    boolean singleResult = false;
+
     LogVO logVO = new LogVO();
     ArrayList<AirconditionerVO> airconditionerData = new ArrayList<AirconditionerVO>();
     ArrayList<AirpurifierVO> airpurifierData = new ArrayList<AirpurifierVO>();
@@ -760,6 +762,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onEndOfSpeech() {
             Log.v(recogTAG, "onEndOfSpeech()");
+            singleResult = true;
         }
 
         @Override
@@ -774,70 +777,85 @@ public class MainActivity extends AppCompatActivity {
             lastClapTime = 0;
             pattenRecognition(intent);
             Log.v(TAG, "너무 늦게 말하면 오류뜹니다");
+
         }
 
         @Override
         public void onResults(Bundle bundle) {
-            String key = "";
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = bundle.getStringArrayList(key);
+            if(singleResult) {
+                Log.v(TAG, "onResults");
+                String key = "";
+                key = SpeechRecognizer.RESULTS_RECOGNITION;
+                ArrayList<String> mResult = bundle.getStringArrayList(key);
 
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
+                String[] rs = new String[mResult.size()];
+                mResult.toArray(rs);
 
-            Log.v(TAG, "음성인식==" + rs[0]);
-            Log.v(TAG, "음성인식size==" + mResult.size());
-            String str = "";
-            if (rs[0].contains("창문")) {
-                if (rs[0].contains("열어")) {
-                    str = "창문을 열겠습니다";
+                Log.v(TAG, "음성인식==" + rs[0]);
+                Log.v(TAG, "음성인식size==" + mResult.size());
+                String str = "";
+                if (rs[0].contains("창문")) {
+                    if (rs[0].contains("열어")) {
+                        str = "창문을 열겠습니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/WINDOW ON");
+                    } else if (rs[0].contains("닫아")) {
+                        str = "창문을 닫겠습니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/WINDOW OFF");
+                    }
+                } else if (rs[0].contains("공기")) {
+                    if (rs[0].contains("켜")) {
+                        str = "공기청정기를 가동합니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/AIRPURIFIER ON");
+                    } else if (rs[0].contains("꺼")) {
+                        str = "공기청정기 작동을 중지합니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
+                    }
+                } else if (rs[0].contains("에어컨")) {
+                    if (rs[0].contains("켜")) {
+                        str = "에어컨을 가동합니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER ON");
+                    } else if (rs[0].contains("꺼")) {
+                        str = "에어컨 작동을 중지합니다";
+                        speech(str);
+                        sharedObject.put("/ANDROID>/AIRCONDITIONER OFF");
+                    }
+                } else if (rs[0].contains("조용")) {
+                    str = "음성감지를 중단합니다";
                     speech(str);
-                    sharedObject.put("/ANDROID>/WINDOW ON");
-                } else if (rs[0].contains("닫아")) {
-                    str = "창문을 닫겠습니다";
-                    speech(str);
-                    sharedObject.put("/ANDROID>/WINDOW OFF");
+                    orderVoiceRecognition = true;
                 }
-            }else if(rs[0].contains("공기")){
-                if(rs[0].contains("켜")){
-                    str = "공기청정기를 가동합니다";
-                    speech(str);
-                    sharedObject.put("/ANDROID>/AIRPURIFIER ON");
-                }else  if(rs[0].contains("꺼")){
-                    str = "공기청정기 작동을 중지합니다";
-                    speech(str);
-                    sharedObject.put("/ANDROID>/AIRPURIFIER OFF");
-                }
-            }else if(rs[0].contains("조용")){
-                str = "음성감지를 중단합니다";
-                speech(str);
-                orderVoiceRecognition = true;
-            }
-            for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
-                if (currentFragment.isVisible()) {
-                    if (currentFragment instanceof FragmentHome) {
-                        Log.v(TAG, "FragmentHome");
-                        startService(serviceIntent);
-                    } else if (currentFragment instanceof FragmentWindow) {
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        if (fragmentWindow == null) {
-                            fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
+                for (Fragment currentFragment : getSupportFragmentManager().getFragments()) {
+                    if (currentFragment.isVisible()) {
+                        if (currentFragment instanceof FragmentHome) {
+                            Log.v(TAG, "FragmentHome");
+                            startService(serviceIntent);
+                        } else if (currentFragment instanceof FragmentWindow) {
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            if (fragmentWindow == null) {
+                                fragmentWindow = new FragmentWindow(sharedObject, bufferedReader, sensorDataVO, weatherVO);
+                            }
+                            fragmentTransaction.replace(
+                                    R.id.frame, fragmentWindow).commitAllowingStateLoss();
+                            bundle.putSerializable("weather", weatherVO);
+                            bundle.putSerializable("sensorData", sensorDataVO);
+                            fragmentWindow.setArguments(bundle);
+                            Log.v(TAG, "FragmentA_OnRefreshListener");
                         }
-                        fragmentTransaction.replace(
-                                R.id.frame, fragmentWindow).commitAllowingStateLoss();
-                        bundle.putSerializable("weather", weatherVO);
-                        bundle.putSerializable("sensorData", sensorDataVO);
-                        fragmentWindow.setArguments(bundle);
-                        Log.v(TAG, "FragmentA_OnRefreshListener");
                     }
                 }
-            }
 
-            if (!dispatcher.isStopped()) {
-                dispatcher.stop();
-                pattenThread.interrupt();
+                if (!dispatcher.isStopped()) {
+                    dispatcher.stop();
+                    pattenThread.interrupt();
+                }
+                pattenRecognition(intent);
+                singleResult = false;
             }
-            pattenRecognition(intent);
         }
 
         @Override
