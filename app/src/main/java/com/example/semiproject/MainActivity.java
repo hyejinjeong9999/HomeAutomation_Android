@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.v(TAG,"JSON TEST  windowList.length()=="+ windowList.length());
 
                                         for(int i = 0; i < airconditionerList.length(); i++){
-                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            Log.v(TAG,"JSON TEST airconditionerList i=="+i);
                                             AirconditionerVO airconditionerVO = new AirconditionerVO();
                                             JSONObject airconditionerListData = airconditionerList.getJSONObject(i);
                                             airconditionerVO.setAirconditionerStatus(airconditionerListData.getString("airconditionerStatus"));
@@ -473,45 +473,46 @@ public class MainActivity extends AppCompatActivity {
                                             Log.v(TAG,"JSON TEST airconditionerList=="+airconditionerListData);
                                         }
                                         for(int i = 0; i < airpurifierList.length(); i++){
-                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            Log.v(TAG,"JSON TEST airpurifierList i=="+i);
                                             AirpurifierVO airpurifierVO = new AirpurifierVO();
                                             JSONObject airpurifierListData = airpurifierList.getJSONObject(i);
-                                            airpurifierVO.setAirpurifierStatus(airpurifierListData.getString(""));
-                                            airpurifierVO.setAirpurifierTime(airpurifierListData.getString(""));
+                                            airpurifierVO.setAirpurifierStatus(airpurifierListData.getString("airpurifierStatus"));
+                                            airpurifierVO.setAirpurifierTime(airpurifierListData.getString("airpurifierTime"));
                                             airpurifierData.add(airpurifierVO);
                                             logVO.setAirpurifierList(airpurifierData);
-                                            Log.v(TAG,"JSON TEST airconditionerList=="+airpurifierListData);
+                                            Log.v(TAG,"JSON TEST airpurifierListData=="+airpurifierListData);
                                         }
                                         for(int i = 0; i < doorList.length(); i++){
-                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            Log.v(TAG,"JSON TEST doorList i=="+i);
                                             DoorVO doorVO = new DoorVO();
                                             JSONObject doorListData = doorList.getJSONObject(i);
-                                            doorVO.setDoorStatus(doorListData.getString(""));
-                                            doorVO.setDoorTime(doorListData.getString(""));
+                                            doorVO.setDoorStatus(doorListData.getString("doorStatus"));
+                                            doorVO.setDoorTime(doorListData.getString("doorTime"));
                                             doorData.add(doorVO);
                                             logVO.setDoorList(doorData);
-                                            Log.v(TAG,"JSON TEST airconditionerList=="+doorListData);
-                                        }
-                                        for(int i = 0; i < lightList.length(); i++){
-                                            Log.v(TAG,"JSON TEST i=="+i);
-                                            LightVO lightVO = new LightVO();
-                                            JSONObject lightListData = lightList.getJSONObject(i);
-                                            lightVO.setLightStatus(lightListData.getString(""));
-                                            lightVO.setLightTime(lightListData.getString(""));
-                                            lightData.add(lightVO);
-                                            logVO.setLightList(lightData);
-                                            Log.v(TAG,"JSON TEST airconditionerList=="+lightListData);
+                                            Log.v(TAG,"JSON TEST doorListData=="+doorListData);
                                         }
                                         for(int i = 0; i < windowList.length(); i++){
-                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            Log.v(TAG,"JSON TEST windowList i=="+i);
                                             WindowVO windowVO = new WindowVO();
                                             JSONObject windowListData = windowList.getJSONObject(i);
-                                            windowVO.setWindowStatus(windowListData.getString(""));
-                                            windowVO.setWindowTime(windowListData.getString(""));
+                                            windowVO.setWindowStatus(windowListData.getString("windowStatus"));
+                                            windowVO.setWindowTime(windowListData.getString("windowTime"));
                                             windowData.add(windowVO);
                                             logVO.setWindowList(windowData);
-                                            Log.v(TAG,"JSON TEST airconditionerList=="+windowListData);
+                                            Log.v(TAG,"JSON TEST windowListData=="+windowListData);
                                         }
+                                        for(int i = 0; i < lightList.length(); i++){
+                                            Log.v(TAG,"JSON TEST  lightList i=="+i);
+                                            LightVO lightVO = new LightVO();
+                                            JSONObject lightListData = lightList.getJSONObject(i);
+                                            lightVO.setLightStatus(lightListData.getString("lightStatus"));
+                                            lightVO.setLightTime(lightListData.getString("lightTime"));
+                                            lightData.add(lightVO);
+                                            logVO.setLightList(lightData);
+                                            Log.v(TAG,"JSON TEST lightListData=="+lightListData);
+                                        }
+
                                     }
                                 }
                             } catch (IOException e) {

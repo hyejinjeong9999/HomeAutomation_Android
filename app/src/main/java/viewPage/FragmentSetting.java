@@ -63,12 +63,15 @@ public class FragmentSetting extends Fragment {
     ArrayList<AirconditionerVO> airconditionerData  = new ArrayList<>();
     ArrayList<String> airconditionerData1 = new ArrayList<>();
     String[] abcData = new String[10];
+    String logDataStatus;
 
     ImageView settingProfile;
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
-    Button btnLog1;
+    Button btnairconditioner;
+    Button btnAirpurifier;
+    Button btnWindow;
     Switch settingVoiceRecognitionBtn;
     ListView lvLog;
 
@@ -100,31 +103,23 @@ public class FragmentSetting extends Fragment {
 
         acct = GoogleSignIn.getLastSignedInAccount(context);
         settingProfile = view.findViewById(R.id.settingProfile);
-        settingName = view.findViewById(R.id.settingName);
+//        settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
-        btnLog1 = view.findViewById(R.id.btnLog1);
+        btnairconditioner = view.findViewById(R.id.btnairconditioner);
+        btnAirpurifier = view.findViewById(R.id.btnAirpurifier);
+        btnWindow = view.findViewById(R.id.btnWindow);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
+
+        btnairconditioner.setOnClickListener(mClick);
+        btnAirpurifier.setOnClickListener(mClick);
+        btnWindow.setOnClickListener(mClick);
+        settingLogut.setOnClickListener(mClick);
+
 //        lvLog = view.findViewById(R.id.lvLog);
         logVO = (LogVO)getArguments().get("LOGVO");
 
-        airconditionerData = logVO.getAirconditionerList();
-        for (int i = 0 ; i < airconditionerData.size() ; i ++){
-            airconditionerData1.add(airconditionerData.get(i).getAirconditionerStatus());
-            abcData[i] = airconditionerData.get(i).getAirconditionerStatus();
-        }
 
-//        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,airconditionerData1);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                context, LinearLayoutManager.VERTICAL, false);
-        logAdapter = new LogAdapter(context,sharedObject,logVO);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(logAdapter);
-
-//        Bundle bundle = getArguments();
-//        settingName.setText(bundle.getString("userEmail"));
         //profiles
 
         //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -177,19 +172,17 @@ public class FragmentSetting extends Fragment {
         } else {
             settingVoiceRecognitionBtn.setChecked(false);
         }
-        // btn
-        btnLog1.setOnClickListener(mClick);
-        settingLogut.setOnClickListener(mClick);
+
 
         return view;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
     }
+
     View.OnClickListener mClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -201,15 +194,20 @@ public class FragmentSetting extends Fragment {
                     }
                     alertsignout();
                     break;
-                case R.id.btnLog1:
-
+                case R.id.btnairconditioner:
+                    recyclerViewCall("Airconditioner");
+                    break;
+                case R.id.btnAirpurifier:
+                    recyclerViewCall("Airpurifier");
+                    break;
+                case R.id.btnWindow:
+                    recyclerViewCall("Window");
                     break;
             }
         }
     };
 
-    public void alertsignout()
-    {
+    public void alertsignout() {
         AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
@@ -247,6 +245,15 @@ public class FragmentSetting extends Fragment {
 
         // Showing Alert Dialog
         signOutAlertDialog.show();
+    }
+
+    public void recyclerViewCall(String keyword){
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                context, LinearLayoutManager.VERTICAL, false);
+        logAdapter = new LogAdapter(context,sharedObject,logVO,keyword);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(logAdapter);
     }
 }
 

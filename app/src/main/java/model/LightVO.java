@@ -4,23 +4,23 @@ import java.io.Serializable;
 
 public class LightVO implements Serializable {
 
-    String LightStatus = "";
-    String LightTime = "";
+    String lightStatus = "";
+    String lightTime = "";
 
     public String getLightStatus() {
-        return LightStatus;
+        return lightStatus;
     }
 
     public void setLightStatus(String lightStatus) {
-        LightStatus = lightStatus;
+        lightStatus = lightStatus;
     }
 
     public String getLightTime() {
-        return LightTime;
+        return lightTime;
     }
 
     public void setLightTime(String lightTime) {
-        LightTime = lightTime;
+        lightTime = lightTime;
     }
 
 }

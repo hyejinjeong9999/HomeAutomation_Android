@@ -42,15 +42,6 @@
                 android:layout_weight="10"
                 android:adjustViewBounds="true" />
             <TextView
-                android:id="@+id/settingName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:textAlignment="center"
-                android:text="null"
-                android:textColor="@color/fontDark"
-                android:textSize="15sp" />
-            <TextView
                 android:id="@+id/settingEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,29 +70,29 @@
             android:layout_marginVertical="30dp"
             android:layout_marginTop="10dp">
             <Button
-                android:id="@+id/btnLog1"
+                android:id="@+id/btnairconditioner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="로그보기"
+                android:text="에어컨"
                 android:textSize="15sp"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
             <Button
-                android:id="@+id/btnLog2"
+                android:id="@+id/btnAirpurifier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="로그보기"
+                android:text="공기청정기"
                 android:textSize="15sp"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
             <Button
-                android:id="@+id/btnLog3"
+                android:id="@+id/btnWindow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="로그보기"
+                android:text="창문"
                 android:textSize="15sp"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
