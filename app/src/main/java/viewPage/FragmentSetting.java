@@ -27,12 +27,14 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
 import com.example.semiproject.R;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.io.BufferedReader;
 import java.util.Objects;
@@ -108,20 +110,36 @@ public class FragmentSetting extends Fragment {
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
-        }else if(user != null){ //  custom firebaseAuth profiles
+
+        }else if(user.getEmail() != null){ //  custom firebaseAuth profiles
             Log.i("ltest", "user != null");
             // Name, email address, and profile photo Url
             userName = user.getDisplayName();
             userEmail = user.getEmail();
             userPhotoURI = user.getPhotoUrl();
-            boolean emailVerified = user.isEmailVerified();
+
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
             settingName.setText(userName);
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
             Glide.with(context).load(userPhotoURI).into(settingProfile);
         }else {
-            Toast.makeText(context, "user == null", Toast.LENGTH_SHORT).show();
+            Log.i("ltest", "else !");
+            // Name, email address, and profile photo Url
+            for (UserInfo userInfo : user.getProviderData()) {
+                if (userName == null && userInfo.getDisplayName() != null) {
+                    userName = userInfo.getDisplayName();
+                }
+                if (userEmail == null && userInfo.getEmail() != null) {
+                    userEmail = userInfo.getEmail();
+                }
+            }
+            userEmail = user.getEmail();
+            userName = user.getDisplayName();
+            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
+            settingName.setText(userName);
+            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
+                    "\n" + " 반갑습니당, '" + userName + "'님");
         }
 
 
@@ -173,7 +191,7 @@ public class FragmentSetting extends Fragment {
                         sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
                     }
                 }
-                alertsignout();
+                alertSingOut();
                 break;
                 case R.id.btnLog:{
                     // code
@@ -183,7 +201,7 @@ public class FragmentSetting extends Fragment {
         }
     };
 
-    public void alertsignout()
+    public void alertSingOut()
     {
         AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(context);
 
@@ -204,6 +222,7 @@ public class FragmentSetting extends Fragment {
                             googleSignInClient.signOut();
                             Objects.requireNonNull(getActivity()).finish();
                         }else{
+                            LoginManager.getInstance().logOut();
                             FirebaseAuth.getInstance().signOut();
                             Objects.requireNonNull(getActivity()).finish();
                         }

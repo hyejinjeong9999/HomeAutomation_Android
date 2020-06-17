@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- timepicker permission 설정 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/><!-- kakao -->
+
 
     <application
         android:allowBackup="true"
@@ -68,7 +70,7 @@
         <!-- kakao -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="2f099570df2c15b718ee5e7765f1f4df" />
+            android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>

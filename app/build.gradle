@@ -53,6 +53,7 @@ dependencies {
     implementation files('lib/musicg-1.4.2.0.jar')
     implementation files('lib/TarsosDSP-latest.jar')
     // add the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation 'com.google.firebase:firebase-core:17.4.3'
@@ -64,5 +65,7 @@ dependencies {
     // add the Firebase SDK for kakao
     implementation "com.kakao.sdk:v2-user-rx:2.0.0-beta02"
     implementation group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    // add the Firebase SDK for gitHub
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
 }
 apply plugin: 'com.google.gms.google-services'
