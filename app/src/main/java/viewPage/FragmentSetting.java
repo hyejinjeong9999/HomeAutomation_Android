@@ -131,7 +131,6 @@ public class FragmentSetting extends Fragment {
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
 
         // custom firebaseAuth profiles
-        user = mFirebaseAuth.getInstance().getCurrentUser();
 
         if (acct != null) {     //  google acct profiles
             Log.i("ltest", "acct != null");
@@ -140,14 +139,13 @@ public class FragmentSetting extends Fragment {
         }else if(user != null){ //  custom firebaseAuth profiles
             Log.i("ltest", "user != null");
             // Name, email address, and profile photo Url
-            userName = user.getDisplayName();
             userEmail = user.getEmail();
             userPhotoURI = user.getPhotoUrl();
 
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
 
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
-                    "\n" + " 반갑습니당, '" + userName + "'님");
+                    "\n" + " 반갑습니당, '" );
             Glide.with(context).load(userPhotoURI).into(settingProfile);
         }
         /*else {
