@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView signUpTv;
     //  FirebaseAuth
     FirebaseAuth mAuth;
-    FirebaseUser user;
+    FirebaseUser mFirebaseUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     // Access a Cloud Firestore instance from your Activity
     // FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
-                FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+                mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
                     Toast.makeText(LoginActivity.this, "mFirebaseUser != null # You are logged in..", Toast.LENGTH_SHORT).show();
 //                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
@@ -119,54 +119,66 @@ public class LoginActivity extends AppCompatActivity {
 
         // facebook login
         iv_ic_facebook = (ImageView) findViewById(R.id.iv_ic_facebook);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setPermissions("email");
         iv_ic_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
+                loginButton.performClick();
+                /*
                 LoginManager.getInstance().logInWithReadPermissions(
                         LoginActivity.this,
-                        Arrays.asList("email"));
+                        Arrays.asList("public_profile", "email"));
 //                Arrays.asList("public_profile", "user_friends"));
 
-                // Callback registration
-                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(LoginActivity.this, "Login 성공", Toast.LENGTH_LONG).show();
-                    }
 
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                */
             }
         });
-//
-//        mCallbackManager = CallbackManager.Factory.create();
-//        // facebook loginManager callback
-//        LoginManager.getInstance().registerCallback(mCallbackManager,
-//                new FacebookCallback<LoginResult>() {
-//                    @Override
-//                    public void onSuccess(LoginResult loginResult) {
-//                        // App code
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//                        // App code
-//                    }
-//
-//                    @Override
-//                    public void onError(FacebookException exception) {
-//                        // App code
-//                    }
-//                });
+/*
 
+        // Callback registration
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(LoginActivity.this, "loginButton:Login 성공", Toast.LENGTH_LONG).show();
+                Log.i("test", "일단 facebook loginbutton callback ");
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+*/
+
+        // Callback registration
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(LoginActivity.this, "loginManager:Login 성공", Toast.LENGTH_LONG).show();
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                Log.i("test", "일단 facebook callback ");
+
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(LoginActivity.this, "Login 안해", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
         // custom email login
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                Log.i("test", "custom 로그인 간다~");
                                 startActivity(i);
                                 finish();
                                 save();
@@ -252,6 +265,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser gFirebaseUser = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
                             google_email = acct.getEmail();
+                            Log.i("test", "google 로그인 간다~");
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
                             finish();
@@ -266,6 +280,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
+        Log.i("LoginTest", "onStart");
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -278,7 +293,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
         if(mAuthStateListener != null){
             mAuth.removeAuthStateListener(mAuthStateListener);
-            mAuth.getInstance().signOut();
+            FirebaseAuth.getInstance().signOut();
         }
     }
 
@@ -289,6 +304,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // facebook
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         // google
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -303,25 +321,31 @@ public class LoginActivity extends AppCompatActivity {
             // ??
             /*Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);*/
-
-            // facebook
-            mCallbackManager.onActivityResult(requestCode, resultCode, data);
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
     private void handleFacebookAccessToken(AccessToken token) {
-
+        Log.i("test", "AccessToken token ~" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        Log.i("test", "AccessToken token ~" + token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.i("test", "isSuccessful");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            String fb_profile = String.valueOf(user.getPhotoUrl());
+                            String fb_email = user.getEmail();
+                            Toast.makeText(LoginActivity.this, "fb_email: " + fb_email + " : Login~", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            Log.i("test", "facebook 로그인 간다~");
+                            startActivity(i);
+                            finish();
                         } else {
+                            Log.i("test", "!isSuccessful ~");
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Facebook Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

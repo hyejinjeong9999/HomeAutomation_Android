@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
-import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -117,7 +116,7 @@ public class FragmentSetting extends Fragment {
             userPhotoURI = user.getPhotoUrl();
             boolean emailVerified = user.isEmailVerified();
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-
+            settingName.setText(userName);
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
             Glide.with(context).load(userPhotoURI).into(settingProfile);
