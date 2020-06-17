@@ -428,67 +428,91 @@ public class MainActivity extends AppCompatActivity {
                                 jsonData = bufferedReader.readLine();
                                 Log.v(TAG, "jsonDataReceive==" + jsonData);
                                 if (jsonData != null) {
-//                                    sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
-//
-//                                    sensorDataVO.setMode(sensorDataVO2.getMode());
-//                                    sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
-//                                    sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
-//                                    sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
-//                                    sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
-//                                    sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
-//                                    sensorDataVO.setDust10(sensorDataVO2.getDust10());
-//                                    sensorDataVO.setDust25(sensorDataVO2.getDust25());
-//                                    sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
-//                                    sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
-//                                    sensorDataVO.setTemp(sensorDataVO2.getTemp());
-//                                    sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
-//
-//                                    bundle.putSerializable("sensorData", sensorDataVO);
-//
-//                                    Log.v(TAG, sensorDataVO.toString());
 
-                                    JSONObject jsonObject = new JSONObject(jsonData);
-                                    Log.v(TAG,"JSON TEST  jsonObject.length()=="+ jsonObject.length());
-                                    JSONArray airconditionerList = jsonObject.getJSONArray("airconditionerList");
-                                    JSONArray airpurifierList = jsonObject.getJSONArray("airpurifierList");
-                                    JSONArray doorList = jsonObject.getJSONArray("doorList");
-                                    JSONArray lightList = jsonObject.getJSONArray("lightList");
-                                    JSONArray windowList = jsonObject.getJSONArray("windowList");
-                                    Log.v(TAG,"JSON TEST  airconditionerList.length()=="+ airconditionerList.length());
-                                    Log.v(TAG,"JSON TEST  airconditionerStatus=="+ airconditionerList.getJSONObject(0).getString("airconditionerStatus"));
-                                    Log.v(TAG,"JSON TEST  airpurifierList.length()=="+ airpurifierList.length());
-                                    Log.v(TAG,"JSON TEST  doorList.length()=="+ doorList.length());
-                                    Log.v(TAG,"JSON TEST  lightList.length()=="+ lightList.length());
-                                    Log.v(TAG,"JSON TEST  windowList.length()=="+ windowList.length());
+                                    if(jsonData.contains("mode")){
+                                        sensorDataVO2 = objectMapper.readValue(jsonData, SensorDataVO.class);
 
-                                   for(int i = 0; i < airconditionerList.length(); i++){
-                                       Log.v(TAG,"JSON TEST i=="+i);
-                                       AirconditionerVO airconditionerVO = new AirconditionerVO();
-                                       JSONObject airconditionerListData = airconditionerList.getJSONObject(i);
-                                       airconditionerVO.setAirconditionerStatus(airconditionerListData.getString("airconditionerStatus"));
-                                       airconditionerVO.setAirconditionerTime(airconditionerListData.getString("airconditionerTime"));
-                                       airconditionerData.add(airconditionerVO);
-                                       logVO.setAirconditionerList(airconditionerData);
-                                       Log.v(TAG,"JSON TEST airconditionerList=="+airconditionerListData);
-                                   }
+                                        sensorDataVO.setMode(sensorDataVO2.getMode());
+                                        sensorDataVO.setAirconditionerMode(sensorDataVO2.getAirconditionerMode());
+                                        sensorDataVO.setAirconditionerSpeed(sensorDataVO2.getAirconditionerSpeed());
+                                        sensorDataVO.setAirconditionerStatus(sensorDataVO2.getAirconditionerStatus());
+                                        sensorDataVO.setAirconditionerTemp(sensorDataVO2.getAirconditionerTemp());
+                                        sensorDataVO.setAirpurifierStatus(sensorDataVO2.getAirpurifierStatus());
+                                        sensorDataVO.setDust10(sensorDataVO2.getDust10());
+                                        sensorDataVO.setDust25(sensorDataVO2.getDust25());
+                                        sensorDataVO.setGasStatus(sensorDataVO2.getGasStatus());
+                                        sensorDataVO.setLightStatus(sensorDataVO2.getLightStatus());
+                                        sensorDataVO.setTemp(sensorDataVO2.getTemp());
+                                        sensorDataVO.setWindowStatus(sensorDataVO2.getWindowStatus());
 
+                                        bundle.putSerializable("sensorData", sensorDataVO);
+                                        Log.v(TAG, sensorDataVO.toString());
+                                    }else {
+                                        JSONObject jsonObject = new JSONObject(jsonData);
+                                        Log.v(TAG,"JSON TEST  jsonObject.length()=="+ jsonObject.length());
+                                        JSONArray airconditionerList = jsonObject.getJSONArray("airconditionerList");
+                                        JSONArray airpurifierList = jsonObject.getJSONArray("airpurifierList");
+                                        JSONArray doorList = jsonObject.getJSONArray("doorList");
+                                        JSONArray lightList = jsonObject.getJSONArray("lightList");
+                                        JSONArray windowList = jsonObject.getJSONArray("windowList");
+                                        Log.v(TAG,"JSON TEST  airconditionerList.length()=="+ airconditionerList.length());
+                                        Log.v(TAG,"JSON TEST  airconditionerStatus=="+ airconditionerList.getJSONObject(0).getString("airconditionerStatus"));
+                                        Log.v(TAG,"JSON TEST  airpurifierList.length()=="+ airpurifierList.length());
+                                        Log.v(TAG,"JSON TEST  doorList.length()=="+ doorList.length());
+                                        Log.v(TAG,"JSON TEST  lightList.length()=="+ lightList.length());
+                                        Log.v(TAG,"JSON TEST  windowList.length()=="+ windowList.length());
 
-//                                    Log.v(TAG, "DEBUG:stringBuffer==" + stringBuffer);
-//                                    String data = stringBuffer.toString();
-//                                    JSONObject jsonData = new JSONObject(data);
-//                                    JSONArray documents = jsonData.getJSONArray("documents");
-//                                    docList = new ArrayList();
-//                                    documentList = new ArrayList<Document>();
-//                                    for(int i = 0; i < documents.length(); i++) {
-//                                        JSONObject document = documents.getJSONObject(i);
-//                                        Document doc = new Document(document);
-//                                        docList.add(doc);
-//                                        documentList.add(doc);
-//                                        Log.v(TAG, "DEBUG:document[" + i + "]=" + document);
-//                                    }
-//                                    Log.v(TAG, "DEBUG:jsonData==" + jsonData);
-//                                    Log.v(TAG,"docList==="+documentList);
-
+                                        for(int i = 0; i < airconditionerList.length(); i++){
+                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            AirconditionerVO airconditionerVO = new AirconditionerVO();
+                                            JSONObject airconditionerListData = airconditionerList.getJSONObject(i);
+                                            airconditionerVO.setAirconditionerStatus(airconditionerListData.getString("airconditionerStatus"));
+                                            airconditionerVO.setAirconditionerTime(airconditionerListData.getString("airconditionerTime"));
+                                            airconditionerData.add(airconditionerVO);
+                                            logVO.setAirconditionerList(airconditionerData);
+                                            Log.v(TAG,"JSON TEST airconditionerList=="+airconditionerListData);
+                                        }
+                                        for(int i = 0; i < airpurifierList.length(); i++){
+                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            AirpurifierVO airpurifierVO = new AirpurifierVO();
+                                            JSONObject airpurifierListData = airpurifierList.getJSONObject(i);
+                                            airpurifierVO.setAirpurifierStatus(airpurifierListData.getString(""));
+                                            airpurifierVO.setAirpurifierTime(airpurifierListData.getString(""));
+                                            airpurifierData.add(airpurifierVO);
+                                            logVO.setAirpurifierList(airpurifierData);
+                                            Log.v(TAG,"JSON TEST airconditionerList=="+airpurifierListData);
+                                        }
+                                        for(int i = 0; i < doorList.length(); i++){
+                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            DoorVO doorVO = new DoorVO();
+                                            JSONObject doorListData = doorList.getJSONObject(i);
+                                            doorVO.setDoorStatus(doorListData.getString(""));
+                                            doorVO.setDoorTime(doorListData.getString(""));
+                                            doorData.add(doorVO);
+                                            logVO.setDoorList(doorData);
+                                            Log.v(TAG,"JSON TEST airconditionerList=="+doorListData);
+                                        }
+                                        for(int i = 0; i < lightList.length(); i++){
+                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            LightVO lightVO = new LightVO();
+                                            JSONObject lightListData = lightList.getJSONObject(i);
+                                            lightVO.setLightStatus(lightListData.getString(""));
+                                            lightVO.setLightTime(lightListData.getString(""));
+                                            lightData.add(lightVO);
+                                            logVO.setLightList(lightData);
+                                            Log.v(TAG,"JSON TEST airconditionerList=="+lightListData);
+                                        }
+                                        for(int i = 0; i < windowList.length(); i++){
+                                            Log.v(TAG,"JSON TEST i=="+i);
+                                            WindowVO windowVO = new WindowVO();
+                                            JSONObject windowListData = windowList.getJSONObject(i);
+                                            windowVO.setWindowStatus(windowListData.getString(""));
+                                            windowVO.setWindowTime(windowListData.getString(""));
+                                            windowData.add(windowVO);
+                                            logVO.setWindowList(windowData);
+                                            Log.v(TAG,"JSON TEST airconditionerList=="+windowListData);
+                                        }
+                                    }
                                 }
                             } catch (IOException e) {
                                 Log.v(TAG, "IOException==" + e);
