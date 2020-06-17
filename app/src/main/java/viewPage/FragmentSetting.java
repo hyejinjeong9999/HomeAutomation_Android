@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -38,7 +37,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
@@ -48,7 +46,6 @@ import communication.SharedObject;
 import model.AirconditionerVO;
 import model.LogVO;
 import recyclerViewAdapter.LogAdapter;
-import recyclerViewAdapter.VerticalAdapter;
 
 
 public class FragmentSetting extends Fragment {
@@ -237,13 +234,13 @@ public class FragmentSetting extends Fragment {
         AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
-        signOutAlertDialog.setTitle("Confirm SignOut");
+        signOutAlertDialog.setTitle("확인");
 
         // Setting Dialog Message
         signOutAlertDialog.setMessage("로그아웃 하시겠습니까?");
 
         // Setting Positive "Yes" Btn
-        signOutAlertDialog.setPositiveButton("YES",
+        signOutAlertDialog.setPositiveButton("네",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if(acct != null){
@@ -269,10 +266,10 @@ public class FragmentSetting extends Fragment {
 
 
         // Setting Negative "NO" Btn
-        signOutAlertDialog.setNegativeButton("NO",
+        signOutAlertDialog.setNegativeButton("아니요",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context,"NO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"로그아웃 취소", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                     }
                 });

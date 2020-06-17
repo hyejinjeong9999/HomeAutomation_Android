@@ -40,7 +40,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
-import com.kakao.auth.Session;
 
 import java.util.Arrays;
 
@@ -147,12 +146,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
                 mFirebaseUser = mAuth.getCurrentUser();
                 if( mFirebaseUser != null){
-                    Toast.makeText(LoginActivity.this, "mFirebaseUser != null # You are logged in..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "로그인 중입니다..", Toast.LENGTH_SHORT).show();
 //                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
 //                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //                    startActivity(i);
                 }else{
-                    Toast.makeText(LoginActivity.this, "mFirebaseUser == null # Please LogIn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "로그인 해주세요", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -185,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(LoginActivity.this, "loginButton:Login 성공", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "페이스북 로그인 성공", Toast.LENGTH_LONG).show();
                 Log.i("test", "일단 facebook loginbutton callback ");
                 setResult(RESULT_OK);
                 finish();
@@ -233,7 +232,6 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnSuccessListener( new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-                                Toast.makeText(LoginActivity.this, "onSuccess", Toast.LENGTH_SHORT).show();
                                 Log.i("test", "startActivityForSignInWithProvider # User is signed in \n"
                                  + authResult.toString());
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -248,7 +246,6 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(LoginActivity.this, "onFailure", Toast.LENGTH_SHORT).show();
                                         Log.i("test", "startActivityForSignInWithProvider # github 로그인 실패 \n"
                                                 + e.toString());
                                         // Handle failure.
@@ -330,13 +327,16 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
+                                Toast.makeText(LoginActivity.this, "아이디를 저장합니다", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                 Log.i("test", "custom 로그인 간다~");
                                 startActivity(i);
+                                Toast.makeText(LoginActivity.this, "로그인 중입니다", Toast.LENGTH_SHORT).show();
                                 finish();
                                 save();
+
                             }else {
-                                Toast.makeText(LoginActivity.this, "Login Error, check again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "로그인 에러", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -388,7 +388,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "구글 인증 완료", Toast.LENGTH_SHORT).show();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser gFirebaseUser = mAuth.getCurrentUser();
                             google_profile = String.valueOf(acct.getPhotoUrl());
@@ -400,7 +400,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             // Snackbar.make(findViewById(R.id.sample_snackbar), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "구글 인증에 실패했습니다", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -450,10 +450,10 @@ public class LoginActivity extends AppCompatActivity {
             /*Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);*/
         }
-        // kakao
+/*        // kakao
         if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
             return;
-        }
+        }*/
     }
     private void handleFacebookAccessToken(AccessToken token) {
         Log.i("test", "AccessToken token ~" + token);
