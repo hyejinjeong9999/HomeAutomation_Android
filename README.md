@@ -1,6 +1,6 @@
 # Home Automation Android
 
-## [기술 참조](https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/kim/Android information.md)
+## [기술 참조](https://github.com/hyejinjeong9999/HomeAutomation_Android/blob/kim/AndroidInformation.md)
 
 * Android 사용 기술 자료
 
@@ -20,3 +20,4 @@
 
 - https://openweathermap.org/weather-conditions > "weather" 항목 세부사항 및 아이콘 리스트
 - https://erikflowers.github.io/weather-icons/ > .svg 폴더에 날씨 아이콘 
+
