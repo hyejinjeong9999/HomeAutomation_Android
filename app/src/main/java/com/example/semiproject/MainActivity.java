@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.v(TAG, "Socket Situation==" + socket.isConnected());
                 name = name.trim();
-                user = FirebaseAuth.getInstance().getCurrentUser();
+                //user = FirebaseAuth.getInstance().getCurrentUser();
                 user_email = user.getEmail();
                 sharedObject.put(name + user_email + " IN");
                 Log.v(TAG, "user name ==" + user_email);
