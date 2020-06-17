@@ -10,4 +10,6 @@ public class ViewType {
 
     public static final int ItemVerticalAir = 10;
     public static final int ItemVerticalAirControl = 11;
+
+    public static final int itemVerticalLog= 20;
 }

@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +25,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.semiproject.LoginActivity;
+import com.example.semiproject.MainActivity;
 import com.example.semiproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,9 +40,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
-import java.util.Objects;
+import java.util.ArrayList;
 
 import communication.SharedObject;
+import model.AirconditionerVO;
+import model.LogVO;
+import recyclerViewAdapter.LogAdapter;
+import recyclerViewAdapter.VerticalAdapter;
 
 
 public class FragmentSetting extends Fragment {
@@ -49,13 +58,19 @@ public class FragmentSetting extends Fragment {
 
     SharedObject sharedObject;
     BufferedReader bufferedReader;
+    LogVO logVO;
+    LogAdapter logAdapter;
+    ArrayList<AirconditionerVO> airconditionerData  = new ArrayList<>();
+    ArrayList<String> airconditionerData1 = new ArrayList<>();
+    String[] abcData = new String[10];
 
     ImageView settingProfile;
     TextView settingName;
     TextView settingEmail;
     Button settingLogut;
-    Button btnLog;
+    Button btnLog1;
     Switch settingVoiceRecognitionBtn;
+    ListView lvLog;
 
     boolean voiceRecognition;
     private SharedPreferences appData;
@@ -63,6 +78,7 @@ public class FragmentSetting extends Fragment {
     // firebaseAuth
     String userEmail, userName;
     Uri userPhotoURI;
+    FirebaseAuth mFirebaseAuth;
     FirebaseUser user;
     GoogleSignInAccount acct;
 
@@ -83,15 +99,30 @@ public class FragmentSetting extends Fragment {
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
 
-        // firebase
         acct = GoogleSignIn.getLastSignedInAccount(context);
-
         settingProfile = view.findViewById(R.id.settingProfile);
         settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
-        btnLog = view.findViewById(R.id.btnLog);
+        btnLog1 = view.findViewById(R.id.btnLog1);
         settingVoiceRecognitionBtn = view.findViewById(R.id.settingVoiceRecognitionBtn);
+//        lvLog = view.findViewById(R.id.lvLog);
+        logVO = (LogVO)getArguments().get("LOGVO");
+
+        airconditionerData = logVO.getAirconditionerList();
+        for (int i = 0 ; i < airconditionerData.size() ; i ++){
+            airconditionerData1.add(airconditionerData.get(i).getAirconditionerStatus());
+            abcData[i] = airconditionerData.get(i).getAirconditionerStatus();
+        }
+
+//        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,airconditionerData1);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                context, LinearLayoutManager.VERTICAL, false);
+        logAdapter = new LogAdapter(context,sharedObject,logVO);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(logAdapter);
 
 //        Bundle bundle = getArguments();
 //        settingName.setText(bundle.getString("userEmail"));
@@ -102,9 +133,11 @@ public class FragmentSetting extends Fragment {
         settingProfile.setClipToOutline(true);
         //settingName.setText(acct.getDisplayName());
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
+
         // custom firebaseAuth profiles
+        user = mFirebaseAuth.getInstance().getCurrentUser();
+
         if (acct != null) {     //  google acct profiles
-            settingName.setText(acct.getDisplayName());
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
@@ -116,12 +149,10 @@ public class FragmentSetting extends Fragment {
             userPhotoURI = user.getPhotoUrl();
             boolean emailVerified = user.isEmailVerified();
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-            settingName.setText(userName);
+
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" + userName + "'님");
             Glide.with(context).load(userPhotoURI).into(settingProfile);
-        }else {
-            Toast.makeText(context, "user == null", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -148,7 +179,7 @@ public class FragmentSetting extends Fragment {
             settingVoiceRecognitionBtn.setChecked(false);
         }
         // btn
-        btnLog.setOnClickListener(mClick);
+        btnLog1.setOnClickListener(mClick);
         settingLogut.setOnClickListener(mClick);
 
         return view;
@@ -165,55 +196,47 @@ public class FragmentSetting extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.settingLogout: {
+                case R.id.settingLogout:
                     if(acct != null){
-                        // code
                     }else if(user != null){
-                        // code
-                        sharedObject.put("/ID:ANDROID" + user.getEmail() + " OUT");
+
                     }
-                }
-                alertsignout();
-                break;
-                case R.id.btnLog:{
-                    // code
-                }
-                break;
+                    alertsignout();
+                    break;
+                case R.id.btnLog1:
+
+                    break;
             }
         }
     };
 
     public void alertsignout()
     {
-        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(context);
+        AlertDialog.Builder signOutAlertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
         signOutAlertDialog.setTitle("Confirm SignOut");
 
         // Setting Dialog Message
-        signOutAlertDialog.setMessage("로그아웃 하시겠습니까?");
+        signOutAlertDialog.setMessage("Are you sure you want to Signout?");
 
         // Setting Positive "Yes" Btn
         signOutAlertDialog.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(acct != null){
-                            // google signout
-                            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
-                            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, gso);
-                            googleSignInClient.signOut();
-                            Objects.requireNonNull(getActivity()).finish();
-                        }else{
-                            FirebaseAuth.getInstance().signOut();
-                            Objects.requireNonNull(getActivity()).finish();
-                        }
+                        mFirebaseAuth.getInstance().signOut();
+                        // google signout
+                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+                        googleSignInClient.signOut();
+                        ((MainActivity) getActivity()).finish();
+                        Log.v(TAG,"getActivity=="+getActivity());
                         Intent i = new Intent(context, LoginActivity.class);
-                        /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
                     }
                 });
+        /* TODO: 언제 finish()룰 해야하는걸까? 알아보기*/
 
         // Setting Negative "NO" Btn
         signOutAlertDialog.setNegativeButton("NO",
