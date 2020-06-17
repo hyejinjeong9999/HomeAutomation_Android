@@ -66,15 +66,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginVertical="30dp"
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/btnairconditioner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:text="에어컨"
+
                 android:textSize="15sp"
                 android:textColor="@color/fontDark"
                 android:background="@drawable/air_temp_line_clicked"/>
