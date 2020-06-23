@@ -181,36 +181,36 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG, "onBindViewHolder()_onClick()_position==" + position);
-                switch (position) {
-                    case 0:
-                        Log.v(TAG, "onBindViewHolder()_onClick()_position=0=" + position);
-                        break;
-                    case 1:
-                        Log.v(TAG, "onBindViewHolder()_onClick()_position=1=" + position);
-                        break;
-                    case 3:
-                        if (sparseBooleanArray.get(position)) {
-                            // 펼쳐진 Item을 클릭 시
-                            sparseBooleanArray.delete(position);
-                        } else {
-                            // 직전의 클릭됐던 Item의 클릭상태를 지움
-                            sparseBooleanArray.delete(prePosition);
-                            // 클릭한 Item의 position을 저장
-                            sparseBooleanArray.put(position, true);
-                        }
-                        // 해당 포지션의 변화를 알림
-                        if (prePosition != -1) notifyItemChanged(prePosition);
-                        notifyItemChanged(position);
-                        // 클릭된 position 저장
-                        prePosition = position;
-                        break;
-                }
-            }
-        });
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.v(TAG, "onBindViewHolder()_onClick()_position==" + position);
+//                switch (position) {
+//                    case 0:
+//                        Log.v(TAG, "onBindViewHolder()_onClick()_position=0=" + position);
+//                        break;
+//                    case 1:
+//                        Log.v(TAG, "onBindViewHolder()_onClick()_position=1=" + position);
+//                        break;
+//                    case 3:
+//                        if (sparseBooleanArray.get(position)) {
+//                            // 펼쳐진 Item을 클릭 시
+//                            sparseBooleanArray.delete(position);
+//                        } else {
+//                            // 직전의 클릭됐던 Item의 클릭상태를 지움
+//                            sparseBooleanArray.delete(prePosition);
+//                            // 클릭한 Item의 position을 저장
+//                            sparseBooleanArray.put(position, true);
+//                        }
+//                        // 해당 포지션의 변화를 알림
+//                        if (prePosition != -1) notifyItemChanged(prePosition);
+//                        notifyItemChanged(position);
+//                        // 클릭된 position 저장
+//                        prePosition = position;
+//                        break;
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -249,6 +249,15 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvGas = itemView.findViewById(R.id.tvGas);
             tvPM25Out = itemView.findViewById(R.id.tvPM25Out);
             tvPM10Out = itemView.findViewById(R.id.tvPM10Out);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.v(TAG, "클릭되었음"+getAdapterPosition());
+
+                }
+            });
+
         }
     }
 
@@ -268,6 +277,14 @@ public class AirRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvWindowControl = itemView.findViewById(R.id.tvWindowControl);
             swAirControl = itemView.findViewById(R.id.swAirControl);
             swWindowControl = itemView.findViewById(R.id.swWindowControl);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.v(TAG, "클릭되었음"+getAdapterPosition());
+
+                }
+            });
         }
     }
 }

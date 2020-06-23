@@ -100,7 +100,6 @@ public class FragmentSetting extends Fragment {
         final SharedPreferences.Editor editor = appData.edit();
 
         voiceRecognition = appData.getBoolean("VOICE_RECOGNITION", false);
-
         // firebase
         acct = GoogleSignIn.getLastSignedInAccount(context);
 
@@ -130,6 +129,8 @@ public class FragmentSetting extends Fragment {
         //settingName.setText(acct.getDisplayName());
         //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
 
+        // custom firebaseAuth profiles
+
         if (acct != null) {     //  google acct profiles
             Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
@@ -142,28 +143,10 @@ public class FragmentSetting extends Fragment {
 
             Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
 
-            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " );
+            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
+                    "\n" + " 반갑습니당, '" );
             Glide.with(context).load(userPhotoURI).into(settingProfile);
         }
-        /*else {
-            Log.i("ltest", "else !");
-            // Name, email address, and profile photo Url
-            for (UserInfo userInfo : user.getProviderData()) {
-                if (userName == null && userInfo.getDisplayName() != null) {
-                    userName = userInfo.getDisplayName();
-                }
-                if (userEmail == null && userInfo.getEmail() != null) {
-                    userEmail = userInfo.getEmail();
-                }
-            }
-            userEmail = user.getEmail();
-            userName = user.getDisplayName();
-            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-            settingName.setText(userName);
-            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
-                    "\n" + " 반갑습니당, '" + userName + "'님");
-        }*/
-
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -187,10 +170,6 @@ public class FragmentSetting extends Fragment {
         } else {
             settingVoiceRecognitionBtn.setChecked(false);
         }
-        // btn
-//        btnLog.setOnClickListener(mClick);
-//        settingLogut.setOnClickListener(mClick);
-
         return view;
     }
 
@@ -206,10 +185,6 @@ public class FragmentSetting extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.settingLogout:
-                    if(acct != null){
-                    }else if(user != null){
-
-                    }
                     alertsignout();
                     break;
                 case R.id.btnairconditioner:

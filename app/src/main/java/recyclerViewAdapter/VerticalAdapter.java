@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +50,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     int oldPosition;
     int selectedPosition;
     int lastPosition;
+
+    String mode = "";
 
     public VerticalAdapter(
             Context context, ArrayList<SystemInfoVO> itemList, WeatherVO weathers,
@@ -94,12 +98,20 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-        Log.v(TAG,"onBindViewHolder()"+holder.itemView);
-        if (holder instanceof SystemInfo){
-            Log.v(TAG,""+itemList.get(position).getTitle());
-            ((SystemInfo)holder).ivTitle.setImageResource(itemList.get(position).getImageView());
-            ((SystemInfo)holder).tvSystemName.setText(itemList.get(position).getTitle());
+        Log.v(TAG, "onBindViewHolder()" + holder.itemView);
+        if (holder instanceof SystemInfo) {
+            Log.v(TAG, "" + itemList.get(position).getTitle());
+            ((SystemInfo) holder).ivTitle.setImageResource(itemList.get(position).getImageView());
+            ((SystemInfo) holder).tvSystemName.setText(itemList.get(position).getTitle());
 
+            //sparseBooleanArray을 통해 현재 위치에 true, false를 참조해 배경, 색 변경
+            if (sparseBooleanArray.get(position, false)) {
+                ((SystemInfo) holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border_cliked);
+                ((SystemInfo) holder).tvSystemName.setTextColor(context.getResources().getColor(R.color.fontDark, null));
+            } else {
+                ((SystemInfo) holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border);
+                ((SystemInfo) holder).tvSystemName.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
+            }
 //            int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
 //            deviceWidth = deviceWidth / 2;
 //            int deviceHeight = (int) (deviceWidth * 1.5);
@@ -175,7 +187,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfoWeather) holder).tvModeSituation.setText(sensorDataVO.getMode());
             //TestView 글자 흐름//
             ((SystemInfoWeather) holder).tvModeSituation.setSelected(true);
-            if (position != 0){
+            if (position != 0) {
                 if (sensorDataVO.getMode().equals("OFF")) {
                     oldPosition = position;
                 } else if (sensorDataVO.getMode().equals("SMART")) {
@@ -187,7 +199,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (sensorDataVO.getMode().equals("VENTILATION")) {
                     lastPosition = 3;
                     oldPosition = position;
-                }else if (sensorDataVO.getMode().equals("OUTING")) {
+                } else if (sensorDataVO.getMode().equals("OUTING")) {
                     lastPosition = 4;
                     oldPosition = position;
                 }
@@ -206,64 +218,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SystemInfoWeather) holder).tvSituation.setText(sensorDataVO.getDust10() + " μg/m³");
         }
 
-        ///RecyclerView Item Background Change///
-//        if (selectedPosition == position && selectedPosition != 0)
-//            holder.itemView.setBackgroundResource(R.drawable.round_border_select);
-//        else
-//            holder.itemView.setBackgroundResource(R.drawable.round_border);
+    }
 
-        /**
-         * //RecyclerView Touch Event (ItemVIew Click시 해당 Item에 Logic처리 가능)//
-         */
-        if (lastPosition == position && position != 0) {
-            ((SystemInfo) holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border_cliked);
-            ((SystemInfo) holder).tvSystemName.setTextColor(context.getResources().getColor(R.color.fontDark, null));
-        } else if (oldPosition == position && position != 0) {
-            ((SystemInfo) holder).layoutSystemInfo.setBackgroundResource(R.drawable.round_border);
-            ((SystemInfo) holder).tvSystemName.setTextColor(context.getResources().getColor(R.color.recyclerViewItemFont, null));
-        }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG, "onBindViewHolder()_onClick()_position==" + position);
-                String mode = "";
-                switch (position) {
-                    case 1:
-                        mode = "SMART";
-                        changeBackground(position, mode);
-                        break;
-                    case 2:
-                        mode = "SLEEP";
-                        changeBackground(position, mode);
-                        break;
-                    case 3:
-                        mode = "VENTILATION";
-                        changeBackground(position, mode);
-                        break;
-                    case 4:
-                        mode = "OUTING";
-                        changeBackground(position, mode);
-                        break;
-                }
-            }
-        });
-    }
-    public void changeBackground(int position, String mode) {
-        if (lastPosition == position) {
-            sharedObject.put("/ANDROID>/MODE OFF");
-            oldPosition = lastPosition;
-            lastPosition = 999;
-            notifyItemChanged(oldPosition);
-            notifyItemChanged(lastPosition);
-        } else {
-            sharedObject.put("/ANDROID>/MODE "+mode);
-            oldPosition = lastPosition;
-            lastPosition = position;
-            notifyItemChanged(oldPosition);
-            notifyItemChanged(lastPosition);
-        }
-        notifyItemChanged(0);
-    }
 
     /**
      * Item 항목에 맞는 ViewType 값을 Return
@@ -285,6 +241,25 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return itemList.size();
     }
 
+    //뷰 초기화
+    //sparseBooleanArray의 모든 리스트를 초기화(클릭안된걸로 싹다 변환)
+    //for문이 끝나면 클릭된 위치값을 파라미터로 넣어주었기에 참값을 넘겨주고
+    //notifyItemChanged(position)으로 리스트를 활성화(클릭된걸로)시키기
+    public void clearSelectedItem(int presentPosition) {
+        int position;
+
+        for (int i = 0; i < sparseBooleanArray.size(); i++) {
+            position = sparseBooleanArray.keyAt(i);
+            sparseBooleanArray.put(position, false);
+            notifyItemChanged(position);
+        }
+
+        sparseBooleanArray.clear();
+        sparseBooleanArray.put(presentPosition, true);
+        notifyItemChanged(presentPosition);
+    }
+
+
     //////////ItemVIew Class//////////
     public class SystemInfo extends RecyclerView.ViewHolder {
         public ImageView ivTitle;
@@ -299,6 +274,32 @@ public class VerticalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvSituation = itemView.findViewById(R.id.tvSituation);
             layoutSystemInfo = itemView.findViewById(R.id.layoutSystemInfo);
             Log.v(TAG, "SystemInfo.class");
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (sparseBooleanArray.get(position, false)) {
+                        //false로 바꾸어 클릭된거 비활성화
+                        sparseBooleanArray.delete(position);
+                        notifyItemChanged(position);
+                        sharedObject.put("/ANDROID>/MODE OFF");
+                    } else {
+                        if (position == 1) {
+                            mode = "SMART";
+                        } else if (position == 2) {
+                            mode = "SLEEP";
+                        } else if (position == 3) {
+                            mode = "VENTILATION";
+                        } else if (position == 4) {
+                            mode = "OUTING";
+                        }
+                        sharedObject.put("/ANDROID>/MODE " + mode);
+                        //A가 클릭되고 B를 클릭했을때 A, C, D, ...를 비활성화하고 B활성화
+                        clearSelectedItem(position);
+                    }
+                }
+            });
         }
     }
 
