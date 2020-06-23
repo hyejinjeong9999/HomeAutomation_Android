@@ -105,7 +105,6 @@ public class FragmentSetting extends Fragment {
         acct = GoogleSignIn.getLastSignedInAccount(context);
 
         settingProfile = view.findViewById(R.id.settingProfile);
-//        settingName = view.findViewById(R.id.settingName);
         settingEmail = view.findViewById(R.id.settingEmail);
         settingLogut = view.findViewById(R.id.settingLogout);
         btnairconditioner = view.findViewById(R.id.btnairconditioner);
@@ -118,55 +117,25 @@ public class FragmentSetting extends Fragment {
         btnWindow.setOnClickListener(mClick);
         settingLogut.setOnClickListener(mClick);
 
-//        lvLog = view.findViewById(R.id.lvLog);
         logVO = (LogVO)getArguments().get("LOGVO");
 
-
         //profiles
-
-        //Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
         settingProfile.setBackground(new ShapeDrawable(new OvalShape()));
         settingProfile.setClipToOutline(true);
-        //settingName.setText(acct.getDisplayName());
-        //settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
 
         // custom firebaseAuth profiles
-
         if (acct != null) {     //  google acct profiles
-            Log.i("ltest", "acct != null");
             settingEmail.setText("유저, '" + acct.getEmail() + "' 님이 입장하셨습니다.");
             Glide.with(context).load(acct.getPhotoUrl()).into(settingProfile);
         }else if(user != null){ //  custom firebaseAuth profiles
-            Log.i("ltest", "user != null");
             // Name, email address, and profile photo Url
             userEmail = user.getEmail();
             userPhotoURI = user.getPhotoUrl();
-
-            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
 
             settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
                     "\n" + " 반갑습니당, '" );
             Glide.with(context).load(userPhotoURI).into(settingProfile);
         }
-        /*else {
-            Log.i("ltest", "else !");
-            // Name, email address, and profile photo Url
-            for (UserInfo userInfo : user.getProviderData()) {
-                if (userName == null && userInfo.getDisplayName() != null) {
-                    userName = userInfo.getDisplayName();
-                }
-                if (userEmail == null && userInfo.getEmail() != null) {
-                    userEmail = userInfo.getEmail();
-                }
-            }
-            userEmail = user.getEmail();
-            userName = user.getDisplayName();
-            Log.i("ltest", userEmail + " / " +userName + " / " +  userPhotoURI);
-            settingName.setText(userName);
-            settingEmail.setText("유저, '" + userEmail + "' 님이 입장하셨습니다. " +
-                    "\n" + " 반갑습니당, '" + userName + "'님");
-        }*/
-
 
         settingVoiceRecognitionBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -190,10 +159,6 @@ public class FragmentSetting extends Fragment {
         } else {
             settingVoiceRecognitionBtn.setChecked(false);
         }
-        // btn
-//        btnLog.setOnClickListener(mClick);
-//        settingLogut.setOnClickListener(mClick);
-
         return view;
     }
 

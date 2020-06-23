@@ -22,7 +22,6 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        Log.i("DBTEST", "onOpen 호출");
     }
 
     @Override
@@ -30,7 +29,6 @@ class DBHelper extends SQLiteOpenHelper {
         String sql = "CREATE TABLE IF NOT EXISTS alarm" +
                 "(_id INTEGER PRIMARY KEY autoincrement, time String)";
         db.execSQL(sql);
-        Log.i("DBTEST", "DB를 생성했습니다");
     }
 
     @Override
@@ -45,7 +43,6 @@ class DBHelper extends SQLiteOpenHelper {
         String sql = "INSERT INTO alarm(time) VALUES " +
                 "("+time+")";
         db.execSQL(sql);
-        Log.i("DBTEST", "insert 호출");
         db.close();
     }
 
@@ -58,7 +55,6 @@ class DBHelper extends SQLiteOpenHelper {
     public void delete() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM ALARM");
-        Log.i("DBTEST", "delete 호출");
         db.close();
     }
 
@@ -74,7 +70,6 @@ class DBHelper extends SQLiteOpenHelper {
             String time = cursor.getString(1);
             result += "레코드 : " + id + ", " + time + "\n";
         }
-        Log.i("DBTEST", "select 호출");
         return result;
     }
 

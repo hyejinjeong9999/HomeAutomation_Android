@@ -90,8 +90,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             //String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
             String date_text = new SimpleDateFormat("a hh시 mm분 ss초 ", Locale.getDefault()).format(currentDateTime);
             Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_LONG).show();
-            Log.i("atest", "## 04 ##");
-            Log.i("atest", "date_text: " + date_text);
 
 
         }
