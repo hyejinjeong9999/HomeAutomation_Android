@@ -62,3 +62,6 @@
 
 - https://openweathermap.org/weather-conditions > "weather" 항목 세부사항 및 아이콘 리스트
 - https://erikflowers.github.io/weather-icons/ > .svg 폴더에 날씨 아이콘
+
+2020-07-07
+- firebase 재설정
